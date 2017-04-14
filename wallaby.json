@@ -1,0 +1,22 @@
+{
+  "files": [
+    "src/**/*.ts"
+  ],
+
+  "tests": [
+    "spec/**/*.ts"
+  ],
+
+  "testFramework": {
+    "type": "mocha"
+  },
+
+  "env": {
+    "type": "node"
+  },
+
+  "workers": {
+    "initial": 1,
+    "regular": 1
+  }
+}
