@@ -24,7 +24,8 @@
         "revert",
         "ci",
         "build"
-      ]
+      ],
+      "autoFix": true
     }
   },
   "nyc": {
@@ -56,6 +57,7 @@
   "scripts": {
     "prepublish": "npm prune && npm run build",
     "precommit": "lint-staged",
+    "prepush": "npm run build",
     "commitmsg": "validate-commit-msg",
     "test": "npm-run-all build:clean && mocha --reporter nyan --compilers ts:ts-node/register --recursive --bail spec",
     "test:cover": "nyc --reporter=lcov --reporter=html npm test",
