@@ -1,9 +1,9 @@
 import * as Rx from 'rxjs';
 import { Scheduler } from 'rxjs/Scheduler';
-import { TestMessageValue } from '../TestMessageValue';
-import { MessageRecordObserver } from './MessageRecordObserver';
+import { TestMessageValue } from './TestMessageValue';
+import { MessageRecordObserverBase } from './MessageRecordObserverBase';
 
-class MessageRecordObserverBase<T = string> implements MessageRecordObserver<T> {
+class MessageRecordObserver<T = string> implements MessageRecordObserverBase<T> {
   public readonly messages: Readonly<Array<TestMessageValue<T>>> = [];
 
   /**
@@ -27,9 +27,12 @@ class MessageRecordObserverBase<T = string> implements MessageRecordObserver<T> 
   }
 }
 
-const recordObserverFactory: (nowMethod: typeof Scheduler.now) => <T = string>() => MessageRecordObserver<T> =
-  (nowMethod: typeof Scheduler.now) => <T = string>() => new MessageRecordObserverBase<T>(nowMethod);
+/**
+ * Returns function to instantiate MessageRecordObserver.
+ */
+const getRecordObserverFactory: (nowMethod: typeof Scheduler.now) => <T = string>() => MessageRecordObserverBase<T> =
+  (nowMethod: typeof Scheduler.now) => <T = string>() => new MessageRecordObserver<T>(nowMethod);
 
 export {
-  recordObserverFactory
+  getRecordObserverFactory
 };
