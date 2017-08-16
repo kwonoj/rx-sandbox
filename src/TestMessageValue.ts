@@ -7,9 +7,7 @@ import { SubscriptionLog } from 'rxjs/testing/SubscriptionLog';
  *
  */
 export class TestMessageValue<T = string> implements TestMessage {
-
-  constructor(public readonly frame: number,
-              public readonly notification: Rx.Notification<T>) { }
+  constructor(public readonly frame: number, public readonly notification: Rx.Notification<T>) {}
 }
 
 /**
@@ -38,7 +36,6 @@ export function complete(frame: number): TestMessage {
   return new TestMessageValue<void>(frame, Rx.Notification.createComplete());
 }
 
-export function subscribe(subscribedFrame: number,
-                          unsubscribedFrame: number = Number.POSITIVE_INFINITY) {
+export function subscribe(subscribedFrame: number, unsubscribedFrame: number = Number.POSITIVE_INFINITY) {
   return new SubscriptionLog(subscribedFrame, unsubscribedFrame);
 }
