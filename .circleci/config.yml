@@ -1,0 +1,25 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/rx-sandbox
+    docker:
+      - image: node:7.10.1
+    steps:
+      - checkout
+      - run:
+          name: Checking Versions
+          command: node --version && npm --version
+      - run:
+          name: prepare
+          command: npm install
+      - run:
+          name: lint
+          command: npm run lint
+      - run:
+          name: build
+          command: npm run build
+      - run:
+          namme: test
+          command: |
+            npm test
+            bash <(curl -s https://codecov.io/bash)
