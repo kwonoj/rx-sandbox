@@ -1,5 +1,5 @@
 import { Observer } from 'rxjs/Observer';
-import { TestMessageValue } from './TestMessageValue';
+import { TestMessageValue } from './message/TestMessageValue';
 
 /**
  * An Observer records Observable values emitted in form of TestMessageValue

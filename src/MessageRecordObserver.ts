@@ -1,7 +1,7 @@
 import { Notification } from 'rxjs/Notification';
 import { Scheduler } from 'rxjs/Scheduler';
+import { TestMessageValue } from './message/TestMessageValue';
 import { MessageRecordObserverBase } from './MessageRecordObserverBase';
-import { TestMessageValue } from './TestMessageValue';
 
 class MessageRecordObserver<T = string> implements MessageRecordObserverBase<T> {
   public readonly messages: Readonly<Array<TestMessageValue<T>>> = [];

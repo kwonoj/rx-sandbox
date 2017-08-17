@@ -3,10 +3,7 @@ import { VirtualTimeScheduler } from 'rxjs/scheduler/VirtualTimeScheduler';
 import { ColdObservable } from 'rxjs/testing/ColdObservable';
 import { HotObservable } from 'rxjs/testing/HotObservable';
 import { SubscriptionMarbleToken } from '../marbles/SubscriptionMarbleToken';
-
-export interface TestMessage<T> {
-  dummy: T;
-}
+import { TestMessage } from '../message/TestMessage';
 
 const parseMarbles = (..._args: Array<any>) => {
   return [];
