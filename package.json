@@ -12,26 +12,6 @@
       "path": "cz-conventional-changelog"
     }
   },
-  "nyc": {
-    "include": [
-      "src/*.ts",
-      "src/**/*.ts"
-    ],
-    "exclude": [
-      "node_modules"
-    ],
-    "extension": [
-      ".ts"
-    ],
-    "require": [
-      "ts-node/register"
-    ],
-    "reporter": [
-      "json",
-      "html"
-    ],
-    "all": true
-  },
   "lint-staged": {
     "*.{ts,js}": [
       "prettier --write --single-quote --print-width 120 --jsx-bracket-same-line true",
@@ -44,9 +24,8 @@
     "precommit": "lint-staged",
     "prepush": "npm run build",
     "commitmsg": "commitlint -e",
-    "test": "npm-run-all build:clean && mocha --reporter nyan --compilers ts:ts-node/register --recursive --bail spec",
-    "test:cover": "nyc --reporter=lcov --reporter=html npm test",
-    "lint": "tslint src/**/*.ts spec/**/*.ts",
+    "test": "jest --config jest.json --coverage",
+    "lint": "tslint \"src/**/*.ts\" \"spec/**/*.ts\"",
     "lint:staged": "lint-staged",
     "build": "npm-run-all build:clean && tsc",
     "build:clean": "shx rm -rf ./dist",
@@ -78,18 +57,23 @@
   "devDependencies": {
     "@commitlint/cli": "^3.1.2",
     "@commitlint/config-angular": "^3.1.1",
+    "@types/chai": "^4.0.3",
+    "@types/jest": "^20.0.7",
     "chai": "^4.1.1",
     "commitizen": "2.9.6",
     "cz-conventional-changelog": "2.0.0",
     "husky": "^0.14.3",
+    "jest": "^20.0.4",
     "lint-staged": "^4.0.3",
     "npm-run-all": "^4.0.2",
     "nyc": "^10.3.0",
     "prettier": "^1.5.3",
     "rxjs": "5.x",
     "shx": "^0.2.2",
+    "ts-jest": "^20.0.10",
     "ts-node": "^3.3.0",
     "tslint": "^5.6.0",
+    "tslint-no-unused-expression-chai": "0.0.2",
     "typescript": "^2.4.2"
   },
   "peerDependencies": {
