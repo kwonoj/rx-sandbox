@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import { Notification } from 'rxjs/Notification';
+import { ColdObservable } from 'rxjs/testing/ColdObservable';
 import { parseObservableMarble } from '../../src/marbles/parseObservableMarble';
 import { TestMessageValue } from '../../src/message/TestMessageValue';
 
@@ -22,6 +23,56 @@ describe('parseObservableMarble', () => {
 
     const messages = parseObservableMarble(marble);
     const expected = [new TestMessageValue<string>(7, Notification.createNext('a'))];
+
+    expect(messages).to.deep.equal(expected);
+  });
+
+  it('should flatten custom value with inner observable when specified', () => {
+    const marble = '----a--b--';
+    const aMessages = [
+      new TestMessageValue<string>(1, Notification.createNext('1')),
+      new TestMessageValue<string>(2, Notification.createNext('2'))
+    ];
+    const bMessages = [
+      new TestMessageValue<string>(3, Notification.createNext('3')),
+      new TestMessageValue<string>(4, Notification.createNext('4'))
+    ];
+
+    const customValue = {
+      a: new ColdObservable(aMessages, null as any),
+      b: new ColdObservable(bMessages, null as any)
+    };
+
+    const messages = parseObservableMarble(marble, customValue, null, true);
+    const expected = [
+      new TestMessageValue<Array<TestMessageValue<string>>>(4, Notification.createNext(aMessages)),
+      new TestMessageValue<Array<TestMessageValue<string>>>(7, Notification.createNext(bMessages))
+    ];
+
+    expect(messages).to.deep.equal(expected);
+  });
+
+  it('should not flatten custom value with inner observable when not specified', () => {
+    const marble = '----a--b--';
+    const aMessages = [
+      new TestMessageValue<string>(1, Notification.createNext('1')),
+      new TestMessageValue<string>(2, Notification.createNext('2'))
+    ];
+    const bMessages = [
+      new TestMessageValue<string>(3, Notification.createNext('3')),
+      new TestMessageValue<string>(4, Notification.createNext('4'))
+    ];
+
+    const customValue = {
+      a: new ColdObservable<string>(aMessages, null as any),
+      b: new ColdObservable<string>(bMessages, null as any)
+    };
+
+    const messages = parseObservableMarble(marble, customValue, null, false);
+    const expected = [
+      new TestMessageValue<ColdObservable<string>>(4, Notification.createNext(customValue.a)),
+      new TestMessageValue<ColdObservable<string>>(7, Notification.createNext(customValue.b))
+    ];
 
     expect(messages).to.deep.equal(expected);
   });
