@@ -1,11 +1,11 @@
-import * as Rx from 'rxjs';
+import { Observer } from 'rxjs/Observer';
 import { TestMessageValue } from './TestMessageValue';
 
 /**
  * An Observer records Observable values emitted in form of TestMessageValue
  *
  */
-export interface MessageRecordObserverBase<T = string> extends Rx.Observer<T> {
+export interface MessageRecordObserverBase<T = string> extends Observer<T> {
   /**
    * Metadata of subscribed Observable, recorded value of next(), error(), complete() calls.
    */

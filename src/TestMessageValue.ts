@@ -1,4 +1,4 @@
-import * as Rx from 'rxjs';
+import { Notification } from 'rxjs/Notification';
 import { SubscriptionLog } from 'rxjs/testing/SubscriptionLog';
 import { TestMessage } from 'rxjs/testing/TestMessage';
 
@@ -7,7 +7,7 @@ import { TestMessage } from 'rxjs/testing/TestMessage';
  *
  */
 export class TestMessageValue<T = string> implements TestMessage {
-  constructor(public readonly frame: number, public readonly notification: Rx.Notification<T>) {}
+  constructor(public readonly frame: number, public readonly notification: Notification<T>) {}
 }
 
 /**
@@ -16,7 +16,7 @@ export class TestMessageValue<T = string> implements TestMessage {
  * @param value
  */
 export function next<T = string>(frame: number, value: T): TestMessage {
-  return new TestMessageValue(frame, Rx.Notification.createNext(value));
+  return new TestMessageValue(frame, Notification.createNext(value));
 }
 
 /**
@@ -25,7 +25,7 @@ export function next<T = string>(frame: number, value: T): TestMessage {
  * @param value
  */
 export function error(frame: number, error: any): TestMessage {
-  return new TestMessageValue<any>(frame, Rx.Notification.createError(error));
+  return new TestMessageValue<any>(frame, Notification.createError(error));
 }
 
 /**
@@ -33,7 +33,7 @@ export function error(frame: number, error: any): TestMessage {
  * @param frame virtual frame time when value will be emitted
  */
 export function complete(frame: number): TestMessage {
-  return new TestMessageValue<void>(frame, Rx.Notification.createComplete());
+  return new TestMessageValue<void>(frame, Notification.createComplete());
 }
 
 export function subscribe(subscribedFrame: number, unsubscribedFrame: number = Number.POSITIVE_INFINITY) {
