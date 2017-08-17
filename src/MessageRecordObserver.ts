@@ -1,7 +1,7 @@
-import * as Rx from 'rxjs';
+import { Notification } from 'rxjs/Notification';
 import { Scheduler } from 'rxjs/Scheduler';
+import { TestMessageValue } from './message/TestMessageValue';
 import { MessageRecordObserverBase } from './MessageRecordObserverBase';
-import { TestMessageValue } from './TestMessageValue';
 
 class MessageRecordObserver<T = string> implements MessageRecordObserverBase<T> {
   public readonly messages: Readonly<Array<TestMessageValue<T>>> = [];
@@ -14,15 +14,15 @@ class MessageRecordObserver<T = string> implements MessageRecordObserverBase<T> 
   constructor(private readonly nowMethod: typeof Scheduler.now) {}
 
   next(value: T): void {
-    this.messages.push(new TestMessageValue(this.nowMethod(), Rx.Notification.createNext(value)));
+    this.messages.push(new TestMessageValue(this.nowMethod(), Notification.createNext(value)));
   }
 
   error(value: any): void {
-    this.messages.push(new TestMessageValue<any>(this.nowMethod(), Rx.Notification.createError(value)));
+    this.messages.push(new TestMessageValue<any>(this.nowMethod(), Notification.createError(value)));
   }
 
   complete(): void {
-    this.messages.push(new TestMessageValue(this.nowMethod(), Rx.Notification.createComplete()));
+    this.messages.push(new TestMessageValue(this.nowMethod(), Notification.createComplete()));
   }
 }
 
