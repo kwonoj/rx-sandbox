@@ -19,7 +19,7 @@ const parseObservableMarble = <T>(
   const frameOffset = subscriptionIndex < 0 ? 0 : subscriptionIndex;
 
   const values = Array.from(marble).filter(token => token !== ObservableMarbleToken.NOOP).slice(frameOffset).reduce((
-    acc: { currentOffset: number; messages: Array<TestMessage<T>> },
+    acc: { currentOffset: number; messages: Array<TestMessage<T>>; simultaneousGrouped: boolean },
     token: any
   ) => {
     let message: TestMessage<T> | null = null;
@@ -37,9 +37,11 @@ const parseObservableMarble = <T>(
       case ObservableMarbleToken.TIMEFRAME_EXPAND:
         break;
       case ObservableMarbleToken.SIMULTANEOUS_START:
-        acc.currentOffset += 1 * frameTimeFactor;
+        acc.simultaneousGrouped = true;
         break;
       case ObservableMarbleToken.SIMULTANEOUS_END:
+        acc.currentOffset += 1 * frameTimeFactor;
+        acc.simultaneousGrouped = false;
         break;
       case SubscriptionMarbleToken.SUBSCRIBE:
         break;
@@ -50,13 +52,16 @@ const parseObservableMarble = <T>(
 
     if (!!message) {
       acc.messages.push(message);
-      acc.currentOffset += 1 * frameTimeFactor;
+      if (!acc.simultaneousGrouped) {
+        acc.currentOffset += 1 * frameTimeFactor;
+      }
     }
 
     return acc;
   }, {
     currentOffset: frameOffset,
-    messages: []
+    messages: [],
+    simultaneousGrouped: false
   });
 
   return values.messages;
