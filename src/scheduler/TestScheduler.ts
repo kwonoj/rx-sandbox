@@ -1,5 +1,5 @@
-import { VirtualTimeScheduler } from 'rxjs/scheduler/VirtualTimeScheduler';
 import { Observable } from 'rxjs/Observable';
+import { VirtualTimeScheduler } from 'rxjs/scheduler/VirtualTimeScheduler';
 import { ColdObservable } from 'rxjs/testing/ColdObservable';
 import { HotObservable } from 'rxjs/testing/HotObservable';
 import { SubscriptionMarbleToken } from '../marbles/SubscriptionMarbleToken';

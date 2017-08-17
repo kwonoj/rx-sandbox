@@ -1,6 +1,6 @@
 import * as Rx from 'rxjs';
-import { TestMessage } from 'rxjs/testing/TestMessage';
 import { SubscriptionLog } from 'rxjs/testing/SubscriptionLog';
+import { TestMessage } from 'rxjs/testing/TestMessage';
 
 /**
  * Represents single metadata value emitted by HotObservable<T> or ColdObservable<T>
