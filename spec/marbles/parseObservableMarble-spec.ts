@@ -74,6 +74,18 @@ describe('parseObservableMarble', () => {
     expect(messages).to.deep.equal(expected);
   });
 
+  it('should throw if expanding timeframe does not contain values', () => {
+    const marble = '----......----a----';
+
+    expect(() => parseObservableMarble(marble)).to.throw();
+  });
+
+  it('should throw when try to set timeframe in expanding timeframe', () => {
+    const marble = '-------...-14...-';
+
+    expect(() => parseObservableMarble(marble)).to.throw();
+  });
+
   it('should parse simultaneous value', () => {
     //             '-------v   ----v'
     const marble = '-------(ab)----(c|)';
@@ -87,6 +99,18 @@ describe('parseObservableMarble', () => {
     ];
 
     expect(messages).to.deep.equal(expected);
+  });
+
+  it('should throw when try to nest simultaneous value', () => {
+    const marble = '-----(a(b|))';
+
+    expect(() => parseObservableMarble(marble)).to.throw();
+  });
+
+  it('should throw when try to set timeframe in simultaneous value', () => {
+    const marble = '-------(a-b)';
+
+    expect(() => parseObservableMarble(marble)).to.throw();
   });
 
   it('should parse complete', () => {
