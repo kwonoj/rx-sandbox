@@ -65,8 +65,28 @@ describe('parseObservableMarble', () => {
     expect(messages).to.deep.equal(expected);
   });
 
+  it('should allow expanding timeframe', () => {
+    const marble = '----...14...----a----';
+
+    const messages = parseObservableMarble(marble);
+    const expected = [new TestMessageValue<string>(22, Notification.createNext('a'))];
+
+    expect(messages).to.deep.equal(expected);
+  });
+
   it('should parse simultaneous value', () => {
-    expect(true).to.be.false;
+    //             '-------v   ----v'
+    const marble = '-------(ab)----(c|)';
+
+    const messages = parseObservableMarble(marble);
+    const expected = [
+      new TestMessageValue<string>(7, Notification.createNext('a')),
+      new TestMessageValue<string>(7, Notification.createNext('b')),
+      new TestMessageValue<string>(12, Notification.createNext('c')),
+      new TestMessageValue<string>(12, Notification.createComplete())
+    ];
+
+    expect(messages).to.deep.equal(expected);
   });
 
   it('should parse complete', () => {
