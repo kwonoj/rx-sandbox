@@ -22,7 +22,7 @@
   "scripts": {
     "prepublish": "npm prune && npm run build",
     "precommit": "lint-staged",
-    "prepush": "npm run build",
+    "prepush": "npm-run-all build test",
     "commitmsg": "commitlint -e",
     "test": "jest --config jest.json --coverage",
     "lint": "tslint \"src/**/*.ts\" \"spec/**/*.ts\"",
