@@ -2,38 +2,70 @@
   "rules": {
     "curly": true,
     "eofline": false,
-    "align": [true, "parameters"],
+    "align": [
+      true,
+      "parameters"
+    ],
     "class-name": true,
-    "indent": [true, "spaces"],
-    "max-line-length": [true, 150],
-    "no-consecutive-blank-lines": [true],
+    "indent": [
+      true,
+      "spaces"
+    ],
+    "max-line-length": [
+      true,
+      150
+    ],
+    "no-consecutive-blank-lines": [
+      true
+    ],
+    "no-console": [
+      true
+    ],
     "no-trailing-whitespace": true,
     "no-duplicate-variable": true,
     "no-var-keyword": true,
     "no-empty": true,
-    "no-unused-expression": true,
+    "no-unused-expression-chai": true,
     "no-use-before-declare": true,
     "no-var-requires": true,
     "no-require-imports": true,
-    "one-line": [true,
+    "one-line": [
+      true,
       "check-else",
       "check-whitespace",
-      "check-open-brace"],
-    "quotemark": [true,
+      "check-open-brace"
+    ],
+    "ordered-imports": [
+      true
+    ],
+    "quotemark": [
+      true,
       "single",
-      "avoid-escape"],
-    "semicolon": [true, "always"],
-    "typedef-whitespace": [true, {
-      "call-signature": "nospace",
-      "index-signature": "nospace",
-      "parameter": "nospace",
-      "property-declaration": "nospace",
-      "variable-declaration": "nospace"
-    }],
-    "whitespace": [true,
+      "avoid-escape"
+    ],
+    "semicolon": [
+      true,
+      "always"
+    ],
+    "typedef-whitespace": [
+      true,
+      {
+        "call-signature": "nospace",
+        "index-signature": "nospace",
+        "parameter": "nospace",
+        "property-declaration": "nospace",
+        "variable-declaration": "nospace"
+      }
+    ],
+    "whitespace": [
+      true,
       "check-branch",
       "check-decl",
       "check-operator",
-      "check-type"]
-  }
+      "check-type"
+    ]
+  },
+  "rulesDirectory": [
+    "node_modules/tslint-no-unused-expression-chai/rules"
+  ]
 }
