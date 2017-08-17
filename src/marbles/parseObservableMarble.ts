@@ -1,4 +1,5 @@
 import { Notification } from 'rxjs/Notification';
+import { ColdObservable } from 'rxjs/testing/ColdObservable';
 import { TestMessage } from '../message/TestMessage';
 import { TestMessageValue } from '../message/TestMessageValue';
 import { ObservableMarbleToken } from './ObservableMarbleToken';
@@ -12,7 +13,7 @@ interface TokenParseAccumulator<T> {
   /**
    * Meta values emitted by marbles (value, error, complete)
    */
-  messages: Array<TestMessage<T>>;
+  messages: Array<TestMessage<T | Array<TestMessage<T>>>>;
   /**
    * Flag indicate values are grouped `()` and emitted simultaneously
    */
@@ -27,11 +28,29 @@ interface TokenParseAccumulator<T> {
   expandingValue: Array<string>;
 }
 
-const marbleTokenParseReducer = <T>(value?: { [key: string]: T } | null, error?: any, frameTimeFactor: number = 1) => (
-  acc: TokenParseAccumulator<T>,
-  token: any
+/**
+ * Translate single token in marble diagram to correct metadata
+ * @param {any} token Single char in marble diagram
+ * @param {{ [key: string]: T }} [value] Custom value for marble value
+ * @param {boolean} [materializeInnerObservables] Flatten inner observables in cold observable. False by default.
+ */
+const getMarbleTokenValue = <T>(
+  token: any,
+  value?: { [key: string]: T } | null,
+  materializeInnerObservables: boolean = false
 ) => {
-  let message: TestMessage<T> | null = null;
+  const customValue = value && value[token] ? value[token] : token;
+
+  return materializeInnerObservables && customValue instanceof ColdObservable ? customValue.messages : customValue;
+};
+
+const marbleTokenParseReducer = <T>(
+  value?: { [key: string]: T } | null,
+  error?: any,
+  materializeInnerObservables: boolean = false,
+  frameTimeFactor: number = 1
+) => (acc: TokenParseAccumulator<T>, token: any) => {
+  let message: TestMessage<T | Array<TestMessage<T>>> | null = null;
 
   switch (token) {
     case ObservableMarbleToken.TIMEFRAME:
@@ -80,8 +99,11 @@ const marbleTokenParseReducer = <T>(value?: { [key: string]: T } | null, error?:
       if (acc.expandingTokenCount > 0) {
         acc.expandingValue.push(token);
       } else {
-        const customValue = value && value[token] ? value[token] : token;
-        message = new TestMessageValue<T>(acc.currentTimeframe, Notification.createNext<T>(customValue));
+        const tokenValue = getMarbleTokenValue(token, value, materializeInnerObservables);
+        message = new TestMessageValue<T | Array<TestMessage<T>>>(
+          acc.currentTimeframe,
+          Notification.createNext<T | Array<TestMessage<T>>>(tokenValue)
+        );
       }
   }
 
@@ -94,6 +116,7 @@ const marbleTokenParseReducer = <T>(value?: { [key: string]: T } | null, error?:
 
   return acc;
 };
+
 /**
  * Parse marble DSL diagram, generates array of TestMessageValue for metadata of each marble values to be scheduled into.
  *
@@ -107,9 +130,9 @@ const parseObservableMarble = <T>(
   marble: string,
   value?: { [key: string]: T } | null,
   error?: any,
-  _materializeInnerObservables: boolean = false,
+  materializeInnerObservables: boolean = false,
   frameTimeFactor = 1
-): Array<TestMessage<T>> => {
+): Array<TestMessage<T | Array<TestMessage<T>>>> => {
   if (marble.indexOf(SubscriptionMarbleToken.UNSUBSCRIBE) !== -1) {
     throw new Error(`Observable marble cannot have unsubscription marker ${SubscriptionMarbleToken.UNSUBSCRIBE}`);
   }
@@ -118,13 +141,16 @@ const parseObservableMarble = <T>(
   const frameOffset = subscriptionIndex < 0 ? 0 : subscriptionIndex;
 
   const marbleTokenArray = Array.from(marble).filter(token => token !== ObservableMarbleToken.NOOP).slice(frameOffset);
-  const values = marbleTokenArray.reduce(marbleTokenParseReducer(value, error, frameTimeFactor), {
-    currentTimeframe: frameOffset,
-    messages: [],
-    simultaneousGrouped: false,
-    expandingTokenCount: 0,
-    expandingValue: []
-  });
+  const values = marbleTokenArray.reduce(
+    marbleTokenParseReducer(value, error, materializeInnerObservables, frameTimeFactor),
+    {
+      currentTimeframe: frameOffset,
+      messages: [],
+      simultaneousGrouped: false,
+      expandingTokenCount: 0,
+      expandingValue: []
+    }
+  );
 
   return values.messages;
 };
