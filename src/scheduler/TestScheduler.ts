@@ -30,7 +30,7 @@ class TestScheduler extends VirtualTimeScheduler {
     this.flushed = true;
   }
 
-  public getMarbles<T = string>(observable: Observable<T>, unsubscriptionMarbles: string | null = null) {
+  public getMessages<T = string>(observable: Observable<T>, unsubscriptionMarbles: string | null = null) {
     const { unsubscribedFrame } = parseSubscriptionMarble(unsubscriptionMarbles);
     const observableMetadata: Array<TestMessage<T | Array<TestMessage<T>>>> = [];
     const pushMetadata = (notification: Notification<T | Array<TestMessage<T>>>) =>
