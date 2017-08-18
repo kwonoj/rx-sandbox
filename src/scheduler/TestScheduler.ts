@@ -65,14 +65,6 @@ class TestScheduler extends VirtualTimeScheduler {
     return observableMetadata;
   }
 
-  public advanceBy(_frameTime: number): void {
-    throw new Error('not implemented');
-  }
-
-  public advanceTo(_frameTime: number): void {
-    throw new Error('not implemented');
-  }
-
   public createColdObservable<T = string>(marble: string, value?: { [key: string]: T }, error?: any): ColdObservable<T>;
   public createColdObservable<T = string>(message: Array<TestMessage<T>>): ColdObservable<T>;
   public createColdObservable<T = string>(...args: Array<any>): ColdObservable<T> {
