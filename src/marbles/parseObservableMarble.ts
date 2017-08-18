@@ -18,7 +18,7 @@ const parseObservableMarble = <T>(
   error?: any,
   materializeInnerObservables: boolean = false,
   frameTimeFactor = 1
-): Array<TestMessage<T | Array<TestMessage<T>>>> => {
+): Readonly<Array<TestMessage<T | Array<TestMessage<T>>>>> => {
   if (marble.indexOf(SubscriptionMarbleToken.UNSUBSCRIBE) !== -1) {
     throw new Error(`Observable marble cannot have unsubscription marker ${SubscriptionMarbleToken.UNSUBSCRIBE}`);
   }

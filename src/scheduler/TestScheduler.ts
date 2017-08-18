@@ -14,16 +14,23 @@ import { TestMessageValue } from '../message/TestMessageValue';
 class TestScheduler extends VirtualTimeScheduler {
   private readonly coldObservables: Array<ColdObservable<any>> = [];
   private readonly hotObservables: Array<HotObservable<any>> = [];
+  private flushed: boolean = false;
 
   constructor(private readonly autoFlush = false, private readonly frameTimeFactor = 1) {
     super(VirtualAction, Number.POSITIVE_INFINITY);
   }
 
-  public getMarbles<T = string>(observable: Observable<T>, unsubscriptionMarbles: string | null = null) {
-    if (this.autoFlush) {
-      throw new Error('not implemented');
+  public flush(): void {
+    const hotObservables = this.hotObservables;
+    while (hotObservables.length > 0) {
+      hotObservables.shift()!.setup();
     }
 
+    super.flush();
+    this.flushed = true;
+  }
+
+  public getMarbles<T = string>(observable: Observable<T>, unsubscriptionMarbles: string | null = null) {
     const { unsubscribedFrame } = parseSubscriptionMarble(unsubscriptionMarbles);
     const observableMetadata: Array<TestMessage<T | Array<TestMessage<T>>>> = [];
     const pushMetadata = (notification: Notification<T | Array<TestMessage<T>>>) =>
@@ -48,20 +55,19 @@ class TestScheduler extends VirtualTimeScheduler {
       this.schedule(() => subscription!.unsubscribe(), unsubscribedFrame);
     }
 
+    if (this.autoFlush) {
+      if (this.flushed) {
+        throw new Error(`Cannot schedule to get marbles, scheduler's already flushed`);
+      }
+      this.flush();
+    }
+
     return observableMetadata;
   }
 
-  public advanceBy(_frameTime: number): void {
-    throw new Error('not implemented');
-  }
-
-  public advanceTo(_frameTime: number): void {
-    throw new Error('not implemented');
-  }
-
-  public createColdObservable<T = string>(marble: string, value?: { [key: string]: T }, error?: any): Observable<T>;
-  public createColdObservable<T = string>(message: Array<TestMessage<T>>): Observable<T>;
-  public createColdObservable<T = string>(...args: Array<any>): Observable<T> {
+  public createColdObservable<T = string>(marble: string, value?: { [key: string]: T }, error?: any): ColdObservable<T>;
+  public createColdObservable<T = string>(message: Array<TestMessage<T>>): ColdObservable<T>;
+  public createColdObservable<T = string>(...args: Array<any>): ColdObservable<T> {
     const [marbleValue, value, error] = args;
 
     if (typeof marbleValue === 'string' && marbleValue.indexOf(SubscriptionMarbleToken.SUBSCRIBE) !== -1) {
@@ -71,20 +77,20 @@ class TestScheduler extends VirtualTimeScheduler {
     const messages = Array.isArray(marbleValue)
       ? marbleValue
       : parseObservableMarble(marbleValue, value, error, false, this.frameTimeFactor);
-    const observable = new ColdObservable<T>(messages, this);
+    const observable = new ColdObservable<T>(messages as Array<TestMessage<T | Array<TestMessage<T>>>>, this);
     this.coldObservables.push(observable);
     return observable;
   }
 
-  public createHotObservable<T = string>(marble: string, value?: { [key: string]: T }, error?: any): Observable<T>;
-  public createHotObservable<T = string>(message: Array<TestMessage<T>>): Observable<T>;
-  public createHotObservable<T = string>(...args: Array<any>): Observable<T> {
+  public createHotObservable<T = string>(marble: string, value?: { [key: string]: T }, error?: any): HotObservable<T>;
+  public createHotObservable<T = string>(message: Array<TestMessage<T>>): HotObservable<T>;
+  public createHotObservable<T = string>(...args: Array<any>): HotObservable<T> {
     const [marbleValue, value, error] = args;
 
     const messages = Array.isArray(marbleValue)
       ? marbleValue
       : parseObservableMarble(marbleValue, value, error, false, this.frameTimeFactor);
-    const subject = new HotObservable<T>(messages, this);
+    const subject = new HotObservable<T>(messages as Array<TestMessage<T | Array<TestMessage<T>>>>, this);
     this.hotObservables.push(subject);
     return subject;
   }
