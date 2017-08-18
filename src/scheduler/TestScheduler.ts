@@ -14,6 +14,7 @@ import { TestMessageValue } from '../message/TestMessageValue';
 class TestScheduler extends VirtualTimeScheduler {
   private readonly coldObservables: Array<ColdObservable<any>> = [];
   private readonly hotObservables: Array<HotObservable<any>> = [];
+  private flushed: boolean = false;
 
   constructor(private readonly autoFlush = false, private readonly frameTimeFactor = 1) {
     super(VirtualAction, Number.POSITIVE_INFINITY);
@@ -26,13 +27,10 @@ class TestScheduler extends VirtualTimeScheduler {
     }
 
     super.flush();
+    this.flushed = true;
   }
 
   public getMarbles<T = string>(observable: Observable<T>, unsubscriptionMarbles: string | null = null) {
-    if (this.autoFlush) {
-      throw new Error('not implemented');
-    }
-
     const { unsubscribedFrame } = parseSubscriptionMarble(unsubscriptionMarbles);
     const observableMetadata: Array<TestMessage<T | Array<TestMessage<T>>>> = [];
     const pushMetadata = (notification: Notification<T | Array<TestMessage<T>>>) =>
@@ -55,6 +53,13 @@ class TestScheduler extends VirtualTimeScheduler {
 
     if (unsubscribedFrame !== Number.POSITIVE_INFINITY && !!subscription) {
       this.schedule(() => subscription!.unsubscribe(), unsubscribedFrame);
+    }
+
+    if (this.autoFlush) {
+      if (this.flushed) {
+        throw new Error(`Cannot schedule to get marbles, scheduler's already flushed`);
+      }
+      this.flush();
     }
 
     return observableMetadata;
