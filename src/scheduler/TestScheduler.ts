@@ -19,20 +19,6 @@ class TestScheduler extends VirtualTimeScheduler {
     super(VirtualAction, Number.POSITIVE_INFINITY);
   }
 
-  private materializeInnerObservable<T>(observable: Observable<any>, outerFrame: number): Array<TestMessage<T>> {
-    const innerObservableMetadata: Array<TestMessage<T>> = [];
-    const pushMetaData = (notification: Notification<T>) =>
-      innerObservableMetadata.push(new TestMessageValue<T>(this.frame - outerFrame, notification));
-
-    observable.subscribe(
-      value => pushMetaData(Notification.createNext(value)),
-      err => pushMetaData(Notification.createError(err)),
-      () => pushMetaData(Notification.createComplete())
-    );
-
-    return innerObservableMetadata;
-  }
-
   public getMarbles<T = string>(observable: Observable<T>, unsubscriptionMarbles: string | null = null) {
     if (this.autoFlush) {
       throw new Error('not implemented');
@@ -101,6 +87,20 @@ class TestScheduler extends VirtualTimeScheduler {
     const subject = new HotObservable<T>(messages, this);
     this.hotObservables.push(subject);
     return subject;
+  }
+
+  private materializeInnerObservable<T>(observable: Observable<any>, outerFrame: number): Array<TestMessage<T>> {
+    const innerObservableMetadata: Array<TestMessage<T>> = [];
+    const pushMetaData = (notification: Notification<T>) =>
+      innerObservableMetadata.push(new TestMessageValue<T>(this.frame - outerFrame, notification));
+
+    observable.subscribe(
+      value => pushMetaData(Notification.createNext(value)),
+      err => pushMetaData(Notification.createError(err)),
+      () => pushMetaData(Notification.createComplete())
+    );
+
+    return innerObservableMetadata;
   }
 }
 
