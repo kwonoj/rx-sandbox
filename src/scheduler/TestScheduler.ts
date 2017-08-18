@@ -19,6 +19,15 @@ class TestScheduler extends VirtualTimeScheduler {
     super(VirtualAction, Number.POSITIVE_INFINITY);
   }
 
+  public flush(): void {
+    const hotObservables = this.hotObservables;
+    while (hotObservables.length > 0) {
+      hotObservables.shift()!.setup();
+    }
+
+    super.flush();
+  }
+
   public getMarbles<T = string>(observable: Observable<T>, unsubscriptionMarbles: string | null = null) {
     if (this.autoFlush) {
       throw new Error('not implemented');
