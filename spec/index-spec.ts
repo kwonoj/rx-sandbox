@@ -3,6 +3,6 @@ import * as idx from '../src/index';
 
 describe('index', () => {
   it('should export', () => {
-    expect(idx).to.empty;
+    expect(idx).to.have.property('rxSandbox');
   });
 });
