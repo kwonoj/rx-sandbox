@@ -14,7 +14,8 @@ const rxSandbox = {
       cold: scheduler.createColdObservable.bind(scheduler) as typeof scheduler.createColdObservable,
       flush: scheduler.flush.bind(scheduler) as typeof scheduler.flush,
       advanceBy: scheduler.advanceBy.bind(scheduler) as typeof scheduler.advanceBy,
-      advanceTo: scheduler.advanceTo.bind(scheduler) as typeof scheduler.advanceTo
+      advanceTo: scheduler.advanceTo.bind(scheduler) as typeof scheduler.advanceTo,
+      getMarbles: scheduler.getMarbles.bind(scheduler) as typeof scheduler.getMarbles
     };
   }
 };
