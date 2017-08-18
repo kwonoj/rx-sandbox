@@ -5,11 +5,11 @@ import { TestMessageValue } from '../message/TestMessageValue';
 import { ObservableMarbleToken } from './ObservableMarbleToken';
 import { SubscriptionMarbleToken } from './SubscriptionMarbleToken';
 
-interface TokenParseAccumulator<T> {
+interface ObservableTokenParseAccumulator<T> {
   /**
    * Current virtual time passed
    */
-  currentTimeframe: number;
+  currentTimeFrame: number;
   /**
    * Meta values emitted by marbles (value, error, complete)
    */
@@ -44,12 +44,12 @@ const getMarbleTokenValue = <T>(
   return materializeInnerObservables && customValue instanceof ColdObservable ? customValue.messages : customValue;
 };
 
-const marbleTokenParseReducer = <T>(
+const observableTokenParseReducer = <T>(
   value?: { [key: string]: T } | null,
   error?: any,
   materializeInnerObservables: boolean = false,
   frameTimeFactor: number = 1
-) => (acc: TokenParseAccumulator<T>, token: any) => {
+) => (acc: ObservableTokenParseAccumulator<T>, token: any) => {
   let message: TestMessage<T | Array<TestMessage<T>>> | null = null;
 
   switch (token) {
@@ -57,13 +57,13 @@ const marbleTokenParseReducer = <T>(
       if (acc.expandingTokenCount > 0 || acc.simultaneousGrouped) {
         throw new Error('Incorret timeframe specified');
       }
-      acc.currentTimeframe += 1 * frameTimeFactor;
+      acc.currentTimeFrame += 1 * frameTimeFactor;
       break;
     case ObservableMarbleToken.ERROR:
-      message = new TestMessageValue<T>(acc.currentTimeframe, Notification.createError(error || '#'));
+      message = new TestMessageValue<T>(acc.currentTimeFrame, Notification.createError(error || '#'));
       break;
     case ObservableMarbleToken.COMPLETE:
-      message = new TestMessageValue<T>(acc.currentTimeframe, Notification.createComplete());
+      message = new TestMessageValue<T>(acc.currentTimeFrame, Notification.createComplete());
       break;
     case ObservableMarbleToken.TIMEFRAME_EXPAND:
       acc.expandingTokenCount += 1;
@@ -80,7 +80,7 @@ const marbleTokenParseReducer = <T>(
           throw new Error(`There isn't value to expand timeframe`);
         }
         const expandedFrame = parseInt(acc.expandingValue.join(''), 10);
-        acc.currentTimeframe += expandedFrame * frameTimeFactor;
+        acc.currentTimeFrame += expandedFrame * frameTimeFactor;
       }
       break;
     case ObservableMarbleToken.SIMULTANEOUS_START:
@@ -90,7 +90,7 @@ const marbleTokenParseReducer = <T>(
       acc.simultaneousGrouped = true;
       break;
     case ObservableMarbleToken.SIMULTANEOUS_END:
-      acc.currentTimeframe += 1 * frameTimeFactor;
+      acc.currentTimeFrame += 1 * frameTimeFactor;
       acc.simultaneousGrouped = false;
       break;
     case SubscriptionMarbleToken.SUBSCRIBE:
@@ -101,7 +101,7 @@ const marbleTokenParseReducer = <T>(
       } else {
         const tokenValue = getMarbleTokenValue(token, value, materializeInnerObservables);
         message = new TestMessageValue<T | Array<TestMessage<T>>>(
-          acc.currentTimeframe,
+          acc.currentTimeFrame,
           Notification.createNext<T | Array<TestMessage<T>>>(tokenValue)
         );
       }
@@ -110,7 +110,7 @@ const marbleTokenParseReducer = <T>(
   if (!!message) {
     acc.messages.push(message);
     if (!acc.simultaneousGrouped) {
-      acc.currentTimeframe += 1 * frameTimeFactor;
+      acc.currentTimeFrame += 1 * frameTimeFactor;
     }
   }
 
@@ -142,9 +142,9 @@ const parseObservableMarble = <T>(
 
   const marbleTokenArray = Array.from(marble).filter(token => token !== ObservableMarbleToken.NOOP).slice(frameOffset);
   const values = marbleTokenArray.reduce(
-    marbleTokenParseReducer(value, error, materializeInnerObservables, frameTimeFactor),
+    observableTokenParseReducer(value, error, materializeInnerObservables, frameTimeFactor),
     {
-      currentTimeframe: frameOffset,
+      currentTimeFrame: frameOffset,
       messages: [],
       simultaneousGrouped: false,
       expandingTokenCount: 0,
