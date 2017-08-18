@@ -11,6 +11,12 @@
       true,
       "spaces"
     ],
+    "member-ordering": [
+      true,
+      {
+        "order": "fields-first"
+      }
+    ],
     "max-line-length": [
       true,
       150
