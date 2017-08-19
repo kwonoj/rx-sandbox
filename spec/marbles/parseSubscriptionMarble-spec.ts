@@ -12,7 +12,7 @@ describe('parseSubscriptionMarble', () => {
     expect(subscription).to.deep.equal(expected);
   });
 
-  it.only('should parse unusubscription', () => {
+  it('should parse unusubscription', () => {
     const marble = '----------!';
 
     const subscription = parseSubscriptionMarble(marble);
