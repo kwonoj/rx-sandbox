@@ -209,7 +209,7 @@ const messages = getMessages(e1.mapTo('x'));
 expect(messages).to.deep.equal(expected);
 
 //subsequent attempt will throw
-exoect(() => getMessages(e1.mapTo('y'))).to.throw();
+expect(() => getMessages(e1.mapTo('y'))).to.throw();
 
 ```
 
