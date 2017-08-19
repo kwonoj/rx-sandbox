@@ -11,6 +11,9 @@ import { SubscriptionMarbleToken } from '../marbles/SubscriptionMarbleToken';
 import { TestMessage } from '../message/TestMessage';
 import { TestMessageValue } from '../message/TestMessageValue';
 
+/**
+ * @internal
+ */
 class TestScheduler extends VirtualTimeScheduler {
   private readonly coldObservables: Array<ColdObservable<any>> = [];
   private readonly hotObservables: Array<HotObservable<any>> = [];
@@ -31,13 +34,13 @@ class TestScheduler extends VirtualTimeScheduler {
   }
 
   public getMessages<T = string>(observable: Observable<T>, unsubscriptionMarbles: string | null = null) {
-    const { unsubscribedFrame } = parseSubscriptionMarble(unsubscriptionMarbles);
+    const { subscribedFrame, unsubscribedFrame } = this.calculateSubscriptionFrame(observable, unsubscriptionMarbles);
+
     const observableMetadata: Array<TestMessage<T | Array<TestMessage<T>>>> = [];
     const pushMetadata = (notification: Notification<T | Array<TestMessage<T>>>) =>
       observableMetadata.push(new TestMessageValue<T | Array<TestMessage<T>>>(this.frame, notification));
 
     let subscription: Subscription | null = null;
-
     this.schedule(() => {
       subscription = observable.subscribe(
         (value: T) =>
@@ -49,9 +52,9 @@ class TestScheduler extends VirtualTimeScheduler {
         (err: any) => pushMetadata(Notification.createError(err)),
         () => pushMetadata(Notification.createComplete())
       );
-    }, 0);
+    }, subscribedFrame);
 
-    if (unsubscribedFrame !== Number.POSITIVE_INFINITY && !!subscription) {
+    if (unsubscribedFrame !== Number.POSITIVE_INFINITY) {
       this.schedule(() => subscription!.unsubscribe(), unsubscribedFrame);
     }
 
@@ -115,6 +118,29 @@ class TestScheduler extends VirtualTimeScheduler {
     );
 
     return innerObservableMetadata;
+  }
+
+  private calculateSubscriptionFrame(observable: Observable<any>, unsubscriptionMarbles: string | null = null) {
+    const { subscribedFrame, unsubscribedFrame } = parseSubscriptionMarble(unsubscriptionMarbles);
+
+    if (subscribedFrame === Number.POSITIVE_INFINITY) {
+      return { subscribedFrame: 0, unsubscribedFrame };
+    }
+
+    //looks internal of Observable implementation to determine source is hot or cold observable.
+    //if source is hot, subscription / unsubscription works as specified,
+    //if source is cold, subscription always triggers start of observable - adjust unsubscription frame as well
+    let source = observable;
+    while (!!source) {
+      if (source instanceof HotObservable) {
+        return { subscribedFrame, unsubscribedFrame };
+      } else if (source instanceof ColdObservable) {
+        return { subscribedFrame: 0, unsubscribedFrame: unsubscribedFrame - subscribedFrame };
+      }
+      source = (source as any).source;
+    }
+
+    throw new Error('Cannot detect source observable type');
   }
 }
 
