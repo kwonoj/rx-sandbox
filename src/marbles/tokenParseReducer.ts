@@ -178,9 +178,9 @@ const subscriptionTokenParseReducer = (frameTimeFactor: number = 1) => (
   switch (token) {
     case SubscriptionMarbleToken.SUBSCRIBE:
       acc.subscriptionFrame = acc.currentTimeFrame;
+      acc = increaseTimeFrame(acc, frameTimeFactor);
       break;
     case SubscriptionMarbleToken.UNSUBSCRIBE:
-      acc = increaseTimeFrame(acc, frameTimeFactor);
       acc.unsubscriptionFrame = acc.currentTimeFrame;
       break;
     case ObservableMarbleToken.TIMEFRAME_EXPAND:
