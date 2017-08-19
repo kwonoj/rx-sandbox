@@ -31,7 +31,8 @@ const error = (frame: number, error: any): TestMessage<any> =>
  * Utility function to generate TestMessage represents completion for Observer::complete()
  * @param frame virtual frame time when value will be emitted
  */
-const complete = (frame: number): TestMessage<void> => new TestMessageValue<void>(frame, Notification.createComplete());
+const complete = <T = void>(frame: number): TestMessage<T> =>
+  new TestMessageValue<T>(frame, Notification.createComplete());
 
 const subscribe = (subscribedFrame: number, unsubscribedFrame: number = Number.POSITIVE_INFINITY) =>
   new SubscriptionLog(subscribedFrame, unsubscribedFrame);
