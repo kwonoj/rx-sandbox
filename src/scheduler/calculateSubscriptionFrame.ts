@@ -5,8 +5,8 @@ import { parseSubscriptionMarble } from '../marbles/parseSubscriptionMarble';
 
 const calculateSubscriptionFrame = (
   observable: Observable<any>,
-  unsubscriptionMarbles: string | null = null,
-  frameTimeFactor: number = 1
+  unsubscriptionMarbles: string | null,
+  frameTimeFactor: number
 ) => {
   const { subscribedFrame, unsubscribedFrame } = parseSubscriptionMarble(unsubscriptionMarbles, frameTimeFactor);
 
