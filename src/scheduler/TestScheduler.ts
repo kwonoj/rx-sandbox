@@ -65,7 +65,11 @@ class TestScheduler extends VirtualTimeScheduler {
     return observableMetadata;
   }
 
-  public createColdObservable<T = string>(marble: string, value?: { [key: string]: T }, error?: any): ColdObservable<T>;
+  public createColdObservable<T = string>(
+    marble: string,
+    value?: { [key: string]: T } | null,
+    error?: any
+  ): ColdObservable<T>;
   public createColdObservable<T = string>(message: Array<TestMessage<T>>): ColdObservable<T>;
   public createColdObservable<T = string>(...args: Array<any>): ColdObservable<T> {
     const [marbleValue, value, error] = args;
@@ -82,7 +86,11 @@ class TestScheduler extends VirtualTimeScheduler {
     return observable;
   }
 
-  public createHotObservable<T = string>(marble: string, value?: { [key: string]: T }, error?: any): HotObservable<T>;
+  public createHotObservable<T = string>(
+    marble: string,
+    value?: { [key: string]: T } | null,
+    error?: any
+  ): HotObservable<T>;
   public createHotObservable<T = string>(message: Array<TestMessage<T>>): HotObservable<T>;
   public createHotObservable<T = string>(...args: Array<any>): HotObservable<T> {
     const [marbleValue, value, error] = args;
