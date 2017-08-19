@@ -6,10 +6,10 @@ import { Subscription } from 'rxjs/Subscription';
 import { ColdObservable } from 'rxjs/testing/ColdObservable';
 import { HotObservable } from 'rxjs/testing/HotObservable';
 import { parseObservableMarble } from '../marbles/parseObservableMarble';
-import { parseSubscriptionMarble } from '../marbles/parseSubscriptionMarble';
 import { SubscriptionMarbleToken } from '../marbles/SubscriptionMarbleToken';
 import { TestMessage } from '../message/TestMessage';
 import { TestMessageValue } from '../message/TestMessageValue';
+import { calculateSubscriptionFrame } from './calculateSubscriptionFrame';
 
 /**
  * @internal
@@ -34,7 +34,11 @@ class TestScheduler extends VirtualTimeScheduler {
   }
 
   public getMessages<T = string>(observable: Observable<T>, unsubscriptionMarbles: string | null = null) {
-    const { subscribedFrame, unsubscribedFrame } = this.calculateSubscriptionFrame(observable, unsubscriptionMarbles);
+    const { subscribedFrame, unsubscribedFrame } = calculateSubscriptionFrame(
+      observable,
+      unsubscriptionMarbles,
+      this.frameTimeFactor
+    );
 
     const observableMetadata: Array<TestMessage<T | Array<TestMessage<T>>>> = [];
     const pushMetadata = (notification: Notification<T | Array<TestMessage<T>>>) =>
@@ -118,29 +122,6 @@ class TestScheduler extends VirtualTimeScheduler {
     );
 
     return innerObservableMetadata;
-  }
-
-  private calculateSubscriptionFrame(observable: Observable<any>, unsubscriptionMarbles: string | null = null) {
-    const { subscribedFrame, unsubscribedFrame } = parseSubscriptionMarble(unsubscriptionMarbles);
-
-    if (subscribedFrame === Number.POSITIVE_INFINITY) {
-      return { subscribedFrame: 0, unsubscribedFrame };
-    }
-
-    //looks internal of Observable implementation to determine source is hot or cold observable.
-    //if source is hot, subscription / unsubscription works as specified,
-    //if source is cold, subscription always triggers start of observable - adjust unsubscription frame as well
-    let source = observable;
-    while (!!source) {
-      if (source instanceof HotObservable) {
-        return { subscribedFrame, unsubscribedFrame };
-      } else if (source instanceof ColdObservable) {
-        return { subscribedFrame: 0, unsubscribedFrame: unsubscribedFrame - subscribedFrame };
-      }
-      source = (source as any).source;
-    }
-
-    throw new Error('Cannot detect source observable type');
   }
 }
 
