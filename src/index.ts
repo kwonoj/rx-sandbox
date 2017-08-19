@@ -5,6 +5,7 @@ import { SubscriptionLog } from 'rxjs/testing/SubscriptionLog';
 import { parseObservableMarble } from './marbles/parseObservableMarble';
 import { parseSubscriptionMarble } from './marbles/parseSubscriptionMarble';
 import { TestMessage } from './message/TestMessage';
+import { complete, error, next, subscribe } from './message/TestMessageValue';
 import { TestScheduler } from './scheduler/TestScheduler';
 
 //workaround TS4029 by explicitly import types and avoid unused import error
@@ -92,4 +93,4 @@ const rxSandbox: RxSandbox = {
   })
 };
 
-export { rxSandbox, TestMessage };
+export { rxSandbox, TestMessage, next, error, complete, subscribe };
