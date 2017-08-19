@@ -12,6 +12,15 @@ describe('parseSubscriptionMarble', () => {
     expect(subscription).to.deep.equal(expected);
   });
 
+  it('should parse unusubscription', () => {
+    const marble = '----------!';
+
+    const subscription = parseSubscriptionMarble(marble);
+    const expected = new SubscriptionLog(Number.POSITIVE_INFINITY, 10);
+
+    expect(subscription).to.deep.equal(expected);
+  });
+
   it('should parse subscription with unsubscription', () => {
     const marble = '--^-----!';
 

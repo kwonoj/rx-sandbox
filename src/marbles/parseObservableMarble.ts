@@ -28,7 +28,7 @@ const parseObservableMarble = <T>(
 
   const marbleTokenArray = Array.from(marble).filter(token => token !== ObservableMarbleToken.NOOP).slice(frameOffset);
   const values = marbleTokenArray.reduce(
-    observableTokenParseReducer(value, error, materializeInnerObservables, frameTimeFactor),
+    observableTokenParseReducer(value || null, error, materializeInnerObservables, frameTimeFactor),
     {
       currentTimeFrame: frameOffset,
       messages: [],

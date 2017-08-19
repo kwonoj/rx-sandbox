@@ -6,11 +6,14 @@ import { Subscription } from 'rxjs/Subscription';
 import { ColdObservable } from 'rxjs/testing/ColdObservable';
 import { HotObservable } from 'rxjs/testing/HotObservable';
 import { parseObservableMarble } from '../marbles/parseObservableMarble';
-import { parseSubscriptionMarble } from '../marbles/parseSubscriptionMarble';
 import { SubscriptionMarbleToken } from '../marbles/SubscriptionMarbleToken';
 import { TestMessage } from '../message/TestMessage';
 import { TestMessageValue } from '../message/TestMessageValue';
+import { calculateSubscriptionFrame } from './calculateSubscriptionFrame';
 
+/**
+ * @internal
+ */
 class TestScheduler extends VirtualTimeScheduler {
   private readonly coldObservables: Array<ColdObservable<any>> = [];
   private readonly hotObservables: Array<HotObservable<any>> = [];
@@ -31,13 +34,17 @@ class TestScheduler extends VirtualTimeScheduler {
   }
 
   public getMessages<T = string>(observable: Observable<T>, unsubscriptionMarbles: string | null = null) {
-    const { unsubscribedFrame } = parseSubscriptionMarble(unsubscriptionMarbles);
+    const { subscribedFrame, unsubscribedFrame } = calculateSubscriptionFrame(
+      observable,
+      unsubscriptionMarbles,
+      this.frameTimeFactor
+    );
+
     const observableMetadata: Array<TestMessage<T | Array<TestMessage<T>>>> = [];
     const pushMetadata = (notification: Notification<T | Array<TestMessage<T>>>) =>
       observableMetadata.push(new TestMessageValue<T | Array<TestMessage<T>>>(this.frame, notification));
 
     let subscription: Subscription | null = null;
-
     this.schedule(() => {
       subscription = observable.subscribe(
         (value: T) =>
@@ -49,9 +56,9 @@ class TestScheduler extends VirtualTimeScheduler {
         (err: any) => pushMetadata(Notification.createError(err)),
         () => pushMetadata(Notification.createComplete())
       );
-    }, 0);
+    }, subscribedFrame);
 
-    if (unsubscribedFrame !== Number.POSITIVE_INFINITY && !!subscription) {
+    if (unsubscribedFrame !== Number.POSITIVE_INFINITY) {
       this.schedule(() => subscription!.unsubscribe(), unsubscribedFrame);
     }
 
@@ -65,7 +72,11 @@ class TestScheduler extends VirtualTimeScheduler {
     return observableMetadata;
   }
 
-  public createColdObservable<T = string>(marble: string, value?: { [key: string]: T }, error?: any): ColdObservable<T>;
+  public createColdObservable<T = string>(
+    marble: string,
+    value?: { [key: string]: T } | null,
+    error?: any
+  ): ColdObservable<T>;
   public createColdObservable<T = string>(message: Array<TestMessage<T>>): ColdObservable<T>;
   public createColdObservable<T = string>(...args: Array<any>): ColdObservable<T> {
     const [marbleValue, value, error] = args;
@@ -82,7 +93,11 @@ class TestScheduler extends VirtualTimeScheduler {
     return observable;
   }
 
-  public createHotObservable<T = string>(marble: string, value?: { [key: string]: T }, error?: any): HotObservable<T>;
+  public createHotObservable<T = string>(
+    marble: string,
+    value?: { [key: string]: T } | null,
+    error?: any
+  ): HotObservable<T>;
   public createHotObservable<T = string>(message: Array<TestMessage<T>>): HotObservable<T>;
   public createHotObservable<T = string>(...args: Array<any>): HotObservable<T> {
     const [marbleValue, value, error] = args;

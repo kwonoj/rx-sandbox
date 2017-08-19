@@ -1,8 +1,10 @@
 import { expect } from 'chai';
 import { Notification } from 'rxjs/Notification';
 import { ColdObservable } from 'rxjs/testing/ColdObservable';
+import { TestMessage } from '../../src/index';
 import { parseObservableMarble } from '../../src/marbles/parseObservableMarble';
 import { TestMessageValue } from '../../src/message/TestMessageValue';
+import { TestScheduler } from '../../src/scheduler/TestScheduler';
 
 describe('parseObservableMarble', () => {
   it('should not allow unsubscription token', () => {
@@ -200,6 +202,24 @@ describe('parseObservableMarble', () => {
 
     const messages = parseObservableMarble(marble);
     const expected = [new TestMessageValue<string>(8, Notification.createNext('a'))];
+
+    expect(messages).to.deep.equal(expected);
+  });
+
+  it('should able to flatten inner observable', () => {
+    const scheduler = new TestScheduler();
+
+    const marble = '                            --a--|';
+    const inner = scheduler.createColdObservable('---1--');
+
+    const messages = parseObservableMarble(marble, { a: inner }, null, true);
+    const expected = [
+      new TestMessageValue<Array<TestMessage>>(
+        2,
+        Notification.createNext([new TestMessageValue(3, Notification.createNext('1'))])
+      ),
+      new TestMessageValue(5, Notification.createComplete())
+    ];
 
     expect(messages).to.deep.equal(expected);
   });

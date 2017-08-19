@@ -56,8 +56,8 @@ interface SubscriptionTokenParseAccumulator extends TokenParseAccumulator {
  */
 const getMarbleTokenValue = <T>(
   token: any,
-  value?: { [key: string]: T } | null,
-  materializeInnerObservables: boolean = false
+  value: { [key: string]: T } | null,
+  materializeInnerObservables: boolean
 ) => {
   const customValue = value && value[token] ? value[token] : token;
 
@@ -113,10 +113,10 @@ const increaseTimeFrame = (acc: TokenParseAccumulator, frameTimeFactor: number) 
  * @param frameTimeFactor Custom timeframe factor
  */
 const observableTokenParseReducer = <T>(
-  value?: { [key: string]: T } | null,
-  error?: any,
-  materializeInnerObservables: boolean = false,
-  frameTimeFactor: number = 1
+  value: { [key: string]: T } | null,
+  error: any,
+  materializeInnerObservables: boolean,
+  frameTimeFactor: number
 ) => (acc: ObservableTokenParseAccumulator<T>, token: any) => {
   let message: TestMessage<T | Array<TestMessage<T>>> | null = null;
 
@@ -171,16 +171,16 @@ const observableTokenParseReducer = <T>(
  * Reducer to traverse subscription marble diagram to generate SubscriptionLog metadata.
  * @param frameTimeFactor Custom timeframe factor
  */
-const subscriptionTokenParseReducer = (frameTimeFactor: number = 1) => (
+const subscriptionTokenParseReducer = (frameTimeFactor: number) => (
   acc: SubscriptionTokenParseAccumulator,
   token: string
 ) => {
   switch (token) {
     case SubscriptionMarbleToken.SUBSCRIBE:
       acc.subscriptionFrame = acc.currentTimeFrame;
+      acc = increaseTimeFrame(acc, frameTimeFactor);
       break;
     case SubscriptionMarbleToken.UNSUBSCRIBE:
-      acc = increaseTimeFrame(acc, frameTimeFactor);
       acc.unsubscriptionFrame = acc.currentTimeFrame;
       break;
     case ObservableMarbleToken.TIMEFRAME_EXPAND:
