@@ -94,7 +94,7 @@ describe('parseObservableMarble', () => {
     const messages = parseObservableMarble(marble);
     const expected = [new TestMessageValue<string>(0, Notification.createNext(marble))];
 
-    expect(messages).to.deep.equal(expected);
+    expect(messages[0].frame).to.deep.equal(expected[0].frame);
   });
 
   it('should parse value literal with custom value', () => {
@@ -197,11 +197,11 @@ describe('parseObservableMarble', () => {
     expect(messages).to.deep.equal(expected);
   });
 
-  it('should support subscription offset', () => {
+  it('should support subscription offset for hot observable', () => {
     const marble = '----^----a----';
-
+    //             '     ----a----';
     const messages = parseObservableMarble(marble);
-    const expected = [new TestMessageValue<string>(8, Notification.createNext('a'))];
+    const expected = [new TestMessageValue<string>(5, Notification.createNext('a'))];
 
     expect(messages).to.deep.equal(expected);
   });
