@@ -23,10 +23,11 @@ const parseObservableMarble = <T>(
     throw new Error(`Observable marble cannot have unsubscription marker ${SubscriptionMarbleToken.UNSUBSCRIBE}`);
   }
 
-  const subscriptionIndex = marble.indexOf(SubscriptionMarbleToken.SUBSCRIBE) * frameTimeFactor;
-  const frameOffset = subscriptionIndex < 0 ? 0 : subscriptionIndex;
+  const marbleTokenArray = Array.from(marble).filter(token => token !== ObservableMarbleToken.NOOP);
 
-  const marbleTokenArray = Array.from(marble).filter(token => token !== ObservableMarbleToken.NOOP).slice(frameOffset);
+  const subscriptionIndex = marbleTokenArray.join('').indexOf(SubscriptionMarbleToken.SUBSCRIBE) * frameTimeFactor;
+  const frameOffset = subscriptionIndex < 0 ? 0 : -subscriptionIndex;
+
   const values = marbleTokenArray.reduce(
     observableTokenParseReducer(value || null, error, materializeInnerObservables, frameTimeFactor),
     {

@@ -143,6 +143,7 @@ const observableTokenParseReducer = <T>(
       acc.simultaneousGrouped = false;
       break;
     case SubscriptionMarbleToken.SUBSCRIBE:
+      acc = increaseTimeFrame(acc, frameTimeFactor);
       break;
     default:
       if (acc.expandingTokenCount > 0) {
