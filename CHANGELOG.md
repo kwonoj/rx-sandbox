@@ -1,0 +1,42 @@
+<a name="0.0.1"></a>
+## 0.0.1 (2017-08-19)
+
+
+### Bug Fixes
+
+* **subscriptiontokenparsereducer:** fix unsubscription frame ([d39e10e](https://github.com/kwonoj/rx-sandbox/commit/d39e10e))
+* **testmessagevalue:** loosen generic type of complete ([5640e97](https://github.com/kwonoj/rx-sandbox/commit/5640e97))
+* **testscheduler:** correct crection method return ([d0d79de](https://github.com/kwonoj/rx-sandbox/commit/d0d79de))
+* **testscheduler:** do not expose advance_ interface ([1158160](https://github.com/kwonoj/rx-sandbox/commit/1158160))
+* **testscheduler:** fix return types for creation method ([e943d6f](https://github.com/kwonoj/rx-sandbox/commit/e943d6f))
+* **testscheduler:** setup hot observable when flush ([cc7865a](https://github.com/kwonoj/rx-sandbox/commit/cc7865a))
+
+
+### Features
+
+* **getmarbles:** initial implementation for getmarbles ([d8058e3](https://github.com/kwonoj/rx-sandbox/commit/d8058e3))
+* **index:** export rxSandbox ([1d8065e](https://github.com/kwonoj/rx-sandbox/commit/1d8065e))
+* **index:** export utility functions ([c42845c](https://github.com/kwonoj/rx-sandbox/commit/c42845c))
+* **index:** export utility functions ([68fbbef](https://github.com/kwonoj/rx-sandbox/commit/68fbbef))
+* **index:** setup initial index ([5fffa83](https://github.com/kwonoj/rx-sandbox/commit/5fffa83))
+* **marbletoken:** define tokens for marble diagram DSL ([9d82b94](https://github.com/kwonoj/rx-sandbox/commit/9d82b94))
+* **MessageRecordObserver:** rename VirtualObserver to MessageRecordObserver ([61ee4ee](https://github.com/kwonoj/rx-sandbox/commit/61ee4ee))
+* **parseobservablemarble:** define interfaces for parseObservableMarble ([579c679](https://github.com/kwonoj/rx-sandbox/commit/579c679))
+* **parseobservablemarble:** parse non grouped values ([3ca4be4](https://github.com/kwonoj/rx-sandbox/commit/3ca4be4))
+* **parseobservablemarble:** support expanding timeframe ([87e988f](https://github.com/kwonoj/rx-sandbox/commit/87e988f))
+* **parseobservablemarble:** support flatten inner observables ([9cbb534](https://github.com/kwonoj/rx-sandbox/commit/9cbb534))
+* **parseobservablemarble:** support grouped value ([7213642](https://github.com/kwonoj/rx-sandbox/commit/7213642))
+* **parsesubscriptionmarble:** implement parseSubscriptionMarble ([dc33071](https://github.com/kwonoj/rx-sandbox/commit/dc33071))
+* **rxsandbox:** export interfaces ([fbc2933](https://github.com/kwonoj/rx-sandbox/commit/fbc2933))
+* **testmessage:** expose TestMessage interface ([0dd9b4b](https://github.com/kwonoj/rx-sandbox/commit/0dd9b4b))
+* **testmessagevalue:** implement testmessagevalue ([5e6c656](https://github.com/kwonoj/rx-sandbox/commit/5e6c656))
+* **TestMessageValue:** implement TestMessageValue ([59b6e36](https://github.com/kwonoj/rx-sandbox/commit/59b6e36))
+* **testscheduler:** define public interfaces ([e4b37bf](https://github.com/kwonoj/rx-sandbox/commit/e4b37bf))
+* **testscheduler:** expose createObservable interface ([fe10331](https://github.com/kwonoj/rx-sandbox/commit/fe10331))
+* **testscheduler:** implement autoflush ([2f4540f](https://github.com/kwonoj/rx-sandbox/commit/2f4540f))
+* **testscheduler:** support subscriptionMarbles ([692d631](https://github.com/kwonoj/rx-sandbox/commit/692d631))
+* **VirtualObserver:** implements VirtualObserver ([958e9f2](https://github.com/kwonoj/rx-sandbox/commit/958e9f2))
+* **VirtualTestScheduler:** implements initial VirtualTestScheduler interface ([084ea38](https://github.com/kwonoj/rx-sandbox/commit/084ea38))
+
+
+
