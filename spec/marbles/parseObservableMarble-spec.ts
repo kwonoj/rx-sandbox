@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 import { Notification } from 'rxjs/Notification';
 import { ColdObservable } from 'rxjs/testing/ColdObservable';
-import { TestMessage } from '../../src/index';
 import { parseObservableMarble } from '../../src/marbles/parseObservableMarble';
+import { TestMessage } from '../../src/message/TestMessage';
 import { TestMessageValue } from '../../src/message/TestMessageValue';
 import { TestScheduler } from '../../src/scheduler/TestScheduler';
 
