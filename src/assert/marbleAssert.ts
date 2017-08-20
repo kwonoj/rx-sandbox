@@ -1,3 +1,4 @@
+import { matcherHint, printExpected, printReceived } from 'jest-matcher-utils';
 import { SubscriptionLog } from 'rxjs/testing/SubscriptionLog';
 import { TestMessage } from '../message/TestMessage';
 import { constructSubscriptionMarble } from './constructSubscriptionMarble';
@@ -14,8 +15,19 @@ const subscriptionMarbleAssert = (source: SubscriptionLog) => (expected: Subscri
   const sourceMarble = constructSubscriptionMarble(source);
   const expectedMarble = constructSubscriptionMarble(expected);
 
-  if (sourceMarble !== expectedMarble) {
-    throw new Error('unmatch!');
+  if (
+    sourceMarble.marbleString !== expectedMarble.marbleString ||
+    sourceMarble.frameString !== expectedMarble.frameString
+  ) {
+    const description = `${matcherHint(' to equal ', JSON.stringify(source), JSON.stringify(expected))}
+
+    ${printReceived(`Source:   ${sourceMarble.marbleString}`)}
+    ${printReceived(`          ${sourceMarble.frameString}`)}
+    ${printExpected(`Expected: ${expectedMarble.marbleString}`)}
+    ${printExpected(`          ${expectedMarble.frameString}`)}
+    `;
+
+    throw new Error(description);
   }
 };
 
