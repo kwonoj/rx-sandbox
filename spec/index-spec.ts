@@ -59,7 +59,5 @@ describe('rxSandbox', () => {
     const { marbleAssert } = idx.rxSandbox;
 
     expect(marbleAssert).to.be.a('function');
-    //not yet implemented
-    expect(() => marbleAssert().to.equal()).to.throw();
   });
 });
