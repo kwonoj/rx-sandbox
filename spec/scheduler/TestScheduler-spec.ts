@@ -3,9 +3,8 @@ import 'rxjs/add/operator/mapTo';
 import 'rxjs/add/operator/windowCount';
 import { ColdObservable } from 'rxjs/testing/ColdObservable';
 import { HotObservable } from 'rxjs/testing/HotObservable';
-import { SubscriptionLog } from 'rxjs/testing/SubscriptionLog';
 import { parseObservableMarble } from '../../src/marbles/parseObservableMarble';
-import { complete, error, next, TestMessage } from '../../src/message/TestMessage';
+import { complete, error, next, subscribe, TestMessage } from '../../src/message/TestMessage';
 import { TestScheduler } from '../../src/scheduler/TestScheduler';
 
 describe('TestScheduler', () => {
@@ -157,7 +156,7 @@ describe('TestScheduler', () => {
       scheduler.flush();
 
       expect(messages).to.deep.equal(expected);
-      expect(e1.subscriptions).to.deep.equal([new SubscriptionLog(0, 11)]);
+      expect(e1.subscriptions).to.deep.equal([subscribe(0, 11)]);
     });
 
     it('should able to autoflush with hot observable source', () => {
@@ -168,7 +167,7 @@ describe('TestScheduler', () => {
       const messages = scheduler.getMessages(e1.mapTo('x'));
 
       expect(messages).to.deep.equal(expected);
-      expect(e1.subscriptions).to.deep.equal([new SubscriptionLog(0, 11)]);
+      expect(e1.subscriptions).to.deep.equal([subscribe(0, 11)]);
     });
 
     it('should throw when autoflush attempted multiple times', () => {
@@ -191,7 +190,7 @@ describe('TestScheduler', () => {
       scheduler.flush();
 
       expect(messages).to.deep.equal(expected);
-      expect(e1.subscriptions).to.deep.equal([new SubscriptionLog(0, 11)]);
+      expect(e1.subscriptions).to.deep.equal([subscribe(0, 11)]);
     });
 
     it('should generate messages from observable having cold observable source', () => {
@@ -205,7 +204,7 @@ describe('TestScheduler', () => {
       scheduler.flush();
 
       expect(messages).to.deep.equal(expected);
-      expect(e1.subscriptions).to.deep.equal([new SubscriptionLog(0, 11)]);
+      expect(e1.subscriptions).to.deep.equal([subscribe(0, 11)]);
     });
 
     it('should able to autoflush with cold observable source', () => {
@@ -216,7 +215,7 @@ describe('TestScheduler', () => {
       const messages = scheduler.getMessages(e1.mapTo('x'));
 
       expect(messages).to.deep.equal(expected);
-      expect(e1.subscriptions).to.deep.equal([new SubscriptionLog(0, 11)]);
+      expect(e1.subscriptions).to.deep.equal([subscribe(0, 11)]);
     });
 
     it('should generate messages from observable having cold observable source with error', () => {
@@ -230,7 +229,7 @@ describe('TestScheduler', () => {
       scheduler.flush();
 
       expect(messages).to.deep.equal(expected);
-      expect(e1.subscriptions).to.deep.equal([new SubscriptionLog(0, 11)]);
+      expect(e1.subscriptions).to.deep.equal([subscribe(0, 11)]);
     });
 
     it('should materialize inner observable with cold observable source', () => {
@@ -315,7 +314,7 @@ describe('TestScheduler', () => {
       scheduler.flush();
 
       expect(messages).to.deep.equal(expected);
-      expect(e1.subscriptions).to.deep.equal([new SubscriptionLog(0, 4)]);
+      expect(e1.subscriptions).to.deep.equal([subscribe(0, 4)]);
     });
 
     it('should support subscription with hot observable source', () => {
@@ -330,7 +329,7 @@ describe('TestScheduler', () => {
       scheduler.flush();
 
       expect(messages).to.deep.equal(expected);
-      expect(e1.subscriptions).to.deep.equal([new SubscriptionLog(6, 10)]);
+      expect(e1.subscriptions).to.deep.equal([subscribe(6, 10)]);
     });
   });
 });

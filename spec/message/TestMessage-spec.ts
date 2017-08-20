@@ -1,6 +1,5 @@
 import { expect } from 'chai';
 import { Notification } from 'rxjs/Notification';
-import { SubscriptionLog } from 'rxjs/testing/SubscriptionLog';
 import { complete, error, next, subscribe, TestMessageValue } from '../../src/message/TestMessage';
 
 describe('TestMessageValue', () => {
@@ -36,8 +35,8 @@ describe('TestMessageValue', () => {
       const withUnsub = subscribe(10, 20);
       const withoutSub = subscribe(10);
 
-      expect(withUnsub).to.deep.equal(new SubscriptionLog(10, 20));
-      expect(withoutSub).to.deep.equal(new SubscriptionLog(10, Number.POSITIVE_INFINITY));
+      expect(withUnsub).to.deep.equal(subscribe(10, 20));
+      expect(withoutSub).to.deep.equal(subscribe(10, Number.POSITIVE_INFINITY));
     });
   });
 });

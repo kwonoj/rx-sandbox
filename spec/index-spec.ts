@@ -1,6 +1,5 @@
 import { expect } from 'chai';
 import 'rxjs/add/operator/mapTo';
-import { SubscriptionLog } from 'rxjs/testing/SubscriptionLog';
 import * as idx from '../src/index';
 
 describe('rxSandbox', () => {
@@ -52,7 +51,7 @@ describe('rxSandbox', () => {
 
     const v = s('--^--!');
 
-    expect(v).to.deep.equal(new SubscriptionLog(2, 5));
+    expect(v).to.deep.equal(idx.subscribe(2, 5));
   });
 
   it('should export assert utility', () => {

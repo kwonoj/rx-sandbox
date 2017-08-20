@@ -32,7 +32,7 @@ const next = <T = string>(frame: number, value: T): TestMessage<T> =>
  * @param frame virtual frame time when value will be emitted
  * @param value
  */
-const error = (frame: number, error: any): TestMessage<any> =>
+const error = (frame: number, error: any = '#'): TestMessage<any> =>
   new TestMessageValue<any>(frame, Notification.createError(error));
 
 /**
