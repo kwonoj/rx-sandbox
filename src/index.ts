@@ -2,6 +2,7 @@ import { Observable } from 'rxjs/Observable';
 import { ColdObservable } from 'rxjs/testing/ColdObservable';
 import { HotObservable } from 'rxjs/testing/HotObservable';
 import { SubscriptionLog } from 'rxjs/testing/SubscriptionLog';
+import { marbleAssert } from './assert/marbleAssert';
 import { parseObservableMarble } from './marbles/parseObservableMarble';
 import { parseSubscriptionMarble } from './marbles/parseSubscriptionMarble';
 import { TestMessage } from './message/TestMessage';
@@ -63,11 +64,8 @@ export interface RxSandbox {
    * better visualization against observable test messages.
    *
    */
-  marbleAssert(): {
-    to: {
-      equal: () => void;
-    };
-  };
+  marbleAssert(source: SubscriptionLog): { to: { equal(expected: SubscriptionLog): void } };
+  marbleAssert(source: Array<TestMessage>): { to: { equal(expected: Array<TestMessage>): void } };
 }
 
 const rxSandbox: RxSandbox = {
@@ -84,13 +82,7 @@ const rxSandbox: RxSandbox = {
       s: (marble: string) => parseSubscriptionMarble(marble, frameTimeFactor)
     };
   },
-  marbleAssert: () => ({
-    to: {
-      equal: () => {
-        throw new Error('not implemented');
-      }
-    }
-  })
+  marbleAssert: marbleAssert
 };
 
 export { rxSandbox, TestMessage, next, error, complete, subscribe };
