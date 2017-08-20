@@ -1,10 +1,22 @@
 import { matcherHint, printExpected, printReceived } from 'jest-matcher-utils';
+//tslint:disable-next-line:no-require-imports
+import isEqualWith = require('lodash.isequalwith');
 import { SubscriptionLog } from 'rxjs/testing/SubscriptionLog';
 import { TestMessage } from '../message/TestMessage';
+import { constructObservableMarble } from './constructObservableMarble';
 import { constructSubscriptionMarble } from './constructSubscriptionMarble';
 
-const observableMarbleAssert = (_source: Array<TestMessage>) => (_expected: Array<TestMessage>) => {
-  throw new Error('not impl');
+const observableMarbleAssert = (source: Array<TestMessage>) => (expected: Array<TestMessage>) => {
+  if (!Array.isArray(expected)) {
+    throw new Error('Expected value is not array');
+  }
+
+  const sourceMarble = constructObservableMarble(source);
+  const expectedMarble = constructObservableMarble(expected);
+
+  if (!isEqualWith(sourceMarble, expectedMarble)) {
+    throw new Error('unmatch');
+  }
 };
 
 const subscriptionMarbleAssert = (source: SubscriptionLog) => (expected: SubscriptionLog) => {
