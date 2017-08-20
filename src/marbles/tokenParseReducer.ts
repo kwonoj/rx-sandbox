@@ -1,6 +1,6 @@
 import { ColdObservable } from 'rxjs/testing/ColdObservable';
 import { TestMessage } from '../message/TestMessage';
-import { complete, error as e, next } from '../message/TestMessageValue';
+import { complete, error as e, next } from '../message/TestMessage';
 import { ObservableMarbleToken } from './ObservableMarbleToken';
 import { SubscriptionMarbleToken } from './SubscriptionMarbleToken';
 

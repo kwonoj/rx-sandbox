@@ -8,7 +8,7 @@ import { HotObservable } from 'rxjs/testing/HotObservable';
 import { parseObservableMarble } from '../marbles/parseObservableMarble';
 import { SubscriptionMarbleToken } from '../marbles/SubscriptionMarbleToken';
 import { TestMessage } from '../message/TestMessage';
-import { TestMessageValue } from '../message/TestMessageValue';
+import { TestMessageValue } from '../message/TestMessage';
 import { calculateSubscriptionFrame } from './calculateSubscriptionFrame';
 
 /**

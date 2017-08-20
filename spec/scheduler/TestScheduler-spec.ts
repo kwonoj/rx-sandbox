@@ -5,8 +5,7 @@ import { ColdObservable } from 'rxjs/testing/ColdObservable';
 import { HotObservable } from 'rxjs/testing/HotObservable';
 import { SubscriptionLog } from 'rxjs/testing/SubscriptionLog';
 import { parseObservableMarble } from '../../src/marbles/parseObservableMarble';
-import { TestMessage } from '../../src/message/TestMessage';
-import { complete, error, next } from '../../src/message/TestMessageValue';
+import { complete, error, next, TestMessage } from '../../src/message/TestMessage';
 import { TestScheduler } from '../../src/scheduler/TestScheduler';
 
 describe('TestScheduler', () => {

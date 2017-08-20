@@ -6,7 +6,7 @@ import { marbleAssert } from './assert/marbleAssert';
 import { parseObservableMarble } from './marbles/parseObservableMarble';
 import { parseSubscriptionMarble } from './marbles/parseSubscriptionMarble';
 import { TestMessage } from './message/TestMessage';
-import { complete, error, next, subscribe } from './message/TestMessageValue';
+import { complete, error, next, subscribe } from './message/TestMessage';
 import { TestScheduler } from './scheduler/TestScheduler';
 
 //workaround TS4029 by explicitly import types and avoid unused import error

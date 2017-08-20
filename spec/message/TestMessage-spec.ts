@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { Notification } from 'rxjs/Notification';
 import { SubscriptionLog } from 'rxjs/testing/SubscriptionLog';
-import { complete, error, next, subscribe, TestMessageValue } from '../../src/message/TestMessageValue';
+import { complete, error, next, subscribe, TestMessageValue } from '../../src/message/TestMessage';
 
 describe('TestMessageValue', () => {
   it('should create metadata', () => {

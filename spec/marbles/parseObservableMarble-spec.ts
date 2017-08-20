@@ -2,8 +2,7 @@ import { expect } from 'chai';
 import { Notification } from 'rxjs/Notification';
 import { ColdObservable } from 'rxjs/testing/ColdObservable';
 import { parseObservableMarble } from '../../src/marbles/parseObservableMarble';
-import { TestMessage } from '../../src/message/TestMessage';
-import { TestMessageValue } from '../../src/message/TestMessageValue';
+import { TestMessage, TestMessageValue } from '../../src/message/TestMessage';
 import { TestScheduler } from '../../src/scheduler/TestScheduler';
 
 describe('parseObservableMarble', () => {
