@@ -1,7 +1,6 @@
-import { Notification } from 'rxjs/Notification';
 import { ColdObservable } from 'rxjs/testing/ColdObservable';
 import { TestMessage } from '../message/TestMessage';
-import { TestMessageValue } from '../message/TestMessageValue';
+import { complete, error as e, next } from '../message/TestMessageValue';
 import { ObservableMarbleToken } from './ObservableMarbleToken';
 import { SubscriptionMarbleToken } from './SubscriptionMarbleToken';
 
@@ -126,10 +125,10 @@ const observableTokenParseReducer = <T>(
       acc = increaseTimeFrame(acc, frameTimeFactor);
       break;
     case ObservableMarbleToken.ERROR:
-      message = new TestMessageValue<T>(acc.currentTimeFrame, Notification.createError(error || '#'));
+      message = e(acc.currentTimeFrame, error || '#');
       break;
     case ObservableMarbleToken.COMPLETE:
-      message = new TestMessageValue<T>(acc.currentTimeFrame, Notification.createComplete());
+      message = complete(acc.currentTimeFrame);
       break;
     case ObservableMarbleToken.TIMEFRAME_EXPAND:
       acc = timeFrameExpandTokenHandler(acc, frameTimeFactor);
@@ -150,10 +149,7 @@ const observableTokenParseReducer = <T>(
         acc.expandingValue.push(token);
       } else {
         const tokenValue = getMarbleTokenValue(token, value, materializeInnerObservables);
-        message = new TestMessageValue<T | Array<TestMessage<T>>>(
-          acc.currentTimeFrame,
-          Notification.createNext<T | Array<TestMessage<T>>>(tokenValue)
-        );
+        message = next<T | Array<TestMessage<T>>>(acc.currentTimeFrame, tokenValue);
       }
   }
 
