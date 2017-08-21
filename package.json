@@ -83,6 +83,7 @@
   },
   "dependencies": {
     "jest-matcher-utils": "^20.0.3",
+    "jest-matchers": "^20.0.3",
     "tslib": "^1.7.1"
   }
 }

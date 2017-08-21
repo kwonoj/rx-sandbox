@@ -1,9 +1,7 @@
 import { expect } from 'chai';
-import { Notification } from 'rxjs/Notification';
 import { ColdObservable } from 'rxjs/testing/ColdObservable';
 import { parseObservableMarble } from '../../src/marbles/parseObservableMarble';
-import { TestMessage } from '../../src/message/TestMessage';
-import { TestMessageValue } from '../../src/message/TestMessageValue';
+import { complete, error, next } from '../../src/message/TestMessage';
 import { TestScheduler } from '../../src/scheduler/TestScheduler';
 
 describe('parseObservableMarble', () => {
@@ -24,21 +22,15 @@ describe('parseObservableMarble', () => {
     const marble = '-------a';
 
     const messages = parseObservableMarble(marble);
-    const expected = [new TestMessageValue<string>(7, Notification.createNext('a'))];
+    const expected = [next(7, 'a')];
 
     expect(messages).to.deep.equal(expected);
   });
 
   it('should flatten custom value with inner observable when specified', () => {
     const marble = '----a--b--';
-    const aMessages = [
-      new TestMessageValue<string>(1, Notification.createNext('1')),
-      new TestMessageValue<string>(2, Notification.createNext('2'))
-    ];
-    const bMessages = [
-      new TestMessageValue<string>(3, Notification.createNext('3')),
-      new TestMessageValue<string>(4, Notification.createNext('4'))
-    ];
+    const aMessages = [next(1, '1'), next(2, '2')];
+    const bMessages = [next(3, '3'), next(4, '4')];
 
     const customValue = {
       a: new ColdObservable(aMessages, null as any),
@@ -46,24 +38,15 @@ describe('parseObservableMarble', () => {
     };
 
     const messages = parseObservableMarble(marble, customValue, null, true);
-    const expected = [
-      new TestMessageValue<Array<TestMessageValue<string>>>(4, Notification.createNext(aMessages)),
-      new TestMessageValue<Array<TestMessageValue<string>>>(7, Notification.createNext(bMessages))
-    ];
+    const expected = [next(4, aMessages), next(7, bMessages)];
 
     expect(messages).to.deep.equal(expected);
   });
 
   it('should not flatten custom value with inner observable when not specified', () => {
     const marble = '----a--b--';
-    const aMessages = [
-      new TestMessageValue<string>(1, Notification.createNext('1')),
-      new TestMessageValue<string>(2, Notification.createNext('2'))
-    ];
-    const bMessages = [
-      new TestMessageValue<string>(3, Notification.createNext('3')),
-      new TestMessageValue<string>(4, Notification.createNext('4'))
-    ];
+    const aMessages = [next(1, '1'), next(2, '2')];
+    const bMessages = [next(3, '3'), next(4, '4')];
 
     const customValue = {
       a: new ColdObservable<string>(aMessages, null as any),
@@ -71,10 +54,7 @@ describe('parseObservableMarble', () => {
     };
 
     const messages = parseObservableMarble(marble, customValue, null, false);
-    const expected = [
-      new TestMessageValue<ColdObservable<string>>(4, Notification.createNext(customValue.a)),
-      new TestMessageValue<ColdObservable<string>>(7, Notification.createNext(customValue.b))
-    ];
+    const expected = [next(4, customValue.a), next(7, customValue.b)];
 
     expect(messages).to.deep.equal(expected);
   });
@@ -83,7 +63,7 @@ describe('parseObservableMarble', () => {
     const marble = '-------a----';
 
     const messages = parseObservableMarble(marble, null, null, false, 10);
-    const expected = [new TestMessageValue<string>(70, Notification.createNext('a'))];
+    const expected = [next(70, 'a')];
 
     expect(messages).to.deep.equal(expected);
   });
@@ -92,9 +72,9 @@ describe('parseObservableMarble', () => {
     const marble = 'x';
 
     const messages = parseObservableMarble(marble);
-    const expected = [new TestMessageValue<string>(0, Notification.createNext(marble))];
+    const expected = [next(0, marble)];
 
-    expect(messages[0].frame).to.deep.equal(expected[0].frame);
+    expect(messages[0]).to.deep.equal(expected[0]);
   });
 
   it('should parse value literal with custom value', () => {
@@ -104,7 +84,7 @@ describe('parseObservableMarble', () => {
     };
 
     const messages = parseObservableMarble(marble, customValue);
-    const expected = [new TestMessageValue<string>(4, Notification.createNext(customValue.a))];
+    const expected = [next(4, customValue.a)];
 
     expect(messages).to.deep.equal(expected);
   });
@@ -113,7 +93,7 @@ describe('parseObservableMarble', () => {
     const marble = '----    ----a';
 
     const messages = parseObservableMarble(marble);
-    const expected = [new TestMessageValue<string>(8, Notification.createNext('a'))];
+    const expected = [next(8, 'a')];
 
     expect(messages).to.deep.equal(expected);
   });
@@ -122,7 +102,7 @@ describe('parseObservableMarble', () => {
     const marble = '----...14...----a----';
 
     const messages = parseObservableMarble(marble);
-    const expected = [new TestMessageValue<string>(22, Notification.createNext('a'))];
+    const expected = [next(22, 'a')];
 
     expect(messages).to.deep.equal(expected);
   });
@@ -144,12 +124,7 @@ describe('parseObservableMarble', () => {
     const marble = '-------(ab)----(c|)';
 
     const messages = parseObservableMarble(marble);
-    const expected = [
-      new TestMessageValue<string>(7, Notification.createNext('a')),
-      new TestMessageValue<string>(7, Notification.createNext('b')),
-      new TestMessageValue<string>(12, Notification.createNext('c')),
-      new TestMessageValue<string>(12, Notification.createComplete())
-    ];
+    const expected = [next(7, 'a'), next(7, 'b'), next(12, 'c'), complete(12)];
 
     expect(messages).to.deep.equal(expected);
   });
@@ -170,10 +145,7 @@ describe('parseObservableMarble', () => {
     const marble = '---a---|';
 
     const messages = parseObservableMarble(marble);
-    const expected = [
-      new TestMessageValue<string>(3, Notification.createNext('a')),
-      new TestMessageValue<void>(7, Notification.createComplete())
-    ];
+    const expected = [next(3, 'a'), complete(7)];
 
     expect(messages).to.deep.equal(expected);
   });
@@ -182,17 +154,17 @@ describe('parseObservableMarble', () => {
     const marble = '----#';
 
     const messages = parseObservableMarble(marble);
-    const expected = [new TestMessageValue<string>(4, Notification.createError('#'))];
+    const expected = [error(4)];
 
     expect(messages).to.deep.equal(expected);
   });
 
   it('should parse error with custom value', () => {
     const marble = '----#---';
-    const error = 'meh';
+    const e = 'meh';
 
-    const messages = parseObservableMarble(marble, null, error);
-    const expected = [new TestMessageValue<string>(4, Notification.createError(error))];
+    const messages = parseObservableMarble(marble, null, e);
+    const expected = [error(4, e)];
 
     expect(messages).to.deep.equal(expected);
   });
@@ -201,7 +173,7 @@ describe('parseObservableMarble', () => {
     const marble = '----^----a----';
     //             '     ----a----';
     const messages = parseObservableMarble(marble);
-    const expected = [new TestMessageValue<string>(5, Notification.createNext('a'))];
+    const expected = [next(5, 'a')];
 
     expect(messages).to.deep.equal(expected);
   });
@@ -213,13 +185,7 @@ describe('parseObservableMarble', () => {
     const inner = scheduler.createColdObservable('---1--');
 
     const messages = parseObservableMarble(marble, { a: inner }, null, true);
-    const expected = [
-      new TestMessageValue<Array<TestMessage>>(
-        2,
-        Notification.createNext([new TestMessageValue(3, Notification.createNext('1'))])
-      ),
-      new TestMessageValue(5, Notification.createComplete())
-    ];
+    const expected = [next(2, [next(3, '1')]), complete(5)];
 
     expect(messages).to.deep.equal(expected);
   });

@@ -1,13 +1,13 @@
 import { expect } from 'chai';
-import { SubscriptionLog } from 'rxjs/testing/SubscriptionLog';
 import { parseSubscriptionMarble } from '../../src/marbles/parseSubscriptionMarble';
+import { subscribe } from '../../src/message/TestMessage';
 
 describe('parseSubscriptionMarble', () => {
   it('should parse subscription', () => {
     const marble = '--^-----';
 
     const subscription = parseSubscriptionMarble(marble);
-    const expected = new SubscriptionLog(2);
+    const expected = subscribe(2);
 
     expect(subscription).to.deep.equal(expected);
   });
@@ -16,7 +16,7 @@ describe('parseSubscriptionMarble', () => {
     const marble = '----------!';
 
     const subscription = parseSubscriptionMarble(marble);
-    const expected = new SubscriptionLog(Number.POSITIVE_INFINITY, 10);
+    const expected = subscribe(Number.POSITIVE_INFINITY, 10);
 
     expect(subscription).to.deep.equal(expected);
   });
@@ -25,7 +25,7 @@ describe('parseSubscriptionMarble', () => {
     const marble = '--^-----!';
 
     const subscription = parseSubscriptionMarble(marble);
-    const expected = new SubscriptionLog(2, 8);
+    const expected = subscribe(2, 8);
 
     expect(subscription).to.deep.equal(expected);
   });
@@ -34,7 +34,7 @@ describe('parseSubscriptionMarble', () => {
     const marble = '--^-----!';
 
     const subscription = parseSubscriptionMarble(marble, 10);
-    const expected = new SubscriptionLog(20, 80);
+    const expected = subscribe(20, 80);
 
     expect(subscription).to.deep.equal(expected);
   });
@@ -43,7 +43,7 @@ describe('parseSubscriptionMarble', () => {
     const marble = '-- ^   -----!';
 
     const subscription = parseSubscriptionMarble(marble);
-    const expected = new SubscriptionLog(2, 8);
+    const expected = subscribe(2, 8);
 
     expect(subscription).to.deep.equal(expected);
   });
@@ -52,7 +52,7 @@ describe('parseSubscriptionMarble', () => {
     const marble = '--...14...^-----!';
 
     const subscription = parseSubscriptionMarble(marble);
-    const expected = new SubscriptionLog(16, 22);
+    const expected = subscribe(16, 22);
 
     expect(subscription).to.deep.equal(expected);
   });
@@ -60,7 +60,7 @@ describe('parseSubscriptionMarble', () => {
   it('should return infinite subscription with null', () => {
     const subscription = parseSubscriptionMarble(null);
 
-    expect(subscription).to.deep.equal(new SubscriptionLog(Number.POSITIVE_INFINITY));
+    expect(subscription).to.deep.equal(subscribe(Number.POSITIVE_INFINITY));
   });
 
   it('should allow simultaneous value', () => {
@@ -68,7 +68,7 @@ describe('parseSubscriptionMarble', () => {
     const marble = '-(ab)--^---(cd)---!';
 
     const subscription = parseSubscriptionMarble(marble);
-    const expected = new SubscriptionLog(4, 12);
+    const expected = subscribe(4, 12);
 
     expect(subscription).to.deep.equal(expected);
   });

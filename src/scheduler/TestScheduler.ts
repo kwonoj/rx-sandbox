@@ -8,7 +8,7 @@ import { HotObservable } from 'rxjs/testing/HotObservable';
 import { parseObservableMarble } from '../marbles/parseObservableMarble';
 import { SubscriptionMarbleToken } from '../marbles/SubscriptionMarbleToken';
 import { TestMessage } from '../message/TestMessage';
-import { TestMessageValue } from '../message/TestMessageValue';
+import { TestMessageValue } from '../message/TestMessage';
 import { calculateSubscriptionFrame } from './calculateSubscriptionFrame';
 
 /**
@@ -87,7 +87,7 @@ class TestScheduler extends VirtualTimeScheduler {
 
     const messages = Array.isArray(marbleValue)
       ? marbleValue
-      : parseObservableMarble(marbleValue, value, error, false, this.frameTimeFactor);
+      : parseObservableMarble(marbleValue, value, error, false, this.frameTimeFactor) as any;
     const observable = new ColdObservable<T>(messages as Array<TestMessage<T | Array<TestMessage<T>>>>, this);
     this.coldObservables.push(observable);
     return observable;
@@ -104,7 +104,7 @@ class TestScheduler extends VirtualTimeScheduler {
 
     const messages = Array.isArray(marbleValue)
       ? marbleValue
-      : parseObservableMarble(marbleValue, value, error, false, this.frameTimeFactor);
+      : parseObservableMarble(marbleValue, value, error, false, this.frameTimeFactor) as any;
     const subject = new HotObservable<T>(messages as Array<TestMessage<T | Array<TestMessage<T>>>>, this);
     this.hotObservables.push(subject);
     return subject;

@@ -1,10 +1,33 @@
 import { matcherHint, printExpected, printReceived } from 'jest-matcher-utils';
+import { toEqual } from 'jest-matchers/build/matchers';
 import { SubscriptionLog } from 'rxjs/testing/SubscriptionLog';
 import { TestMessage } from '../message/TestMessage';
+import { constructObservableMarble } from './constructObservableMarble';
 import { constructSubscriptionMarble } from './constructSubscriptionMarble';
 
-const observableMarbleAssert = (_source: Array<TestMessage>) => (_expected: Array<TestMessage>) => {
-  throw new Error('not impl');
+const toEqulAssert = toEqual.bind({ expand: false });
+
+const observableMarbleAssert = <T = string>(source: Array<TestMessage<T>> | Readonly<Array<TestMessage<T>>>) => (
+  expected: Array<TestMessage<T>> | Readonly<Array<TestMessage<T>>>
+) => {
+  if (!Array.isArray(expected)) {
+    throw new Error('Expected value is not array');
+  }
+
+  const sourceMarble = constructObservableMarble(source);
+  const expectedMarble = constructObservableMarble(expected);
+
+  const asserted = toEqulAssert(source, expected);
+
+  if (!asserted.pass) {
+    const description = `
+${printReceived(`Source:   ${sourceMarble}`)}
+${printExpected(`Expected: ${expectedMarble}`)}
+
+${asserted.message()}
+    `;
+    throw new Error(description);
+  }
 };
 
 const subscriptionMarbleAssert = (source: SubscriptionLog) => (expected: SubscriptionLog) => {
@@ -15,25 +38,29 @@ const subscriptionMarbleAssert = (source: SubscriptionLog) => (expected: Subscri
   const sourceMarble = constructSubscriptionMarble(source);
   const expectedMarble = constructSubscriptionMarble(expected);
 
-  if (
-    sourceMarble.marbleString !== expectedMarble.marbleString ||
-    sourceMarble.frameString !== expectedMarble.frameString
-  ) {
-    const description = `${matcherHint(' to equal ', JSON.stringify(source), JSON.stringify(expected))}
+  const asserted = toEqulAssert(sourceMarble, expectedMarble);
 
-    ${printReceived(`Source:   ${sourceMarble.marbleString}`)}
-    ${printReceived(`          ${sourceMarble.frameString}`)}
-    ${printExpected(`Expected: ${expectedMarble.marbleString}`)}
-    ${printExpected(`          ${expectedMarble.frameString}`)}
+  if (!asserted.pass) {
+    const description = `
+${matcherHint(' to equal ', JSON.stringify(source), JSON.stringify(expected))}
+
+${printReceived(`Source:   ${sourceMarble.marbleString}`)}
+${printReceived(`          ${sourceMarble.frameString}`)}
+${printExpected(`Expected: ${expectedMarble.marbleString}`)}
+${printExpected(`          ${expectedMarble.frameString}`)}
     `;
 
     throw new Error(description);
   }
 };
 
-function marbleAssert(source: SubscriptionLog): { to: { equal(expected: SubscriptionLog): void } };
-function marbleAssert(source: Array<TestMessage>): { to: { equal(expected: Array<TestMessage>): void } };
-function marbleAssert(source: SubscriptionLog | Array<TestMessage>): { to: { equal(expected: object): void } } {
+function marbleAssert<T = void>(source: SubscriptionLog): { to: { equal(expected: SubscriptionLog): void } };
+function marbleAssert<T = string>(
+  source: Array<TestMessage<T>> | Readonly<Array<TestMessage<T>>>
+): { to: { equal(expected: Array<TestMessage<T>> | Readonly<Array<TestMessage<T>>>): void } };
+function marbleAssert<T = string>(
+  source: SubscriptionLog | Array<TestMessage<T>> | Readonly<Array<TestMessage<T>>>
+): { to: { equal(expected: object): void } } {
   const isSourceArray = Array.isArray(source);
   const isSourceSubscription = source instanceof SubscriptionLog;
 
@@ -45,7 +72,7 @@ function marbleAssert(source: SubscriptionLog | Array<TestMessage>): { to: { equ
     to: {
       equal: isSourceSubscription
         ? subscriptionMarbleAssert(source as SubscriptionLog)
-        : observableMarbleAssert(source as Array<TestMessage>)
+        : observableMarbleAssert(source as any)
     }
   };
 }

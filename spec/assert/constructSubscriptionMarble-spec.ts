@@ -1,10 +1,10 @@
 import { expect } from 'chai';
-import { SubscriptionLog } from 'rxjs/testing/SubscriptionLog';
 import { constructSubscriptionMarble } from '../../src/assert/constructSubscriptionMarble';
+import { subscribe } from '../../src/message/TestMessage';
 
 describe('constructSubscriptionMarble', () => {
   it('should create marble with subscription in range', () => {
-    const sub = new SubscriptionLog(10, Number.POSITIVE_INFINITY);
+    const sub = subscribe(10, Number.POSITIVE_INFINITY);
     const marble = constructSubscriptionMarble(sub);
 
     const m = '----------^--------------------';
@@ -14,7 +14,7 @@ describe('constructSubscriptionMarble', () => {
   });
 
   it('should create marble with unsubscription in range', () => {
-    const sub = new SubscriptionLog(Number.POSITIVE_INFINITY, 30);
+    const sub = subscribe(Number.POSITIVE_INFINITY, 30);
     const marble = constructSubscriptionMarble(sub);
 
     const m = '------------------------------!';
@@ -24,7 +24,7 @@ describe('constructSubscriptionMarble', () => {
   });
 
   it('should create marble with subscription and unsubscription both in range', () => {
-    const sub = new SubscriptionLog(10, 25);
+    const sub = subscribe(10, 25);
     const marble = constructSubscriptionMarble(sub);
 
     const m = '----------^--------------!';
@@ -36,7 +36,7 @@ describe('constructSubscriptionMarble', () => {
   });
 
   it('should strip timeframe after unsubscription', () => {
-    const sub = new SubscriptionLog(Number.POSITIVE_INFINITY, 25);
+    const sub = subscribe(Number.POSITIVE_INFINITY, 25);
     const marble = constructSubscriptionMarble(sub);
 
     const m = '-------------------------!';
@@ -46,7 +46,7 @@ describe('constructSubscriptionMarble', () => {
   });
 
   it('should create marble with subscription out of range', () => {
-    const sub = new SubscriptionLog(40, Number.POSITIVE_INFINITY);
+    const sub = subscribe(40, Number.POSITIVE_INFINITY);
     const marble = constructSubscriptionMarble(sub);
 
     const m = '---...34...---^----------------';
@@ -56,7 +56,7 @@ describe('constructSubscriptionMarble', () => {
   });
 
   it('should create marble with unsubscription out of range', () => {
-    const sub = new SubscriptionLog(Number.POSITIVE_INFINITY, 40);
+    const sub = subscribe(Number.POSITIVE_INFINITY, 40);
 
     const marble = constructSubscriptionMarble(sub);
     //'------------------------------!';
@@ -67,7 +67,7 @@ describe('constructSubscriptionMarble', () => {
   });
 
   it('should create marble with unsubscription out of range, subscription in range', () => {
-    const sub = new SubscriptionLog(10, 68);
+    const sub = subscribe(10, 68);
 
     const marble = constructSubscriptionMarble(sub);
 
@@ -79,7 +79,7 @@ describe('constructSubscriptionMarble', () => {
   });
 
   it('should create marble with unsubscription out of range, subscription in expand range', () => {
-    const sub = new SubscriptionLog(40, 68);
+    const sub = subscribe(40, 68);
 
     const marble = constructSubscriptionMarble(sub);
 
@@ -90,7 +90,7 @@ describe('constructSubscriptionMarble', () => {
   });
 
   it('should create marble with unsubscription out of range, subscription in collapsable expand range', () => {
-    const sub = new SubscriptionLog(27, 68);
+    const sub = subscribe(27, 68);
     const marble = constructSubscriptionMarble(sub);
 
     const m = '---------------------------^...37...---!';

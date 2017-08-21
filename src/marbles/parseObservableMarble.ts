@@ -12,7 +12,7 @@ import { observableTokenParseReducer } from './tokenParseReducer';
  * @param {boolean} [materializeInnerObservables] Flatten inner observables in cold observable. False by default.
  * @param {number} [frameTimeFactor] Custom frametime factor for virtual time frame. 1 by default.
  */
-const parseObservableMarble = <T>(
+const parseObservableMarble = <T = string>(
   marble: string,
   value?: { [key: string]: T } | null,
   error?: any,
