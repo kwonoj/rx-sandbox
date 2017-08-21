@@ -65,7 +65,9 @@ export interface RxSandbox {
    *
    */
   marbleAssert(source: SubscriptionLog): { to: { equal(expected: SubscriptionLog): void } };
-  marbleAssert(source: Array<TestMessage>): { to: { equal(expected: Array<TestMessage>): void } };
+  marbleAssert<T = string>(
+    source: Array<TestMessage<T>> | Readonly<Array<TestMessage<T>>>
+  ): { to: { equal(expected: Array<TestMessage<T>> | Readonly<Array<TestMessage<T>>>): void } };
 }
 
 const rxSandbox: RxSandbox = {
