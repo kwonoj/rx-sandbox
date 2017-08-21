@@ -64,10 +64,18 @@ export interface RxSandbox {
    * better visualization against observable test messages.
    *
    */
-  marbleAssert(source: SubscriptionLog): { to: { equal(expected: SubscriptionLog): void } };
   marbleAssert<T = string>(
-    source: Array<TestMessage<T>> | Readonly<Array<TestMessage<T>>>
-  ): { to: { equal(expected: Array<TestMessage<T>> | Readonly<Array<TestMessage<T>>>): void } };
+    source: Array<TestMessage<T | Array<TestMessage<T>>>> | Readonly<Array<TestMessage<T | Array<TestMessage<T>>>>>
+  ): {
+    to: {
+      equal(
+        expected:
+          | Array<TestMessage<T | Array<TestMessage<T>>>>
+          | Readonly<Array<TestMessage<T | Array<TestMessage<T>>>>>
+      ): void;
+    };
+  };
+  marbleAssert(source: Array<SubscriptionLog>): { to: { equal(expected: Array<SubscriptionLog>): void } };
 }
 
 const rxSandbox: RxSandbox = {
