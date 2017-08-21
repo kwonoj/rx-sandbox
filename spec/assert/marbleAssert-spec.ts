@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import { SubscriptionLog } from 'rxjs/testing/SubscriptionLog';
 import { marbleAssert } from '../../src/assert/marbleAssert';
+import { parseObservableMarble as p } from '../../src/marbles/parseObservableMarble';
 
 describe('marbleAssert', () => {
   it('should throw if source is neither array nor SubscriptionLog', () => {
@@ -12,48 +13,165 @@ describe('marbleAssert', () => {
       expect(() => marbleAssert([]).to.equal(new SubscriptionLog(0) as any)).to.throw();
     });
 
-    it('should pass hot observables', () => {
-      //noop
-    });
+    it('should pass observables', () => {
+      const s = p('--a--b--');
+      const e = p('--a--b--');
 
-    it('should pass cold observable', () => {
-      //noop
-    });
-
-    it('should pass hot and cold observables', () => {
-      //noop
+      marbleAssert(s).to.equal(e);
     });
 
     it('should pass observable with noop', () => {
-      //noop
+      const s = p('--a-  -b--');
+      const e = p('--a- -b--');
+
+      marbleAssert(s).to.equal(e);
     });
 
     it('should pass observable with groups', () => {
-      //noop
+      const s = p('--(ab)-c-');
+      const e = p('--(ab)-c--');
+
+      marbleAssert(s).to.equal(e);
     });
 
     it('should pass observable with expand', () => {
-      //noop
+      const s = p('--a-...3...-b--');
+      const e = p('--a-----b--');
+
+      marbleAssert(s).to.equal(e);
     });
 
     it('should pass observable with complete', () => {
-      //noop
+      const s = p('a--b--|');
+      const e = p('a--b--|');
+
+      marbleAssert(s).to.equal(e);
+    });
+
+    it('should pass observable with synchronous group', () => {
+      const s = p('(a|)');
+      const e = p('(a|)');
+
+      marbleAssert(s).to.equal(e);
     });
 
     it('should pass observable with error', () => {
-      //noop
+      const s = p('--a--b--#');
+      const e = p('--a--b--#');
+
+      marbleAssert(s).to.equal(e);
     });
 
-    it('should pass observable with non completion', () => {
-      //noop
+    it('should pass observable with custom value', () => {
+      const s = p('--a--b--', { a: 1 });
+      const e = p('--a--b--', { a: 1 });
+
+      marbleAssert(s).to.equal(e);
     });
 
-    it('should pass hot observable with subscription, emit before sub', () => {
-      //noop
+    it('should pass observable with custom error', () => {
+      const s = p('--a--b--#', null, 1);
+      const e = p('--a--b--#', null, 1);
+
+      marbleAssert(s).to.equal(e);
     });
 
     it('should pass hot observable with subscription, without emit before sub', () => {
-      //noop
+      const s = p('^--a--b--');
+      const e = p('---a--b--');
+
+      marbleAssert(s).to.equal(e);
+    });
+
+    it('should pass hot observable with subscription, emit before sub', () => {
+      const s = p('-x--^--a--b--');
+      const e = p('-x--^--a--b--');
+
+      marbleAssert(s).to.equal(e);
+    });
+
+    it('should assert observables frame', () => {
+      const s = p('--a--b--');
+      const e = p('--a---b--');
+
+      expect(() => marbleAssert(s).to.equal(e)).to.throw();
+    });
+
+    it('should assert observables value', () => {
+      const s = p('--a--b--');
+      const e = p('--a--x--');
+
+      expect(() => marbleAssert(s).to.equal(e)).to.throw();
+    });
+
+    it('should assert observables with noop', () => {
+      const s = p('--a-  -b--');
+      const e = p('--a- --b--');
+
+      expect(() => marbleAssert(s).to.equal(e)).to.throw();
+    });
+
+    it('should assert observables with groups', () => {
+      const s = p('--a--b--(c|)');
+      const e = p('--a--b--(cd|)');
+
+      expect(() => marbleAssert(s).to.equal(e)).to.throw();
+    });
+
+    it('should assert observables with expand', () => {
+      const s = p('--a-...3...-b--');
+      const e = p('--a-...4...-b--');
+
+      expect(() => marbleAssert(s).to.equal(e)).to.throw();
+    });
+
+    it('should assert observables with complete', () => {
+      const s = p('--a--b--|');
+      const e = p('--a--b--');
+
+      expect(() => marbleAssert(s).to.equal(e)).to.throw();
+    });
+
+    it('should assert observables with synchronous group', () => {
+      const s = p('(ab|)');
+      const e = p('(a|)');
+
+      expect(() => marbleAssert(s).to.equal(e)).to.throw();
+    });
+
+    it('should assert observables with error', () => {
+      const s = p('--a--b--#');
+      const e = p('--a--b--');
+
+      expect(() => marbleAssert(s).to.equal(e)).to.throw();
+    });
+
+    it('should assert observables with custom value', () => {
+      const s = p('--a--b--', { a: 'meh' });
+      const e = p('--a--b--');
+
+      expect(() => marbleAssert(s).to.equal(e)).to.throw();
+    });
+
+    it('should assert observables with custom error', () => {
+      const s = p('--a--b--#', null, 'meh');
+      const e = p('--a--b--#');
+
+      expect(() => marbleAssert(s).to.equal(e)).to.throw();
+    });
+
+    it('should assert hot observable with subscriptions, without emit before sub', () => {
+      const s = p('^--a--b--');
+      const e = p('--a--b--');
+
+      expect(() => marbleAssert(s).to.equal(e)).to.throw();
+    });
+
+    it('should assert hot observable with subscription, emit before sub', () => {
+      const s = p('-x--^--a--b--');
+      const e = p('---y^--a--b--');
+
+      expect(() => marbleAssert(s).to.equal(e)).to.throw();
     });
   });
 

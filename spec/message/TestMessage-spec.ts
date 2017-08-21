@@ -34,9 +34,11 @@ describe('TestMessageValue', () => {
     it('should create subscription log', () => {
       const withUnsub = subscribe(10, 20);
       const withoutSub = subscribe(10);
+      const emptySub = subscribe();
 
       expect(withUnsub).to.deep.equal(subscribe(10, 20));
       expect(withoutSub).to.deep.equal(subscribe(10, Number.POSITIVE_INFINITY));
+      expect(emptySub).to.deep.equal(subscribe(Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY));
     });
   });
 });
