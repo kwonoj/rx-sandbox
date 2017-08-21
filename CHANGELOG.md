@@ -1,3 +1,24 @@
+<a name="0.0.4"></a>
+## [0.0.4](https://github.com/kwonoj/rx-sandbox/compare/v0.0.3...v0.0.4) (2017-08-21)
+
+
+### Bug Fixes
+
+* **marbleassert:** accept subscriptionlog array ([4640bc9](https://github.com/kwonoj/rx-sandbox/commit/4640bc9))
+
+
+### Features
+
+* **constructobservablemarble:** define interfaces ([5788fb1](https://github.com/kwonoj/rx-sandbox/commit/5788fb1))
+* **constructobservablemarble:** implement constructobservablemarble ([fee3d80](https://github.com/kwonoj/rx-sandbox/commit/fee3d80))
+* **constructsubscriptionmarble:** implement constructSubscriptionMarble ([527d231](https://github.com/kwonoj/rx-sandbox/commit/527d231))
+* **marbleassert:** define assertion interface ([04b27dc](https://github.com/kwonoj/rx-sandbox/commit/04b27dc))
+* **marbleassert:** implement marbleAssert ([3822439](https://github.com/kwonoj/rx-sandbox/commit/3822439))
+* **observablemarbleassert:** input validation ([29f010e](https://github.com/kwonoj/rx-sandbox/commit/29f010e))
+* **subscriptionmarbleassert:** implement subscriptionMarbleAssert ([df823fa](https://github.com/kwonoj/rx-sandbox/commit/df823fa))
+
+
+
 <a name="0.0.3"></a>
 ## [0.0.3](https://github.com/kwonoj/rx-sandbox/compare/v0.0.2...v0.0.3) (2017-08-19)
 
