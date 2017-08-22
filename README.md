@@ -132,10 +132,10 @@ Optional parameter values will be described further.
 
 ```typescript
 hot<T = string>(marble: string, value?: { [key: string]: T } | null, error?: any): HotObservable<T>;
-hot<T = string>(messages: message: Array<TestMessage<T>>): HotObservable<T>;
+hot<T = string>(messages: Array<TestMessage<T>>): HotObservable<T>;
 
 cold<T = string>(marble: string, value?: { [key: string]: T } | null, error?: any): ColdObservable<T>;
-cold<T = string>(messages: message: Array<TestMessage<T>>): ColdObservable<T>;
+cold<T = string>(messages: Array<TestMessage<T>>): ColdObservable<T>;
 ```
 
 Both interfaces accepts marble diagram string, and optionally accepts custom values for marble values or errors. Otherwise, you can create `Array<TestMessage<T>>` directly instead of marble diagram.
