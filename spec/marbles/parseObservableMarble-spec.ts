@@ -27,6 +27,15 @@ describe('parseObservableMarble', () => {
     expect(messages).to.deep.equal(expected);
   });
 
+  it('should parse timeframe with maxFrame', () => {
+    const marble = '--a------b--|';
+
+    const messages = parseObservableMarble(marble, null, null, false, 1, 5);
+    const expected = [next(2, 'a')];
+
+    expect(messages).to.deep.equal(expected);
+  });
+
   it('should flatten custom value with inner observable when specified', () => {
     const marble = '----a--b--';
     const aMessages = [next(1, '1'), next(2, '2')];
@@ -64,6 +73,15 @@ describe('parseObservableMarble', () => {
 
     const messages = parseObservableMarble(marble, null, null, false, 10);
     const expected = [next(70, 'a')];
+
+    expect(messages).to.deep.equal(expected);
+  });
+
+  it('should support custom timeframe value with maxFrame', () => {
+    const marble = '--a------b--|';
+
+    const messages = parseObservableMarble(marble, null, null, false, 10, 50);
+    const expected = [next(20, 'a')];
 
     expect(messages).to.deep.equal(expected);
   });
@@ -179,7 +197,7 @@ describe('parseObservableMarble', () => {
   });
 
   it('should able to flatten inner observable', () => {
-    const scheduler = new TestScheduler();
+    const scheduler = new TestScheduler(false, 1, 1000);
 
     const marble = '                            --a--|';
     const inner = scheduler.createColdObservable('---1--');

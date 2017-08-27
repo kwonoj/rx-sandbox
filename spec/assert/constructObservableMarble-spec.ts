@@ -153,8 +153,8 @@ describe('constructObservableMarble', () => {
     expect(marble).to.equal(e);
   });
 
-  it('should craet marble with higher order obsrevables', () => {
-    const scheduler = new TestScheduler();
+  it('should create marble with higher order obsrevables', () => {
+    const scheduler = new TestScheduler(false, 1, 1000);
 
     const s = '--a--b--|';
     const a = scheduler.createHotObservable('--1--2--|');
