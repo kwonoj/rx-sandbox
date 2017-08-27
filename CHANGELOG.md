@@ -1,3 +1,13 @@
+<a name="0.0.5"></a>
+## [0.0.5](https://github.com/kwonoj/rx-sandbox/compare/v0.0.4...v0.0.5) (2017-08-27)
+
+
+### Features
+
+* **advanceto:** implement advanceTo interface ([1d27849](https://github.com/kwonoj/rx-sandbox/commit/1d27849)), closes [#36](https://github.com/kwonoj/rx-sandbox/issues/36)
+
+
+
 <a name="0.0.4"></a>
 ## [0.0.4](https://github.com/kwonoj/rx-sandbox/compare/v0.0.3...v0.0.4) (2017-08-21)
 
