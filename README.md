@@ -193,6 +193,25 @@ expect(messages).to.deep.equal(expected);
 expect(e1.subscriptions).to.deep.equal(subs);
 ```
 
+Or if you need to control timeframe instead of flush out whole at once, you can use `advanceTo` as well.
+
+```typescript
+const e1 = hot('    --a--b--|');
+const subs = s(`    ^       !`);
+const messages = getMessages(e1.mapTo('x'));
+
+//at this moment, messages are empty!
+expect(messages).to.be.empty;
+
+advanceTo(3);
+const expected = e('--x------'); // we're flushing to frame 3 only, so rest of marbles are not constructed
+
+//now values are available
+expect(messages).to.deep.equal(expected);
+//subscriptions are also available too
+expect(e1.subscriptions).to.deep.equal(subs);
+```
+
 #### Flushing scheduler automatically
 
 By default sandbox instance requires to `flush()` explicitly to execute observables. For cases each test case doesn't require to schedule multiple observables but only need to test single, we can create sandbox instance to flush automatically. Since it flushes scheduler as soon as `getMessages` being called, subsequent `getMessages` call will raise errors.
