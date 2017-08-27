@@ -30,11 +30,29 @@ describe('parseSubscriptionMarble', () => {
     expect(subscription).to.deep.equal(expected);
   });
 
+  it('should parse subscription with unsubscription with maxFrame', () => {
+    const marble = '--^-----!';
+
+    const subscription = parseSubscriptionMarble(marble, 1, 5);
+    const expected = subscribe(2, Number.POSITIVE_INFINITY);
+
+    expect(subscription).to.deep.equal(expected);
+  });
+
   it('should support custom timeframe value', () => {
     const marble = '--^-----!';
 
     const subscription = parseSubscriptionMarble(marble, 10);
     const expected = subscribe(20, 80);
+
+    expect(subscription).to.deep.equal(expected);
+  });
+
+  it('should support custom timeframe value with maxFrame', () => {
+    const marble = '--^-----!';
+
+    const subscription = parseSubscriptionMarble(marble, 10, 50);
+    const expected = subscribe(20, Number.POSITIVE_INFINITY);
 
     expect(subscription).to.deep.equal(expected);
   });

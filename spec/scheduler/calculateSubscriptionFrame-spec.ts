@@ -13,7 +13,7 @@ describe('calculateSubscriptionFrame', () => {
   });
 
   it('should preserve subscription frame with hot observable', () => {
-    const scheduler = new TestScheduler();
+    const scheduler = new TestScheduler(false, 1, 1000);
     const hot = scheduler.createHotObservable('');
 
     const { subscribedFrame, unsubscribedFrame } = calculateSubscriptionFrame(hot, '--^---!', 1);
@@ -23,7 +23,7 @@ describe('calculateSubscriptionFrame', () => {
   });
 
   it('should allow custom frameTimeFactor', () => {
-    const scheduler = new TestScheduler();
+    const scheduler = new TestScheduler(false, 1, 1000);
     const hot = scheduler.createHotObservable('');
 
     const { subscribedFrame, unsubscribedFrame } = calculateSubscriptionFrame(hot, '--^---!', 10);
@@ -33,7 +33,7 @@ describe('calculateSubscriptionFrame', () => {
   });
 
   it('should return adjusted subscription frame with cold observable', () => {
-    const scheduler = new TestScheduler();
+    const scheduler = new TestScheduler(false, 1, 1000);
     const hot = scheduler.createColdObservable('');
 
     const { subscribedFrame, unsubscribedFrame } = calculateSubscriptionFrame(hot, '--^---!', 1);
@@ -43,7 +43,7 @@ describe('calculateSubscriptionFrame', () => {
   });
 
   it('should preserve immediate subscription with cold observable', () => {
-    const scheduler = new TestScheduler();
+    const scheduler = new TestScheduler(false, 1, 1000);
     const hot = scheduler.createColdObservable('');
 
     const { subscribedFrame, unsubscribedFrame } = calculateSubscriptionFrame(hot, '^---!', 1);
@@ -53,7 +53,7 @@ describe('calculateSubscriptionFrame', () => {
   });
 
   it('should return subscription only frame with hot obsrevable', () => {
-    const scheduler = new TestScheduler();
+    const scheduler = new TestScheduler(false, 1, 1000);
     const hot = scheduler.createHotObservable('');
 
     const { subscribedFrame, unsubscribedFrame } = calculateSubscriptionFrame(hot, '--^---', 1);
@@ -63,7 +63,7 @@ describe('calculateSubscriptionFrame', () => {
   });
 
   it('should return adjusted subscription only frame with cold obsrevable', () => {
-    const scheduler = new TestScheduler();
+    const scheduler = new TestScheduler(false, 1, 1000);
     const hot = scheduler.createColdObservable('');
 
     const { subscribedFrame, unsubscribedFrame } = calculateSubscriptionFrame(hot, '--^---', 1);

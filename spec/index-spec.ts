@@ -37,6 +37,16 @@ describe('rxSandbox', () => {
     expect(v).to.deep.equal(expected);
   });
 
+  it('should able to create instance with custom maxFrame', () => {
+    const sandbox = idx.rxSandbox;
+
+    const { e } = sandbox.create(false, 1, 5);
+    const v = e('--a------|');
+    const expected = [idx.next(2, 'a')];
+
+    expect(v).to.deep.equal(expected);
+  });
+
   it('should able to create expected message values', () => {
     const { e } = idx.rxSandbox.create();
 

@@ -115,8 +115,13 @@ const observableTokenParseReducer = <T>(
   value: { [key: string]: T } | null,
   error: any,
   materializeInnerObservables: boolean,
-  frameTimeFactor: number
+  frameTimeFactor: number,
+  maxFrame: number
 ) => (acc: ObservableTokenParseAccumulator<T>, token: any) => {
+  if (acc.currentTimeFrame >= maxFrame) {
+    return acc;
+  }
+
   let message: TestMessage<T | Array<TestMessage<T>>> | null = null;
 
   switch (token) {
@@ -168,10 +173,14 @@ const observableTokenParseReducer = <T>(
  * Reducer to traverse subscription marble diagram to generate SubscriptionLog metadata.
  * @param frameTimeFactor Custom timeframe factor
  */
-const subscriptionTokenParseReducer = (frameTimeFactor: number) => (
+const subscriptionTokenParseReducer = (frameTimeFactor: number, maxFrame: number) => (
   acc: SubscriptionTokenParseAccumulator,
   token: string
 ) => {
+  if (acc.currentTimeFrame >= maxFrame) {
+    return acc;
+  }
+
   switch (token) {
     case SubscriptionMarbleToken.SUBSCRIBE:
       acc.subscriptionFrame = acc.currentTimeFrame;
