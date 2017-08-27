@@ -28,6 +28,10 @@ export type RxSandboxInstance = {
    */
   flush: typeof TestScheduler.prototype.flush;
   /**
+   * Flush out currently scheduled observables, only until reaches frame specfied.
+   */
+  advanceTo: typeof TestScheduler.prototype.advanceTo;
+  /**
    * Get array of observable value's metadata TestMessage<T> from observable
    * created via `hot` or `cold`. Returned array will be filled once scheduler flushes
    * scheduled actions, either via explicit `flush` or implicit `autoFlush`.
@@ -53,10 +57,12 @@ export interface RxSandbox {
    *
    * @param {boolean} [autoFlush] Flush scheduler automatically when `getMarbles` is being called. False by default.
    * @param {number} [frameTimeFactor] Custom frametime factor for virtual time frame. 1 by default.
-   *
+   * @param {number} [maxFrameValue] Maximum frame value of marble diagram can be read.
+   * If marble has value over max frame, it'll be ignored when scheduler flushes out.
+   * 1000 * frameTimeFactory by default.
    * @return {RxSandboxInstance} instance of test scheduler interfaces.
    */
-  create(autoFlush?: boolean, frameTimeFactor?: number): RxSandboxInstance;
+  create(autoFlush?: boolean, frameTimeFactor?: number, maxFrameValue?: number): RxSandboxInstance;
   /**
    * Utility assertion method to assert marble based observable test messages.
    * By default return values of sandbox functions are plain object works with
@@ -79,17 +85,18 @@ export interface RxSandbox {
 }
 
 const rxSandbox: RxSandbox = {
-  create: (autoFlush: boolean = false, frameTimeFactor: number = 1) => {
-    const scheduler = new TestScheduler(autoFlush, frameTimeFactor);
+  create: (autoFlush: boolean = false, frameTimeFactor: number = 1, maxFrameValue = 1000) => {
+    const scheduler = new TestScheduler(autoFlush, frameTimeFactor, maxFrameValue);
 
     return {
       hot: scheduler.createHotObservable.bind(scheduler) as typeof scheduler.createHotObservable,
       cold: scheduler.createColdObservable.bind(scheduler) as typeof scheduler.createColdObservable,
       flush: scheduler.flush.bind(scheduler) as typeof scheduler.flush,
+      advanceTo: scheduler.advanceTo.bind(scheduler) as typeof scheduler.advanceTo,
       getMessages: scheduler.getMessages.bind(scheduler) as typeof scheduler.getMessages,
       e: <T = string>(marble: string, value?: { [key: string]: T } | null, error?: any) =>
-        parseObservableMarble(marble, value, error, true, frameTimeFactor),
-      s: (marble: string) => parseSubscriptionMarble(marble, frameTimeFactor)
+        parseObservableMarble(marble, value, error, true, frameTimeFactor, frameTimeFactor * maxFrameValue),
+      s: (marble: string) => parseSubscriptionMarble(marble, frameTimeFactor, frameTimeFactor * maxFrameValue)
     };
   },
   marbleAssert: marbleAssert

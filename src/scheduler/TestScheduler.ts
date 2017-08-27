@@ -1,7 +1,8 @@
 import { Notification } from 'rxjs/Notification';
 import { Observable } from 'rxjs/Observable';
-import { VirtualTimeScheduler } from 'rxjs/scheduler/VirtualTimeScheduler';
+import { AsyncAction } from 'rxjs/scheduler/AsyncAction';
 import { VirtualAction } from 'rxjs/scheduler/VirtualTimeScheduler';
+import { VirtualTimeScheduler } from 'rxjs/scheduler/VirtualTimeScheduler';
 import { Subscription } from 'rxjs/Subscription';
 import { ColdObservable } from 'rxjs/testing/ColdObservable';
 import { HotObservable } from 'rxjs/testing/HotObservable';
@@ -18,19 +19,20 @@ class TestScheduler extends VirtualTimeScheduler {
   private readonly coldObservables: Array<ColdObservable<any>> = [];
   private readonly hotObservables: Array<HotObservable<any>> = [];
   private flushed: boolean = false;
+  private flushing: boolean = false;
 
-  constructor(private readonly autoFlush = false, private readonly frameTimeFactor = 1) {
+  private readonly _maxFrame: number;
+  public get maxFrame(): number {
+    return this._maxFrame;
+  }
+
+  constructor(private readonly autoFlush: boolean, private readonly frameTimeFactor: number, maxFrameValue: number) {
     super(VirtualAction, Number.POSITIVE_INFINITY);
+    this._maxFrame = maxFrameValue * frameTimeFactor;
   }
 
   public flush(): void {
-    const hotObservables = this.hotObservables;
-    while (hotObservables.length > 0) {
-      hotObservables.shift()!.setup();
-    }
-
-    super.flush();
-    this.flushed = true;
+    this.flushUntil();
   }
 
   public getMessages<T = string>(observable: Observable<T>, unsubscriptionMarbles: string | null = null) {
@@ -87,7 +89,7 @@ class TestScheduler extends VirtualTimeScheduler {
 
     const messages = Array.isArray(marbleValue)
       ? marbleValue
-      : parseObservableMarble(marbleValue, value, error, false, this.frameTimeFactor) as any;
+      : parseObservableMarble(marbleValue, value, error, false, this.frameTimeFactor, this._maxFrame) as any;
     const observable = new ColdObservable<T>(messages as Array<TestMessage<T | Array<TestMessage<T>>>>, this);
     this.coldObservables.push(observable);
     return observable;
@@ -104,10 +106,24 @@ class TestScheduler extends VirtualTimeScheduler {
 
     const messages = Array.isArray(marbleValue)
       ? marbleValue
-      : parseObservableMarble(marbleValue, value, error, false, this.frameTimeFactor) as any;
+      : parseObservableMarble(marbleValue, value, error, false, this.frameTimeFactor, this._maxFrame) as any;
     const subject = new HotObservable<T>(messages as Array<TestMessage<T | Array<TestMessage<T>>>>, this);
     this.hotObservables.push(subject);
+    subject.setup();
     return subject;
+  }
+
+  public advanceTo(toFrame: number): void {
+    if (this.autoFlush) {
+      throw new Error('Cannot advance frame manually with autoflushing scheduler');
+    }
+
+    if (toFrame < 0 || toFrame < this.frame) {
+      throw new Error(`Cannot advance frame, given frame is either negative or smaller than current frame`);
+    }
+
+    this.flushUntil(toFrame);
+    this.frame = toFrame;
   }
 
   private materializeInnerObservable<T>(observable: Observable<any>, outerFrame: number): Array<TestMessage<T>> {
@@ -122,6 +138,45 @@ class TestScheduler extends VirtualTimeScheduler {
     );
 
     return innerObservableMetadata;
+  }
+
+  private peek(): AsyncAction<any> | null {
+    const { actions } = this;
+    return actions && actions.length > 0 ? actions[0] : null;
+  }
+
+  private flushUntil(toFrame: number = this.maxFrame): void {
+    if (this.flushing) {
+      return;
+    }
+
+    this.flushing = true;
+
+    const { actions } = this;
+    let error: any;
+    let action: AsyncAction<any> | null | undefined = null;
+
+    while (this.flushing && (action = this.peek()) && action.delay <= toFrame) {
+      const action: AsyncAction<any> = actions.shift()!;
+      this.frame = action.delay;
+
+      if ((error = action.execute(action.state, action.delay))) {
+        break;
+      }
+    }
+
+    this.flushing = false;
+
+    if (toFrame >= this.maxFrame) {
+      this.flushed = true;
+    }
+
+    if (error) {
+      while ((action = actions.shift())) {
+        action.unsubscribe();
+      }
+      throw error;
+    }
   }
 }
 

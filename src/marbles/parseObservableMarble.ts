@@ -17,7 +17,8 @@ const parseObservableMarble = <T = string>(
   value?: { [key: string]: T } | null,
   error?: any,
   materializeInnerObservables: boolean = false,
-  frameTimeFactor = 1
+  frameTimeFactor = 1,
+  maxFrame = 1000
 ): Readonly<Array<TestMessage<T | Array<TestMessage<T>>>>> => {
   if (marble.indexOf(SubscriptionMarbleToken.UNSUBSCRIBE) !== -1) {
     throw new Error(`Observable marble cannot have unsubscription marker ${SubscriptionMarbleToken.UNSUBSCRIBE}`);
@@ -29,7 +30,7 @@ const parseObservableMarble = <T = string>(
   const frameOffset = subscriptionIndex < 0 ? 0 : -subscriptionIndex;
 
   const values = marbleTokenArray.reduce(
-    observableTokenParseReducer(value || null, error, materializeInnerObservables, frameTimeFactor),
+    observableTokenParseReducer(value || null, error, materializeInnerObservables, frameTimeFactor, maxFrame),
     {
       currentTimeFrame: frameOffset,
       messages: [],
