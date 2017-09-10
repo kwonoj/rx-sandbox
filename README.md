@@ -4,6 +4,8 @@
 
 # RxSandbox
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/kwonoj/rx-sandbox.svg)](https://greenkeeper.io/)
+
 `RxSandbox` is test suite for RxJS 5, based on marble diagram DSL for easier assertion around Observables.
 
 ## What's difference with `TestScheduler` in RxJS 5?
