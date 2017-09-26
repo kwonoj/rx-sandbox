@@ -1,3 +1,13 @@
+<a name="0.0.6"></a>
+## [0.0.6](https://github.com/kwonoj/rx-sandbox/compare/v0.0.5...v0.0.6) (2017-09-26)
+
+
+### Bug Fixes
+
+* **getmarbletokenvalue:** Check for `undefined` values for given token ([78b34c2](https://github.com/kwonoj/rx-sandbox/commit/78b34c2))
+
+
+
 <a name="0.0.5"></a>
 ## [0.0.5](https://github.com/kwonoj/rx-sandbox/compare/v0.0.4...v0.0.5) (2017-08-27)
 
