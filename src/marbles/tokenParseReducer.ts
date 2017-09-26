@@ -58,7 +58,7 @@ const getMarbleTokenValue = <T>(
   value: { [key: string]: T } | null,
   materializeInnerObservables: boolean
 ) => {
-  const customValue = value && value[token] ? value[token] : token;
+  const customValue = value && typeof value[token] !== 'undefined' ? value[token] : token;
 
   return materializeInnerObservables && customValue instanceof ColdObservable ? customValue.messages : customValue;
 };
