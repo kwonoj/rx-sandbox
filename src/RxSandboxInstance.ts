@@ -16,6 +16,10 @@ type expectedSubscription = (marble: string) => SubscriptionLog;
 
 type RxSandboxInstance = {
   /**
+   * Test scheduler created for sandbox instance
+   */
+  scheduler: TestScheduler;
+  /**
    * Creates a hot observable using marble diagram DSL, or TestMessage.
    */
   hot: hotObservable;
