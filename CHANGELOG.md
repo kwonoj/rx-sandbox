@@ -1,3 +1,13 @@
+<a name="0.0.8"></a>
+## [0.0.8](https://github.com/kwonoj/rx-sandbox/compare/v0.0.7...v0.0.8) (2017-09-29)
+
+
+### Features
+
+* **rxsandboxinstance:** export scheduler instance ([09afcc9](https://github.com/kwonoj/rx-sandbox/commit/09afcc9))
+
+
+
 <a name="0.0.7"></a>
 ## [0.0.7](https://github.com/kwonoj/rx-sandbox/compare/v0.0.6...v0.0.7) (2017-09-29)
 
