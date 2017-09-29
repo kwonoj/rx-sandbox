@@ -31,6 +31,7 @@ const rxSandbox: RxSandbox = {
     const scheduler = new TestScheduler(autoFlush, frameTimeFactor, maxFrameValue);
 
     return {
+      scheduler,
       hot: scheduler.createHotObservable.bind(scheduler) as typeof scheduler.createHotObservable,
       cold: scheduler.createColdObservable.bind(scheduler) as typeof scheduler.createColdObservable,
       flush: scheduler.flush.bind(scheduler) as typeof scheduler.flush,
