@@ -1,3 +1,13 @@
+<a name="0.0.7"></a>
+## [0.0.7](https://github.com/kwonoj/rx-sandbox/compare/v0.0.6...v0.0.7) (2017-09-29)
+
+
+### Features
+
+* **index:** export types for functions ([c069f86](https://github.com/kwonoj/rx-sandbox/commit/c069f86))
+
+
+
 <a name="0.0.6"></a>
 ## [0.0.6](https://github.com/kwonoj/rx-sandbox/compare/v0.0.5...v0.0.6) (2017-09-26)
 
