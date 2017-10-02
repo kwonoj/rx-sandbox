@@ -95,13 +95,17 @@ class TestScheduler extends VirtualTimeScheduler {
     return observable;
   }
 
-  public createHotObservable<T = string>(
+  public createHotObservable<T = string, R extends Observable<T> = Observable<T>>(
     marble: string,
     value?: { [key: string]: T } | null,
     error?: any
   ): HotObservable<T>;
-  public createHotObservable<T = string>(message: Array<TestMessage<T>>): HotObservable<T>;
-  public createHotObservable<T = string>(...args: Array<any>): HotObservable<T> {
+  public createHotObservable<T = string, R extends Observable<T> = Observable<T>>(
+    message: Array<TestMessage<T>>
+  ): HotObservable<T>;
+  public createHotObservable<T = string, R extends Observable<T> = Observable<T>>(
+    ...args: Array<any>
+  ): HotObservable<T> {
     const [marbleValue, value, error] = args;
 
     const messages = Array.isArray(marbleValue)
