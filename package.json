@@ -1,6 +1,6 @@
 {
   "name": "rx-sandbox",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Marble diagram DSL based test suite for RxJS 5",
   "main": "./dist/src/index.js",
   "types": "./dist/src/index.d.ts",
@@ -66,7 +66,7 @@
     "cz-conventional-changelog": "2.1.0",
     "husky": "^0.14.3",
     "jest": "^21.0.1",
-    "lint-staged": "^5.0.0",
+    "lint-staged": "^6.0.0",
     "npm-run-all": "^4.0.2",
     "nyc": "^11.2.1",
     "prettier": "^1.5.3",
