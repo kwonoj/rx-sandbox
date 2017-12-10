@@ -109,7 +109,6 @@ class TestScheduler extends VirtualTimeScheduler {
       : parseObservableMarble(marbleValue, value, error, false, this.frameTimeFactor, this._maxFrame) as any;
     const subject = new HotObservable<T>(messages as Array<TestMessage<T | Array<TestMessage<T>>>>, this);
     this.hotObservables.push(subject);
-    subject.setup();
     return subject;
   }
 
@@ -148,6 +147,11 @@ class TestScheduler extends VirtualTimeScheduler {
   private flushUntil(toFrame: number = this.maxFrame): void {
     if (this.flushing) {
       return;
+    }
+
+    const { hotObservables } = this;
+    while (hotObservables.length > 0) {
+      hotObservables.shift()!.setup();
     }
 
     this.flushing = true;
