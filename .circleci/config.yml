@@ -3,15 +3,21 @@ jobs:
   build:
     working_directory: ~/rx-sandbox
     docker:
-      - image: node:7.10.1
+      - image: node:9.3.0
     steps:
       - checkout
       - run:
           name: Checking Versions
-          command: node --version && npm --version
+          command: |
+            npm install -g npm@5.6.0
+            npm install -g greenkeeper-lockfile@1
+            node --version && npm --version
       - run:
           name: prepare
           command: npm install
+      - run:
+          name: lockfile update
+          command: greenkeeper-lockfile-update
       - run:
           name: lint
           command: npm run lint
@@ -19,7 +25,10 @@ jobs:
           name: build
           command: npm run build
       - run:
-          namme: test
+          name: test
           command: |
             npm test
             bash <(curl -s https://codecov.io/bash)
+      - run:
+          name: lockfile upload
+          command: greenkeeper-lockfile-upload
