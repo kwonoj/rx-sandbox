@@ -82,7 +82,7 @@
     "rxjs": "5.x"
   },
   "dependencies": {
-    "jest-matcher-utils": "^21.0.2",
+    "jest-matcher-utils": "^22.0.0",
     "jest-matchers": "^20.0.3",
     "tslib": "^1.7.1"
   }
