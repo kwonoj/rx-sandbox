@@ -1,3 +1,13 @@
+<a name="0.0.10"></a>
+## [0.0.10](https://github.com/kwonoj/rx-sandbox/compare/v0.0.9...v0.0.10) (2018-01-26)
+
+
+### Bug Fixes
+
+* **tokenparsereducer:** support simultaneous sub-unsub ([e60d6f1](https://github.com/kwonoj/rx-sandbox/commit/e60d6f1))
+
+
+
 <a name="0.0.9"></a>
 ## [0.0.9](https://github.com/kwonoj/rx-sandbox/compare/v0.0.8...v0.0.9) (2017-12-10)
 
