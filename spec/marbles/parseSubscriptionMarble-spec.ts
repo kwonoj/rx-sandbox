@@ -91,6 +91,15 @@ describe('parseSubscriptionMarble', () => {
     expect(subscription).to.deep.equal(expected);
   });
 
+  it('should allow grouped simultaneous sub-unsub', () => {
+    const marble = '(^!)';
+
+    const subscription = parseSubscriptionMarble(marble);
+    const expected = subscribe(0, 0);
+
+    expect(subscription).to.deep.equal(expected);
+  });
+
   it('should throw when try to nest simultaneous value', () => {
     const marble = '-----(a(b|))';
 
