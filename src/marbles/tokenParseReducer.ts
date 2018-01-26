@@ -184,7 +184,9 @@ const subscriptionTokenParseReducer = (frameTimeFactor: number, maxFrame: number
   switch (token) {
     case SubscriptionMarbleToken.SUBSCRIBE:
       acc.subscriptionFrame = acc.currentTimeFrame;
-      acc = increaseTimeFrame(acc, frameTimeFactor);
+      if (!acc.simultaneousGrouped) {
+        acc = increaseTimeFrame(acc, frameTimeFactor);
+      }
       break;
     case SubscriptionMarbleToken.UNSUBSCRIBE:
       acc.unsubscriptionFrame = acc.currentTimeFrame;
