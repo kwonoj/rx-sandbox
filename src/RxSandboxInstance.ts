@@ -1,4 +1,4 @@
-import { SubscriptionLog } from 'rxjs/testing/SubscriptionLog';
+import { SubscriptionLog } from 'rxjs/internal/testing/SubscriptionLog';
 import { TestMessage } from './message/TestMessage';
 import { TestScheduler } from './scheduler/TestScheduler';
 

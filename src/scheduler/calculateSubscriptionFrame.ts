@@ -1,6 +1,6 @@
-import { Observable } from 'rxjs/Observable';
-import { ColdObservable } from 'rxjs/testing/ColdObservable';
-import { HotObservable } from 'rxjs/testing/HotObservable';
+import { Observable } from 'rxjs';
+import { ColdObservable } from 'rxjs/internal/testing/ColdObservable';
+import { HotObservable } from 'rxjs/internal/testing/HotObservable';
 import { parseSubscriptionMarble } from '../marbles/parseSubscriptionMarble';
 
 const calculateSubscriptionFrame = (

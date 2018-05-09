@@ -1,9 +1,8 @@
 import { expect } from 'chai';
-import 'rxjs/add/operator/mapTo';
-import 'rxjs/add/operator/windowCount';
-import { AsyncAction } from 'rxjs/scheduler/AsyncAction';
-import { ColdObservable } from 'rxjs/testing/ColdObservable';
-import { HotObservable } from 'rxjs/testing/HotObservable';
+import { AsyncAction } from 'rxjs/internal/scheduler/AsyncAction';
+import { ColdObservable } from 'rxjs/internal/testing/ColdObservable';
+import { HotObservable } from 'rxjs/internal/testing/HotObservable';
+import { mapTo, windowCount } from 'rxjs/operators';
 import { parseObservableMarble } from '../../src/marbles/parseObservableMarble';
 import { complete, error, next, subscribe, TestMessage } from '../../src/message/TestMessage';
 import { TestScheduler } from '../../src/scheduler/TestScheduler';
@@ -151,7 +150,7 @@ describe('TestScheduler', () => {
       const scheduler = new TestScheduler(false, 1, 1000);
 
       const e1 = scheduler.createHotObservable('---1---2---|');
-      const messages = scheduler.getMessages(e1.mapTo('x'));
+      const messages = scheduler.getMessages(e1.pipe(mapTo('x')));
 
       expect(messages).to.be.empty;
       scheduler.flush();
@@ -165,7 +164,7 @@ describe('TestScheduler', () => {
       const scheduler = new TestScheduler(true, 1, 1000);
 
       const e1 = scheduler.createHotObservable('---1---2---|');
-      const messages = scheduler.getMessages(e1.mapTo('x'));
+      const messages = scheduler.getMessages(e1.pipe(mapTo('x')));
 
       expect(messages).to.deep.equal(expected);
       expect(e1.subscriptions).to.deep.equal([subscribe(0, 11)]);
@@ -175,9 +174,9 @@ describe('TestScheduler', () => {
       const scheduler = new TestScheduler(true, 1, 1000);
 
       const e1 = scheduler.createHotObservable('---1---2---|');
-      scheduler.getMessages(e1.mapTo('x'));
+      scheduler.getMessages(e1.pipe(mapTo('x')));
 
-      expect(() => scheduler.getMessages(e1.mapTo('x'))).to.throw();
+      expect(() => scheduler.getMessages(e1.pipe(mapTo('x')))).to.throw();
     });
 
     it('should ignore values over max frames', () => {
@@ -185,7 +184,7 @@ describe('TestScheduler', () => {
       const scheduler = new TestScheduler(true, 1, 5);
 
       const e1 = scheduler.createHotObservable('---1---2---|');
-      const messages = scheduler.getMessages(e1.mapTo('x'));
+      const messages = scheduler.getMessages(e1.pipe(mapTo('x')));
 
       expect(messages).to.deep.equal(expected);
     });
@@ -195,7 +194,7 @@ describe('TestScheduler', () => {
       const scheduler = new TestScheduler(false, 1, 1000);
 
       const e1 = scheduler.createHotObservable('---1---2---#');
-      const messages = scheduler.getMessages(e1.mapTo('x'));
+      const messages = scheduler.getMessages(e1.pipe(mapTo('x')));
 
       expect(messages).to.be.empty;
       scheduler.flush();
@@ -209,7 +208,7 @@ describe('TestScheduler', () => {
       const scheduler = new TestScheduler(false, 1, 1000);
 
       const e1 = scheduler.createColdObservable('---1---2---|');
-      const messages = scheduler.getMessages(e1.mapTo('x'));
+      const messages = scheduler.getMessages(e1.pipe(mapTo('x')));
 
       expect(messages).to.be.empty;
       scheduler.flush();
@@ -223,7 +222,7 @@ describe('TestScheduler', () => {
       const scheduler = new TestScheduler(true, 1, 1000);
 
       const e1 = scheduler.createColdObservable('---1---2---|');
-      const messages = scheduler.getMessages(e1.mapTo('x'));
+      const messages = scheduler.getMessages(e1.pipe(mapTo('x')));
 
       expect(messages).to.deep.equal(expected);
       expect(e1.subscriptions).to.deep.equal([subscribe(0, 11)]);
@@ -234,7 +233,7 @@ describe('TestScheduler', () => {
       const scheduler = new TestScheduler(false, 1, 1000);
 
       const e1 = scheduler.createColdObservable('---1---2---#');
-      const messages = scheduler.getMessages(e1.mapTo('x'));
+      const messages = scheduler.getMessages(e1.pipe(mapTo('x')));
 
       expect(messages).to.be.empty;
       scheduler.flush();
@@ -253,7 +252,7 @@ describe('TestScheduler', () => {
 
       const source = scheduler.createColdObservable('---a---b---c---d---|');
 
-      const messages = scheduler.getMessages(source.windowCount(3));
+      const messages = scheduler.getMessages(source.pipe(windowCount(3)));
       expect(messages).to.be.empty;
 
       scheduler.flush();
@@ -270,7 +269,7 @@ describe('TestScheduler', () => {
 
       const source = scheduler.createColdObservable('---a---b---c---#');
 
-      const messages = scheduler.getMessages(source.windowCount(3));
+      const messages = scheduler.getMessages(source.pipe(windowCount(3)));
       expect(messages).to.be.empty;
 
       scheduler.flush();
@@ -287,7 +286,7 @@ describe('TestScheduler', () => {
 
       const source = scheduler.createHotObservable('---a---b---c---d---|');
 
-      const messages = scheduler.getMessages(source.windowCount(3));
+      const messages = scheduler.getMessages(source.pipe(windowCount(3)));
       expect(messages).to.be.empty;
 
       scheduler.flush();
@@ -304,7 +303,7 @@ describe('TestScheduler', () => {
 
       const source = scheduler.createHotObservable('---a---b---c---#');
 
-      const messages = scheduler.getMessages(source.windowCount(3));
+      const messages = scheduler.getMessages(source.pipe(windowCount(3)));
       expect(messages).to.be.empty;
 
       scheduler.flush();
@@ -319,7 +318,7 @@ describe('TestScheduler', () => {
       const sub = '                              ------^---!';
       //actual subscription:                           ---1-
 
-      const messages = scheduler.getMessages(e1.mapTo('x'), sub);
+      const messages = scheduler.getMessages(e1.pipe(mapTo('x')), sub);
 
       expect(messages).to.be.empty;
       scheduler.flush();
@@ -334,7 +333,7 @@ describe('TestScheduler', () => {
 
       const e1 = scheduler.createHotObservable('---1---2---|');
       const sub = '                             ------^---!';
-      const messages = scheduler.getMessages(e1.mapTo('x'), sub);
+      const messages = scheduler.getMessages(e1.pipe(mapTo('x')), sub);
 
       expect(messages).to.be.empty;
       scheduler.flush();

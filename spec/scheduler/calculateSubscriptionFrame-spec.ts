@@ -1,12 +1,11 @@
 import { expect } from 'chai';
-import 'rxjs/add/observable/of';
-import { Observable } from 'rxjs/Observable';
+import { of } from 'rxjs';
 import { calculateSubscriptionFrame } from '../../src/scheduler/calculateSubscriptionFrame';
 import { TestScheduler } from '../../src/scheduler/TestScheduler';
 
 describe('calculateSubscriptionFrame', () => {
   it('should return immediate subscription without subscription token', () => {
-    const { subscribedFrame, unsubscribedFrame } = calculateSubscriptionFrame(Observable.of(''), '---!', 1);
+    const { subscribedFrame, unsubscribedFrame } = calculateSubscriptionFrame(of(''), '---!', 1);
 
     expect(subscribedFrame).to.equal(0);
     expect(unsubscribedFrame).to.equal(3);
@@ -73,6 +72,6 @@ describe('calculateSubscriptionFrame', () => {
   });
 
   it('should throw when source is neither hot nor cold', () => {
-    expect(() => calculateSubscriptionFrame(Observable.of(''), '-^-!', 1)).to.throw();
+    expect(() => calculateSubscriptionFrame(of(''), '-^-!', 1)).to.throw();
   });
 });

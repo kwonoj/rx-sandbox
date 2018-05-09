@@ -1,11 +1,8 @@
-import { Notification } from 'rxjs/Notification';
-import { Observable } from 'rxjs/Observable';
-import { AsyncAction } from 'rxjs/scheduler/AsyncAction';
-import { VirtualAction } from 'rxjs/scheduler/VirtualTimeScheduler';
-import { VirtualTimeScheduler } from 'rxjs/scheduler/VirtualTimeScheduler';
-import { Subscription } from 'rxjs/Subscription';
-import { ColdObservable } from 'rxjs/testing/ColdObservable';
-import { HotObservable } from 'rxjs/testing/HotObservable';
+import { Notification, Observable, Subscription } from 'rxjs';
+import { AsyncAction } from 'rxjs/internal/scheduler/AsyncAction';
+import { VirtualAction, VirtualTimeScheduler } from 'rxjs/internal/scheduler/VirtualTimeScheduler';
+import { ColdObservable } from 'rxjs/internal/testing/ColdObservable';
+import { HotObservable } from 'rxjs/internal/testing/HotObservable';
 import { parseObservableMarble } from '../marbles/parseObservableMarble';
 import { SubscriptionMarbleToken } from '../marbles/SubscriptionMarbleToken';
 import { TestMessage } from '../message/TestMessage';
@@ -89,7 +86,7 @@ class TestScheduler extends VirtualTimeScheduler {
 
     const messages = Array.isArray(marbleValue)
       ? marbleValue
-      : parseObservableMarble(marbleValue, value, error, false, this.frameTimeFactor, this._maxFrame) as any;
+      : (parseObservableMarble(marbleValue, value, error, false, this.frameTimeFactor, this._maxFrame) as any);
     const observable = new ColdObservable<T>(messages as Array<TestMessage<T | Array<TestMessage<T>>>>, this);
     this.coldObservables.push(observable);
     return observable;
@@ -106,7 +103,7 @@ class TestScheduler extends VirtualTimeScheduler {
 
     const messages = Array.isArray(marbleValue)
       ? marbleValue
-      : parseObservableMarble(marbleValue, value, error, false, this.frameTimeFactor, this._maxFrame) as any;
+      : (parseObservableMarble(marbleValue, value, error, false, this.frameTimeFactor, this._maxFrame) as any);
     const subject = new HotObservable<T>(messages as Array<TestMessage<T | Array<TestMessage<T>>>>, this);
     this.hotObservables.push(subject);
     return subject;
