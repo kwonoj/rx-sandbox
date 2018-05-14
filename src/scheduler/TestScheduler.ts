@@ -1,16 +1,16 @@
-import { Notification, Observable, Subscription } from "rxjs";
-import { AsyncAction } from "rxjs/internal/scheduler/AsyncAction";
+import { Notification, Observable, Subscription } from 'rxjs';
+import { AsyncAction } from 'rxjs/internal/scheduler/AsyncAction';
 import {
   VirtualAction,
   VirtualTimeScheduler
-} from "rxjs/internal/scheduler/VirtualTimeScheduler";
-import { ColdObservable } from "rxjs/internal/testing/ColdObservable";
-import { HotObservable } from "rxjs/internal/testing/HotObservable";
-import { parseObservableMarble } from "../marbles/parseObservableMarble";
-import { SubscriptionMarbleToken } from "../marbles/SubscriptionMarbleToken";
-import { TestMessage } from "../message/TestMessage";
-import { TestMessageValue } from "../message/TestMessage";
-import { calculateSubscriptionFrame } from "./calculateSubscriptionFrame";
+} from 'rxjs/internal/scheduler/VirtualTimeScheduler';
+import { ColdObservable } from 'rxjs/internal/testing/ColdObservable';
+import { HotObservable } from 'rxjs/internal/testing/HotObservable';
+import { parseObservableMarble } from '../marbles/parseObservableMarble';
+import { SubscriptionMarbleToken } from '../marbles/SubscriptionMarbleToken';
+import { TestMessage } from '../message/TestMessage';
+import { TestMessageValue } from '../message/TestMessage';
+import { calculateSubscriptionFrame } from './calculateSubscriptionFrame';
 
 /**
  * @internal
@@ -79,7 +79,7 @@ class TestScheduler extends VirtualTimeScheduler {
   public createColdObservable<T = string>(...args: Array<any>): ColdObservable<T> {
     const [marbleValue, value, error] = args;
 
-    if (typeof marbleValue === "string" && marbleValue.indexOf(SubscriptionMarbleToken.SUBSCRIBE) !== -1) {
+    if (typeof marbleValue === 'string' && marbleValue.indexOf(SubscriptionMarbleToken.SUBSCRIBE) !== -1) {
       throw new Error(`Cold observable cannot have subscription offset ${SubscriptionMarbleToken.SUBSCRIBE}`);
     }
 
@@ -106,7 +106,7 @@ class TestScheduler extends VirtualTimeScheduler {
 
   public advanceTo(toFrame: number): void {
     if (this.autoFlush) {
-      throw new Error("Cannot advance frame manually with autoflushing scheduler");
+      throw new Error('Cannot advance frame manually with autoflushing scheduler');
     }
 
     if (toFrame < 0 || toFrame < this.frame) {
