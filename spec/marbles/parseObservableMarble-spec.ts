@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { ColdObservable } from 'rxjs/testing/ColdObservable';
+import { ColdObservable } from 'rxjs/internal/testing/ColdObservable';
 import { parseObservableMarble } from '../../src/marbles/parseObservableMarble';
 import { complete, error, next } from '../../src/message/TestMessage';
 import { TestScheduler } from '../../src/scheduler/TestScheduler';

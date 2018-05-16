@@ -42,7 +42,9 @@ const constructObservableMarble = <T = string>(
   value: Array<TestMessage<T>> | Readonly<Array<TestMessage<T>>>
 ): string => {
   if (value.length === 0) {
-    return Array.from(Array(30)).map(() => ObservableMarbleToken.TIMEFRAME).join('');
+    return Array.from(Array(30))
+      .map(() => ObservableMarbleToken.TIMEFRAME)
+      .join('');
   }
 
   const groupedMarble: Array<Array<TestMessage<T>>> = value.reduce(marbleGroupReducer, []);

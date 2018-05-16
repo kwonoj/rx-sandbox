@@ -1,4 +1,4 @@
-import { ColdObservable } from 'rxjs/testing/ColdObservable';
+import { ColdObservable } from 'rxjs/internal/testing/ColdObservable';
 import { TestMessage } from '../message/TestMessage';
 import { complete, error as e, next } from '../message/TestMessage';
 import { ObservableMarbleToken } from './ObservableMarbleToken';

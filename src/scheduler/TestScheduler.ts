@@ -1,11 +1,11 @@
-import { Notification } from 'rxjs/Notification';
-import { Observable } from 'rxjs/Observable';
-import { AsyncAction } from 'rxjs/scheduler/AsyncAction';
-import { VirtualAction } from 'rxjs/scheduler/VirtualTimeScheduler';
-import { VirtualTimeScheduler } from 'rxjs/scheduler/VirtualTimeScheduler';
-import { Subscription } from 'rxjs/Subscription';
-import { ColdObservable } from 'rxjs/testing/ColdObservable';
-import { HotObservable } from 'rxjs/testing/HotObservable';
+import { Notification, Observable, Subscription } from 'rxjs';
+import { AsyncAction } from 'rxjs/internal/scheduler/AsyncAction';
+import {
+  VirtualAction,
+  VirtualTimeScheduler
+} from 'rxjs/internal/scheduler/VirtualTimeScheduler';
+import { ColdObservable } from 'rxjs/internal/testing/ColdObservable';
+import { HotObservable } from 'rxjs/internal/testing/HotObservable';
 import { parseObservableMarble } from '../marbles/parseObservableMarble';
 import { SubscriptionMarbleToken } from '../marbles/SubscriptionMarbleToken';
 import { TestMessage } from '../message/TestMessage';
@@ -74,11 +74,7 @@ class TestScheduler extends VirtualTimeScheduler {
     return observableMetadata;
   }
 
-  public createColdObservable<T = string>(
-    marble: string,
-    value?: { [key: string]: T } | null,
-    error?: any
-  ): ColdObservable<T>;
+  public createColdObservable<T = string>(marble: string, value?: { [key: string]: T } | null, error?: any): ColdObservable<T>;
   public createColdObservable<T = string>(message: Array<TestMessage<T>>): ColdObservable<T>;
   public createColdObservable<T = string>(...args: Array<any>): ColdObservable<T> {
     const [marbleValue, value, error] = args;
@@ -95,11 +91,7 @@ class TestScheduler extends VirtualTimeScheduler {
     return observable;
   }
 
-  public createHotObservable<T = string>(
-    marble: string,
-    value?: { [key: string]: T } | null,
-    error?: any
-  ): HotObservable<T>;
+  public createHotObservable<T = string>(marble: string, value?: { [key: string]: T } | null, error?: any): HotObservable<T>;
   public createHotObservable<T = string>(message: Array<TestMessage<T>>): HotObservable<T>;
   public createHotObservable<T = string>(...args: Array<any>): HotObservable<T> {
     const [marbleValue, value, error] = args;

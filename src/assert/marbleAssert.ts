@@ -1,6 +1,6 @@
 import { matcherHint, printExpected, printReceived } from 'jest-matcher-utils';
 import { toEqual } from 'jest-matchers/build/matchers';
-import { SubscriptionLog } from 'rxjs/testing/SubscriptionLog';
+import { SubscriptionLog } from 'rxjs/internal/testing/SubscriptionLog';
 import { TestMessage } from '../message/TestMessage';
 import { constructObservableMarble } from './constructObservableMarble';
 import { constructSubscriptionMarble } from './constructSubscriptionMarble';

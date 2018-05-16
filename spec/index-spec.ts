@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import 'rxjs/add/operator/mapTo';
+import { mapTo } from 'rxjs/operators';
 import * as idx from '../src/index';
 
 describe('rxSandbox', () => {
@@ -23,7 +23,7 @@ describe('rxSandbox', () => {
     const source = hot('--a--|');
     const expected = [idx.next(2, 'a'), idx.complete(5)];
 
-    const v = getMessages(source.mapTo('a'));
+    const v = getMessages(source.pipe(mapTo('a')));
     expect(v).to.deep.equal(expected);
   });
 
