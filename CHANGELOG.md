@@ -1,3 +1,10 @@
+<a name="1.0.0"></a>
+# [1.0.0](https://github.com/kwonoj/rx-sandbox/compare/v0.0.10...v1.0.0) (2018-05-16)
+* **package:** bump up peerdep to rxjs@6 ([085c2b6](https://github.com/kwonoj/rx-sandbox/commit/085c2b6))
+
+### BREAKING CHANGES
+* **package:** Import paths are not compatible with rxjs@5 anymore
+
 <a name="0.0.10"></a>
 ## [0.0.10](https://github.com/kwonoj/rx-sandbox/compare/v0.0.9...v0.0.10) (2018-01-26)
 
