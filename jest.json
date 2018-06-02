@@ -6,7 +6,6 @@
     "**/spec/**/*-spec.ts"
   ],
   "bail": true,
-  "mapCoverage": true,
   "resetMocks": true,
   "clearMocks": true,
   "resetModules": true,
