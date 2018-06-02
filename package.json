@@ -57,7 +57,7 @@
   "homepage": "https://github.com/kwonoj/rx-sandbox#readme",
   "devDependencies": {
     "@commitlint/cli": "^7.0.0",
-    "@commitlint/config-angular": "^7.0.0",
+    "@commitlint/config-angular": "^7.0.1",
     "@types/chai": "^4.1.3",
     "@types/jest": "^23.0.0",
     "chai": "^4.1.1",
