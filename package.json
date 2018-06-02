@@ -57,32 +57,32 @@
   "homepage": "https://github.com/kwonoj/rx-sandbox#readme",
   "devDependencies": {
     "@commitlint/cli": "^7.0.0",
-    "@commitlint/config-angular": "^6.0.2",
-    "@types/chai": "^4.0.10",
-    "@types/jest": "^22.0.0",
+    "@commitlint/config-angular": "^7.0.0",
+    "@types/chai": "^4.1.3",
+    "@types/jest": "^23.0.0",
     "chai": "^4.1.1",
     "commitizen": "2.10.1",
     "conventional-changelog-cli": "^2.0.0",
     "cz-conventional-changelog": "2.1.0",
     "husky": "^0.14.3",
-    "jest": "^22.0.4",
-    "lint-staged": "^7.0.0",
-    "npm-run-all": "^4.1.2",
+    "jest": "^23.1.0",
+    "lint-staged": "^7.1.3",
+    "npm-run-all": "^4.1.3",
     "nyc": "^12.0.1",
-    "prettier": "^1.9.2",
-    "rxjs": "6.x",
+    "prettier": "^1.13.4",
+    "rxjs": "^6.2.0",
     "shx": "^0.2.2",
-    "ts-jest": "^22.0.0",
-    "tslint": "^5.8.0",
+    "ts-jest": "^22.4.6",
+    "tslint": "^5.10.0",
     "tslint-no-unused-expression-chai": "0.1.3",
-    "typescript": "^2.6.2"
+    "typescript": "^2.9.1"
   },
   "peerDependencies": {
     "rxjs": "6.x"
   },
   "dependencies": {
-    "jest-matcher-utils": "^23.0.0",
+    "jest-matcher-utils": "^23.0.1",
     "jest-matchers": "^20.0.3",
-    "tslib": "^1.8.1"
+    "tslib": "^1.9.2"
   }
 }
