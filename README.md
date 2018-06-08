@@ -5,9 +5,10 @@
 
 # RxSandbox
 
-`RxSandbox` is test suite for RxJS 5, based on marble diagram DSL for easier assertion around Observables.
+`RxSandbox` is test suite for RxJS, based on marble diagram DSL for easier assertion around Observables.
+For RxJS 5 support, check pre-1.x versions. 1.x supports latest RxJS 6.x.
 
-## What's difference with `TestScheduler` in RxJS 5?
+## What's difference with `TestScheduler` in RxJS?
 
 `RxJS` 5's test cases are written via its own [`TestScheduler`](https://github.com/ReactiveX/rxjs/blob/9267b30ebc982e1845843f85866906496b3aaa8f/src/testing/TestScheduler.ts) implementation. While it still can be used for testing any other Observable based codes its ergonomics are not user code friendly, reason why core repo tracks [issue](https://github.com/ReactiveX/rxjs/issues/1775) to provide separate package for general usage. RxSandbox aims to resolve those ergonomics with few design goals
 
