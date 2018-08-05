@@ -23,6 +23,9 @@
   "coverageReporters": [
     "lcov"
   ],
+  "reporters": [
+    "jest-spin-reporter"
+  ],
   "collectCoverageFrom": [
     "src/**/*.{ts, tsx}",
     "!**/*.d.ts"
