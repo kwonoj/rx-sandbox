@@ -1,7 +1,5 @@
 {
-  "transform": {
-    ".(js|jsx|ts|tsx)": "ts-jest"
-  },
+  "preset": "ts-jest",
   "testMatch": [
     "**/spec/**/*-spec.ts"
   ],

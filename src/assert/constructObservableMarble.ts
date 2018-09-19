@@ -63,7 +63,7 @@ const constructObservableMarble = <T = string>(
       return true;
     } else {
       const value = message.notification.value;
-      if (value.toString().length === 1) {
+      if (!!value && value.toString().length === 1) {
         marbleString += message.notification.value;
       } else {
         //we can't recover original token when notification metadata has custom value, use pseudo alphabet instead.
