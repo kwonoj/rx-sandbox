@@ -58,7 +58,7 @@
     "@types/chai": "^4.1.6",
     "@types/jest": "^23.3.2",
     "chai": "^4.2.0",
-    "commitizen": "^3.0.1",
+    "commitizen": "^3.0.2",
     "conventional-changelog-cli": "^2.0.5",
     "cz-conventional-changelog": "2.1.0",
     "husky": "^1.1.0",
