@@ -1,0 +1,34 @@
+language: node_js
+sudo: false
+
+cache:
+  directories:
+    - $HOME/.npm
+
+env:
+  matrix:
+  - NODE_VER=10 FULL_VALIDATE=true
+
+matrix:
+  fast_finish: true
+
+before_install:
+  - nvm install $NODE_VER
+  - npm install -g npm@6
+  - npm install -g greenkeeper-lockfile@1
+  - node -v && npm -v
+
+install:
+  - npm install
+  - if [ "$FULL_VALIDATE" == "true" ]; then npm run lint; fi
+
+before_script: greenkeeper-lockfile-update
+
+script:
+  - npm run build
+  - npm test
+
+after_script: greenkeeper-lockfile-upload
+
+after_success:
+  - if [ "$FULL_VALIDATE" == "true" ]; then bash <(curl -s https://codecov.io/bash); fi
