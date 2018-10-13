@@ -1,6 +1,6 @@
 {
   "name": "rx-sandbox",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Marble diagram DSL based test suite for RxJS 6",
   "main": "./dist/src/index.js",
   "types": "./dist/src/index.d.ts",
@@ -21,7 +21,7 @@
     ]
   },
   "scripts": {
-    "prepublish": "npm prune && npm run build",
+    "prepublishOnly": "npm run build",
     "test": "jest --config jest.json --coverage",
     "lint": "tslint --type-check -c tslint.json -p tsconfig.json \"src/**/*.ts\" \"spec/**/*.ts\"",
     "lint:staged": "lint-staged",

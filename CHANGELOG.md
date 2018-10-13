@@ -1,3 +1,13 @@
+<a name="1.0.1"></a>
+## [1.0.1](https://github.com/kwonoj/rx-sandbox/compare/v1.0.0...v1.0.1) (2018-10-13)
+
+
+### Bug Fixes
+
+* **package:** update jest-matcher-utils to version 23.0.0 ([ede0594](https://github.com/kwonoj/rx-sandbox/commit/ede0594))
+
+
+
 <a name="1.0.0"></a>
 # [1.0.0](https://github.com/kwonoj/rx-sandbox/compare/v0.0.10...v1.0.0) (2018-05-16)
 * **package:** bump up peerdep to rxjs@6 ([085c2b6](https://github.com/kwonoj/rx-sandbox/commit/085c2b6))
