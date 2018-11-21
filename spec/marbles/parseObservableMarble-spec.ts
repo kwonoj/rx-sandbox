@@ -27,11 +27,11 @@ describe('parseObservableMarble', () => {
     expect(messages).to.deep.equal(expected);
   });
 
-  it('should correctly parse falsy timeframe value', () => {
+  it('should correctly parse falsy timeframe values', () => {
     const marble = '--a-b-c-d';
 
     const messages = parseObservableMarble(marble, { a: null, b: false, c: 0, d: undefined });
-    const expected = [next(2, null), next(4, false), next(6, 0), next(8, 'd')];
+    const expected = [next(2, null), next(4, false), next(6, 0), next(8, undefined)];
 
     expect(messages).to.deep.equal(expected);
   });

@@ -1,6 +1,5 @@
 import { ColdObservable } from 'rxjs/internal/testing/ColdObservable';
-import { TestMessage } from '../message/TestMessage';
-import { complete, error as e, next } from '../message/TestMessage';
+import { complete, error as e, next, TestMessage } from '../message/TestMessage';
 import { ObservableMarbleToken } from './ObservableMarbleToken';
 import { SubscriptionMarbleToken } from './SubscriptionMarbleToken';
 
@@ -58,7 +57,7 @@ const getMarbleTokenValue = <T>(
   value: { [key: string]: T } | null,
   materializeInnerObservables: boolean
 ) => {
-  const customValue = value && typeof value[token] !== 'undefined' ? value[token] : token;
+  const customValue = value && token in value ? value[token] : token;
 
   return materializeInnerObservables && customValue instanceof ColdObservable ? customValue.messages : customValue;
 };
