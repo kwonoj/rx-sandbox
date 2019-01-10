@@ -1,3 +1,13 @@
+<a name="1.0.2"></a>
+## [1.0.2](https://github.com/kwonoj/rx-sandbox/compare/v1.0.1...v1.0.2) (2019-01-10)
+
+
+### Bug Fixes
+
+* **getmarbletokenvalue:** allow `undefined` as token value ([ec318c7](https://github.com/kwonoj/rx-sandbox/commit/ec318c7))
+
+
+
 <a name="1.0.1"></a>
 ## [1.0.1](https://github.com/kwonoj/rx-sandbox/compare/v1.0.0...v1.0.1) (2018-10-13)
 
