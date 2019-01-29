@@ -78,7 +78,7 @@
     "rxjs": "6.x"
   },
   "dependencies": {
-    "jest-matcher-utils": "^23.6.0",
+    "jest-matcher-utils": "^24.0.0",
     "jest-matchers": "^20.0.3",
     "tslib": "^1.9.3"
   },
