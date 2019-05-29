@@ -38,7 +38,7 @@ const marbleGroupReducer = <T>(
 };
 
 //we don't restore identical marble to original - preserve metadata only
-const constructObservableMarble = <T = string>(
+const constructObservableMarble = <T extends Object = string>(
   value: Array<TestMessage<T>> | Readonly<Array<TestMessage<T>>>
 ): string => {
   if (value.length === 0) {
@@ -47,7 +47,10 @@ const constructObservableMarble = <T = string>(
       .join('');
   }
 
-  const groupedMarble: Array<Array<TestMessage<T>>> = value.reduce(marbleGroupReducer, []);
+  const groupedMarble: Array<Array<TestMessage<T>>> = (value as Array<TestMessage<T>>).reduce(
+    marbleGroupReducer,
+    [] as Array<Array<TestMessage<T>>>
+  );
   const tokens = [...token];
 
   let group: Array<TestMessage<T>>;
