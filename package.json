@@ -1,6 +1,6 @@
 {
   "name": "rx-sandbox",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Marble diagram DSL based test suite for RxJS 6",
   "main": "./dist/src/index.js",
   "types": "./dist/src/index.d.ts",
