@@ -1,9 +1,9 @@
-import { matcherHint, printExpected, printReceived } from 'jest-matcher-utils';
 import { toEqual } from 'jest-matchers/build/matchers';
 import { SubscriptionLog } from 'rxjs/internal/testing/SubscriptionLog';
 import { TestMessage } from '../message/TestMessage';
 import { constructObservableMarble } from './constructObservableMarble';
 import { constructSubscriptionMarble } from './constructSubscriptionMarble';
+const { matcherHint, printExpected, printReceived } = require('jest-matcher-utils'); //tslint:disable-line:no-require-imports no-var-requires
 
 const toEqualAssert = toEqual.bind({ expand: false });
 

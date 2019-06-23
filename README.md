@@ -121,10 +121,13 @@ it('testcase', () => {
 ### Creating sandbox
 
 ```typescript
-rxSandbox.create(autoFlush?: boolean, frameTimeFactor?: number): RxSandboxInstance
+rxSandbox.create(autoFlush?: boolean, frameTimeFactor?: number, maxFrameValue?: number): RxSandboxInstance
 ```
 
-Optional parameter values will be described further.
+`frameTimeFactor` allows to override default frame passage `1` to given value.
+`maxFrameValue` allows to override maximum frame number testscheduler will accept. (`1000` by default). Maxframevalue is relavant to frameTimeFactor. (i.e if `frameTimeFactor = 2` and `maxFrameValue = 4`, `--` will represent max frame)
+
+Refer below for `autoFlush` option.
 
 ### Using RxSandboxInstance
 
