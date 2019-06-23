@@ -27,6 +27,28 @@ describe('rxSandbox', () => {
     expect(v).to.deep.equal(expected);
   });
 
+  it('should allow specify frameTimeFactor', () => {
+    const sandbox = idx.rxSandbox;
+
+    const { hot, getMessages } = sandbox.create(true, 2, 8);
+    const source = hot('-a--b');
+    const expected = [idx.next(2, 'a')];
+
+    const v = getMessages(source.pipe(mapTo('a')));
+    expect(v).to.deep.equal(expected);
+  });
+
+  it('should allow specify maxFrameValue', () => {
+    const sandbox = idx.rxSandbox;
+
+    const { hot, getMessages } = sandbox.create(true, 1, 4);
+    const source = hot('--a--|');
+    const expected = [idx.next(2, 'a')];
+
+    const v = getMessages(source.pipe(mapTo('a')));
+    expect(v).to.deep.equal(expected);
+  });
+
   it('should able to create instance with custom frame', () => {
     const sandbox = idx.rxSandbox;
 
