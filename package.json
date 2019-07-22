@@ -61,7 +61,7 @@
     "chai": "^4.2.0",
     "commitizen": "^3.1.1",
     "conventional-changelog-cli": "^2.0.21",
-    "cz-conventional-changelog": "2.1.0",
+    "cz-conventional-changelog": "3.0.2",
     "husky": "^2.4.1",
     "jest": "^24.8.0",
     "jest-spin-reporter": "^1.0.2",
