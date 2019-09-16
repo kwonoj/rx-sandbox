@@ -8,11 +8,6 @@
     "npm": ">=3.0.0",
     "node": ">=4.2.4"
   },
-  "config": {
-    "commitizen": {
-      "path": "cz-conventional-changelog"
-    }
-  },
   "lint-staged": {
     "*.{ts,js}": [
       "prettier --write --single-quote --print-width 120 --jsx-bracket-same-line true",
@@ -27,7 +22,6 @@
     "lint:staged": "lint-staged",
     "build": "npm-run-all build:clean && tsc",
     "build:clean": "shx rm -rf ./dist",
-    "commit": "git-cz -S",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s"
   },
   "repository": {
@@ -53,33 +47,32 @@
   },
   "homepage": "https://github.com/kwonoj/rx-sandbox#readme",
   "devDependencies": {
-    "@commitlint/cli": "^8.0.0",
-    "@commitlint/config-angular": "^8.0.0",
-    "@types/chai": "^4.1.7",
-    "@types/jest": "^24.0.15",
-    "@types/node": "^12.0.10",
+    "@commitlint/cli": "^8.1.0",
+    "@commitlint/config-angular": "^8.1.0",
+    "@types/chai": "^4.2.2",
+    "@types/jest": "^24.0.18",
+    "@types/node": "^12.7.5",
     "chai": "^4.2.0",
-    "commitizen": "^3.1.1",
-    "conventional-changelog-cli": "^2.0.21",
-    "cz-conventional-changelog": "2.1.0",
-    "husky": "^2.4.1",
-    "jest": "^24.8.0",
-    "jest-spin-reporter": "^1.0.2",
-    "lint-staged": "^8.2.1",
+    "conventional-changelog-cli": "^2.0.23",
+    "cz-conventional-changelog": "^3.0.2",
+    "husky": "^3.0.5",
+    "jest": "^24.9.0",
+    "jest-spin-reporter": "^2.0.0",
+    "lint-staged": "^9.2.5",
     "npm-run-all": "^4.1.5",
     "prettier": "^1.18.2",
-    "rxjs": "^6.5.2",
+    "rxjs": "^6.5.3",
     "shx": "^0.3.2",
-    "ts-jest": "^24.0.2",
-    "tslint": "^5.18.0",
+    "ts-jest": "^24.1.0",
+    "tslint": "^5.20.0",
     "tslint-no-unused-expression-chai": "^0.1.4",
-    "typescript": "^3.5.2"
+    "typescript": "^3.6.3"
   },
   "peerDependencies": {
     "rxjs": "6.x"
   },
   "dependencies": {
-    "jest-matcher-utils": "^24.8.0",
+    "jest-matcher-utils": "^24.9.0",
     "jest-matchers": "^20.0.3",
     "tslib": "^1.10.0"
   },
