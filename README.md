@@ -1,7 +1,6 @@
 [![Build Status](https://circleci.com/gh/kwonoj/rx-sandbox/tree/master.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/kwonoj/rx-sandbox/tree/master)
 [![codecov](https://codecov.io/gh/kwonoj/rx-sandbox/branch/master/graph/badge.svg)](https://codecov.io/gh/kwonoj/rx-sandbox)
 [![npm](https://img.shields.io/npm/v/rx-sandbox.svg)](https://www.npmjs.com/package/rx-sandbox)
-[![Greenkeeper badge](https://badges.greenkeeper.io/kwonoj/rx-sandbox.svg)](https://greenkeeper.io/)
 
 # RxSandbox
 
@@ -19,7 +18,7 @@ For RxJS 5 support, check pre-1.x versions. 1.x supports latest RxJS 6.x.
 
 # Install
 
-This has a peer dependencies of `rxjs@5.*.*`, which will have to be installed as well
+This has a peer dependencies of `rxjs@6.*.*`, which will have to be installed as well
 
 ```sh
 npm install rx-sandbox
