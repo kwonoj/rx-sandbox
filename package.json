@@ -2,8 +2,8 @@
   "name": "rx-sandbox",
   "version": "1.0.3",
   "description": "Marble diagram DSL based test suite for RxJS 6",
-  "main": "./dist/src/index.js",
-  "types": "./dist/src/index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "engines": {
     "npm": ">=3.0.0",
     "node": ">=4.2.4"
@@ -20,8 +20,8 @@
     "test": "jest --config jest.json --coverage",
     "lint": "tslint -c tslint.json -p tsconfig.json \"src/**/*.ts\" \"spec/**/*.ts\"",
     "lint:staged": "lint-staged",
-    "build": "tsc -b --verbose tsconfig.json",
-    "build:clean": "shx rm -rf ./dist",
+    "build": "tsc -b --verbose src/tsconfig.json spec/tsconfig.json",
+    "build:clean": "shx rm -rf ./dist ./.tmp",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s"
   },
   "repository": {
@@ -81,5 +81,14 @@
       "pre-commit": "lint-staged",
       "pre-push": "npm-run-all build test"
     }
-  }
+  },
+  "files": [
+    "dist",
+    "src",
+    "CHANGELOG.md",
+    "LICENSE",
+    "package.json",
+    "README.md",
+    "tsconfig.json"
+  ]
 }
