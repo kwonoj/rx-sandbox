@@ -32,7 +32,7 @@ describe('TestScheduler', () => {
     it('should create hot observale via marble with custom value', () => {
       const scheduler = new TestScheduler(false, 1, 1000);
       const value = scheduler.createHotObservable('---a---|', {
-        a: 'meh'
+        a: 'meh',
       });
 
       const expected: Array<TestMessage<string>> = [next(3, 'meh'), complete(7)];
@@ -97,7 +97,7 @@ describe('TestScheduler', () => {
     it('should create cold observale via marble with custom value', () => {
       const scheduler = new TestScheduler(false, 1, 1000);
       const value = scheduler.createColdObservable('---a---|', {
-        a: 'meh'
+        a: 'meh',
       });
 
       const expected: Array<TestMessage<string>> = [next(3, 'meh'), complete(7)];
@@ -247,7 +247,7 @@ describe('TestScheduler', () => {
       const expected: Array<TestMessage<Readonly<TestMessage<string | TestMessage<string>[]>[]>>> = [
         next(0, parseObservableMarble<string>(' ---a---b---(c|)')),
         next(11, parseObservableMarble<string>('           ----d---|')),
-        complete(19)
+        complete(19),
       ];
 
       const source = scheduler.createColdObservable('---a---b---c---d---|');
@@ -264,7 +264,7 @@ describe('TestScheduler', () => {
       const expected: Array<TestMessage<Readonly<TestMessage<string | TestMessage<string>[]>[]>>> = [
         next(0, parseObservableMarble<string>(' ---a---b---(c|)')),
         next(11, parseObservableMarble<string>('           ----#')),
-        error(15, '#')
+        error(15, '#'),
       ];
 
       const source = scheduler.createColdObservable('---a---b---c---#');
@@ -281,7 +281,7 @@ describe('TestScheduler', () => {
       const expected: Array<TestMessage<Readonly<TestMessage<string | TestMessage<string>[]>[]>>> = [
         next(0, parseObservableMarble<string>(' ---a---b---(c|)')),
         next(11, parseObservableMarble<string>('           ----d---|')),
-        complete(19)
+        complete(19),
       ];
 
       const source = scheduler.createHotObservable('---a---b---c---d---|');
@@ -298,7 +298,7 @@ describe('TestScheduler', () => {
       const expected: Array<TestMessage<Readonly<TestMessage<string | TestMessage<string>[]>[]>>> = [
         next(0, parseObservableMarble<string>(' ---a---b---(c|)')),
         next(11, parseObservableMarble<string>('           ----#')),
-        error(15, '#')
+        error(15, '#'),
       ];
 
       const source = scheduler.createHotObservable('---a---b---c---#');
@@ -349,7 +349,7 @@ describe('TestScheduler', () => {
 
       const expected = [next(20, 'a'), next(40, 'b'), next(60, 'c'), complete(80)];
 
-      scheduler.schedule((x: TestScheduler) => x.flush(), 50, scheduler);
+      scheduler.schedule((x: TestScheduler | undefined) => x?.flush(), 50, scheduler);
 
       const source = scheduler.createHotObservable([next(20, 'a'), next(40, 'b'), next(60, 'c'), complete<string>(80)]);
       const messages = scheduler.getMessages(source);

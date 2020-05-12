@@ -22,13 +22,14 @@ class TestScheduler extends VirtualTimeScheduler {
   private flushing: boolean = false;
 
   private readonly _maxFrame: number;
-  public get maxFrame(): number {
-    return this._maxFrame;
-  }
 
   constructor(private readonly autoFlush: boolean, private readonly frameTimeFactor: number, maxFrameValue: number) {
     super(VirtualAction, Number.POSITIVE_INFINITY);
     this._maxFrame = maxFrameValue * frameTimeFactor;
+  }
+
+  public get maxFrame(): number {
+    return this._maxFrame;
   }
 
   public flush(): void {
