@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "incremental": true,
+    "declarationMap": true,
     "removeComments": false,
     "preserveConstEnums": true,
     "sourceMap": true,
@@ -14,6 +16,7 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "importHelpers": false,
+    "strict": true,
     "pretty": false,
     "target": "es5",
     "outDir": "dist",
