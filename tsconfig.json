@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "composite": true,
     "incremental": true,
     "declarationMap": true,
     "removeComments": false,
@@ -18,8 +19,7 @@
     "importHelpers": false,
     "strict": true,
     "pretty": false,
-    "target": "es5",
-    "outDir": "dist",
+    "target": "es2015",
     "lib": [
       "es5",
       "es2015",
