@@ -145,12 +145,12 @@ describe('TestScheduler', () => {
   });
 
   describe('getMessages', () => {
-    it('should generate messages from observable having hot observable source', () => {
+    it('should generate messages from observable having hot observable source', async () => {
       const expected: Array<TestMessage<string>> = [next(3, 'x'), next(7, 'x'), complete(11)];
       const scheduler = new TestScheduler(false, 1, 1000);
 
       const e1 = scheduler.createHotObservable('---1---2---|');
-      const messages = scheduler.getMessages(e1.pipe(mapTo('x')));
+      const messages = await scheduler.getMessages(e1.pipe(mapTo('x')));
 
       expect(messages).to.be.empty;
       scheduler.flush();
@@ -159,81 +159,85 @@ describe('TestScheduler', () => {
       expect(e1.subscriptions).to.deep.equal([subscribe(0, 11)]);
     });
 
-    it('should able to autoflush with hot observable source', () => {
+    it('should able to autoflush with hot observable source', async () => {
       const expected: Array<TestMessage<string>> = [next(3, 'x'), next(7, 'x'), complete(11)];
       const scheduler = new TestScheduler(true, 1, 1000);
 
       const e1 = scheduler.createHotObservable('---1---2---|');
-      const messages = scheduler.getMessages(e1.pipe(mapTo('x')));
+      const messages = await scheduler.getMessages(e1.pipe(mapTo('x')));
 
       expect(messages).to.deep.equal(expected);
       expect(e1.subscriptions).to.deep.equal([subscribe(0, 11)]);
     });
 
-    it('should throw when autoflush attempted multiple times', () => {
+    it('should throw when autoflush attempted multiple times', async (done) => {
       const scheduler = new TestScheduler(true, 1, 1000);
 
       const e1 = scheduler.createHotObservable('---1---2---|');
-      scheduler.getMessages(e1.pipe(mapTo('x')));
+      await scheduler.getMessages(e1.pipe(mapTo('x')));
 
-      expect(() => scheduler.getMessages(e1.pipe(mapTo('x')))).to.throw();
+      try {
+        await scheduler.getMessages(e1.pipe(mapTo('x')));
+      } catch (_e) {
+        done();
+      }
     });
 
-    it('should ignore values over max frames', () => {
+    it('should ignore values over max frames', async () => {
       const expected: Array<TestMessage<string>> = [next(3, 'x')];
       const scheduler = new TestScheduler(true, 1, 5);
 
       const e1 = scheduler.createHotObservable('---1---2---|');
-      const messages = scheduler.getMessages(e1.pipe(mapTo('x')));
+      const messages = await scheduler.getMessages(e1.pipe(mapTo('x')));
 
       expect(messages).to.deep.equal(expected);
     });
 
-    it('should generate messages from observable having hot observable source with error', () => {
+    it('should generate messages from observable having hot observable source with error', async () => {
       const expected: Array<TestMessage<string>> = [next(3, 'x'), next(7, 'x'), error(11, '#')];
       const scheduler = new TestScheduler(false, 1, 1000);
 
       const e1 = scheduler.createHotObservable('---1---2---#');
-      const messages = scheduler.getMessages(e1.pipe(mapTo('x')));
+      const messages = await scheduler.getMessages(e1.pipe(mapTo('x')));
 
       expect(messages).to.be.empty;
-      scheduler.flush();
+      await scheduler.flush();
 
       expect(messages).to.deep.equal(expected);
       expect(e1.subscriptions).to.deep.equal([subscribe(0, 11)]);
     });
 
-    it('should generate messages from observable having cold observable source', () => {
+    it('should generate messages from observable having cold observable source', async () => {
       const expected: Array<TestMessage<string>> = [next(3, 'x'), next(7, 'x'), complete(11)];
       const scheduler = new TestScheduler(false, 1, 1000);
 
       const e1 = scheduler.createColdObservable('---1---2---|');
-      const messages = scheduler.getMessages(e1.pipe(mapTo('x')));
+      const messages = await scheduler.getMessages(e1.pipe(mapTo('x')));
 
       expect(messages).to.be.empty;
-      scheduler.flush();
+      await scheduler.flush();
 
       expect(messages).to.deep.equal(expected);
       expect(e1.subscriptions).to.deep.equal([subscribe(0, 11)]);
     });
 
-    it('should able to autoflush with cold observable source', () => {
+    it('should able to autoflush with cold observable source', async () => {
       const expected: Array<TestMessage<string>> = [next(3, 'x'), next(7, 'x'), complete(11)];
       const scheduler = new TestScheduler(true, 1, 1000);
 
       const e1 = scheduler.createColdObservable('---1---2---|');
-      const messages = scheduler.getMessages(e1.pipe(mapTo('x')));
+      const messages = await scheduler.getMessages(e1.pipe(mapTo('x')));
 
       expect(messages).to.deep.equal(expected);
       expect(e1.subscriptions).to.deep.equal([subscribe(0, 11)]);
     });
 
-    it('should generate messages from observable having cold observable source with error', () => {
+    it('should generate messages from observable having cold observable source with error', async () => {
       const expected: Array<TestMessage<string>> = [next(3, 'x'), next(7, 'x'), error(11, '#')];
       const scheduler = new TestScheduler(false, 1, 1000);
 
       const e1 = scheduler.createColdObservable('---1---2---#');
-      const messages = scheduler.getMessages(e1.pipe(mapTo('x')));
+      const messages = await scheduler.getMessages(e1.pipe(mapTo('x')));
 
       expect(messages).to.be.empty;
       scheduler.flush();
@@ -242,7 +246,7 @@ describe('TestScheduler', () => {
       expect(e1.subscriptions).to.deep.equal([subscribe(0, 11)]);
     });
 
-    it('should materialize inner observable with cold observable source', () => {
+    it('should materialize inner observable with cold observable source', async () => {
       const scheduler = new TestScheduler(false, 1, 1000);
       const expected: Array<TestMessage<Readonly<TestMessage<string | TestMessage<string>[]>[]>>> = [
         next(0, parseObservableMarble<string>(' ---a---b---(c|)')),
@@ -252,14 +256,14 @@ describe('TestScheduler', () => {
 
       const source = scheduler.createColdObservable('---a---b---c---d---|');
 
-      const messages = scheduler.getMessages(source.pipe(windowCount(3)));
+      const messages = await scheduler.getMessages(source.pipe(windowCount(3)));
       expect(messages).to.be.empty;
 
       scheduler.flush();
       expect(messages).to.deep.equal(expected);
     });
 
-    it('should materialize inner observable with cold observable source with error', () => {
+    it('should materialize inner observable with cold observable source with error', async () => {
       const scheduler = new TestScheduler(false, 1, 1000);
       const expected: Array<TestMessage<Readonly<TestMessage<string | TestMessage<string>[]>[]>>> = [
         next(0, parseObservableMarble<string>(' ---a---b---(c|)')),
@@ -269,14 +273,14 @@ describe('TestScheduler', () => {
 
       const source = scheduler.createColdObservable('---a---b---c---#');
 
-      const messages = scheduler.getMessages(source.pipe(windowCount(3)));
+      const messages = await scheduler.getMessages(source.pipe(windowCount(3)));
       expect(messages).to.be.empty;
 
-      scheduler.flush();
+      await scheduler.flush();
       expect(messages).to.deep.equal(expected);
     });
 
-    it('should materialize inner observable with hot observable source', () => {
+    it('should materialize inner observable with hot observable source', async () => {
       const scheduler = new TestScheduler(false, 1, 1000);
       const expected: Array<TestMessage<Readonly<TestMessage<string | TestMessage<string>[]>[]>>> = [
         next(0, parseObservableMarble<string>(' ---a---b---(c|)')),
@@ -286,14 +290,14 @@ describe('TestScheduler', () => {
 
       const source = scheduler.createHotObservable('---a---b---c---d---|');
 
-      const messages = scheduler.getMessages(source.pipe(windowCount(3)));
+      const messages = await scheduler.getMessages(source.pipe(windowCount(3)));
       expect(messages).to.be.empty;
 
-      scheduler.flush();
+      await scheduler.flush();
       expect(messages).to.deep.equal(expected);
     });
 
-    it('should materialize inner observable with hot observable source with error', () => {
+    it('should materialize inner observable with hot observable source with error', async () => {
       const scheduler = new TestScheduler(false, 1, 1000);
       const expected: Array<TestMessage<Readonly<TestMessage<string | TestMessage<string>[]>[]>>> = [
         next(0, parseObservableMarble<string>(' ---a---b---(c|)')),
@@ -303,14 +307,14 @@ describe('TestScheduler', () => {
 
       const source = scheduler.createHotObservable('---a---b---c---#');
 
-      const messages = scheduler.getMessages(source.pipe(windowCount(3)));
+      const messages = await scheduler.getMessages(source.pipe(windowCount(3)));
       expect(messages).to.be.empty;
 
-      scheduler.flush();
+      await scheduler.flush();
       expect(messages).to.deep.equal(expected);
     });
 
-    it('should support subscription with cold observable source', () => {
+    it('should support subscription with cold observable source', async () => {
       const expected: Array<TestMessage<string>> = [next(3, 'x')];
       const scheduler = new TestScheduler(false, 1, 1000);
 
@@ -318,25 +322,25 @@ describe('TestScheduler', () => {
       const sub = '                              ------^---!';
       //actual subscription:                           ---1-
 
-      const messages = scheduler.getMessages(e1.pipe(mapTo('x')), sub);
+      const messages = await scheduler.getMessages(e1.pipe(mapTo('x')), sub);
 
       expect(messages).to.be.empty;
-      scheduler.flush();
+      await scheduler.flush();
 
       expect(messages).to.deep.equal(expected);
       expect(e1.subscriptions).to.deep.equal([subscribe(0, 4)]);
     });
 
-    it('should support subscription with hot observable source', () => {
+    it('should support subscription with hot observable source', async () => {
       const expected: Array<TestMessage<string>> = [next(7, 'x')];
       const scheduler = new TestScheduler(false, 1, 1000);
 
       const e1 = scheduler.createHotObservable('---1---2---|');
       const sub = '                             ------^---!';
-      const messages = scheduler.getMessages(e1.pipe(mapTo('x')), sub);
+      const messages = await scheduler.getMessages(e1.pipe(mapTo('x')), sub);
 
       expect(messages).to.be.empty;
-      scheduler.flush();
+      await scheduler.flush();
 
       expect(messages).to.deep.equal(expected);
       expect(e1.subscriptions).to.deep.equal([subscribe(6, 10)]);
@@ -344,7 +348,7 @@ describe('TestScheduler', () => {
   });
 
   describe('flush', () => {
-    it(`should not flush while it's already flushing`, () => {
+    it(`should not flush while it's already flushing`, async () => {
       const scheduler = new TestScheduler(false, 1, 1000);
 
       const expected = [next(20, 'a'), next(40, 'b'), next(60, 'c'), complete(80)];
@@ -352,22 +356,26 @@ describe('TestScheduler', () => {
       scheduler.schedule((x: TestScheduler | undefined) => x?.flush(), 50, scheduler);
 
       const source = scheduler.createHotObservable([next(20, 'a'), next(40, 'b'), next(60, 'c'), complete<string>(80)]);
-      const messages = scheduler.getMessages(source);
+      const messages = await scheduler.getMessages(source);
 
-      scheduler.flush();
+      await scheduler.flush();
 
       expect(messages).to.deep.equal(expected);
     });
   });
 
   describe('advanceTo', () => {
-    it('should throw when autoflush set', () => {
+    it('should throw when autoflush set', async (done) => {
       const scheduler = new TestScheduler(true, 1, 1000);
 
-      expect(() => scheduler.advanceTo(10)).to.throw();
+      try {
+        await scheduler.advanceTo(10);
+      } catch (_e) {
+        done();
+      }
     });
 
-    it('should able to advance to absolute time', () => {
+    it('should able to advance to absolute time', async () => {
       const scheduler = new TestScheduler(false, 1, 1000);
       const toFrame = 50;
 
@@ -375,9 +383,9 @@ describe('TestScheduler', () => {
 
       const source = scheduler.createHotObservable([next(20, 'a'), next(40, 'b'), next(60, 'c'), complete<string>(80)]);
 
-      const messages = scheduler.getMessages(source);
+      const messages = await scheduler.getMessages(source);
 
-      scheduler.advanceTo(toFrame);
+      await scheduler.advanceTo(toFrame);
 
       expect(messages).to.deep.equal(expected);
       expect(scheduler.frame).to.equal(toFrame);
@@ -401,15 +409,28 @@ describe('TestScheduler', () => {
       expect(() => scheduler.advanceTo(100)).to.not.throw();
     });
 
-    it('should not allow backward', () => {
+    it('should not allow backward', async () => {
       const scheduler = new TestScheduler(false, 1, 1000);
-      scheduler.advanceTo(100);
+      await scheduler.advanceTo(100);
+      const throws = [];
 
-      expect(() => scheduler.advanceTo(80)).to.throw();
-      expect(() => scheduler.advanceTo(-1)).to.throw();
+      try {
+        await scheduler.advanceTo(80);
+      } catch (_e) {
+        throws.push(true);
+      }
+
+      try {
+        await scheduler.advanceTo(-1);
+      } catch (_e) {
+        throws.push(true);
+      }
+
+      expect(throws).to.have.length(2);
+      expect(throws.every(Boolean)).to.be.true;
     });
 
-    it('should unsubscribe the rest of the scheduled actions if an action throws an error', () => {
+    it('should unsubscribe the rest of the scheduled actions if an action throws an error', async () => {
       const scheduler = new TestScheduler(false, 1, 1000);
 
       const error = new Error('meh');
@@ -427,7 +448,11 @@ describe('TestScheduler', () => {
 
       scheduler.actions.push(errorAction, normalAction);
 
-      expect(() => scheduler.advanceTo(100)).to.throw(error);
+      try {
+        await scheduler.advanceTo(100);
+      } catch (e) {
+        expect(e).to.eql(error);
+      }
 
       expect(errorAction.closed).to.be.true;
       expect(normalAction.closed).to.be.true;
