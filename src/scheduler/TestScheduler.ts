@@ -1,23 +1,34 @@
 import { Notification, Observable, Subscription } from 'rxjs';
-import { AsyncAction } from 'rxjs/internal/scheduler/AsyncAction';
-import {
-  VirtualAction,
-  VirtualTimeScheduler
-} from 'rxjs/internal/scheduler/VirtualTimeScheduler';
-import { ColdObservable } from 'rxjs/internal/testing/ColdObservable';
-import { HotObservable } from 'rxjs/internal/testing/HotObservable';
+import { AsyncAction } from 'rxjs/dist/types/internal/scheduler/AsyncAction';
 import { parseObservableMarble } from '../marbles/parseObservableMarble';
 import { SubscriptionMarbleToken } from '../marbles/SubscriptionMarbleToken';
 import { TestMessage } from '../message/TestMessage';
 import { TestMessageValue } from '../message/TestMessage';
 import { calculateSubscriptionFrame } from './calculateSubscriptionFrame';
 
+//tslint:disable no-var-requires no-require-imports
+const {
+  VirtualAction,
+  VirtualTimeScheduler,
+}: {
+  VirtualAction: typeof import('rxjs/dist/types/internal/scheduler/VirtualTimeScheduler').VirtualAction;
+  VirtualTimeScheduler: typeof import('rxjs/dist/types/internal/scheduler/VirtualTimeScheduler').VirtualTimeScheduler;
+} = require('rxjs/dist/cjs/internal/scheduler/VirtualTimeScheduler');
+
+const hotObservableCtor = require('rxjs/dist/cjs/internal/testing/HotObservable').HotObservable;
+const coldObservableCtor = require('rxjs/dist/cjs/internal/testing/ColdObservable').ColdObservable;
+//tslint:enable no-var-requires no-require-imports
+
 /**
  * @internal
  */
 class TestScheduler extends VirtualTimeScheduler {
-  private readonly coldObservables: Array<ColdObservable<any>> = [];
-  private readonly hotObservables: Array<HotObservable<any>> = [];
+  private readonly coldObservables: Array<
+    import('rxjs/dist/types/internal/testing/ColdObservable').ColdObservable<any>
+  > = [];
+  private readonly hotObservables: Array<
+    import('rxjs/dist/types/internal/testing/HotObservable').HotObservable<any>
+  > = [];
   private flushed: boolean = false;
   private flushing: boolean = false;
 
@@ -75,9 +86,17 @@ class TestScheduler extends VirtualTimeScheduler {
     return observableMetadata;
   }
 
-  public createColdObservable<T = string>(marble: string, value?: { [key: string]: T } | null, error?: any): ColdObservable<T>;
-  public createColdObservable<T = string>(message: Array<TestMessage<T>>): ColdObservable<T>;
-  public createColdObservable<T = string>(...args: Array<any>): ColdObservable<T> {
+  public createColdObservable<T = string>(
+    marble: string,
+    value?: { [key: string]: T } | null,
+    error?: any
+  ): import('rxjs/dist/types/internal/testing/ColdObservable').ColdObservable<T>;
+  public createColdObservable<T = string>(
+    message: Array<TestMessage<T>>
+  ): import('rxjs/dist/types/internal/testing/ColdObservable').ColdObservable<T>;
+  public createColdObservable<T = string>(
+    ...args: Array<any>
+  ): import('rxjs/dist/types/internal/testing/ColdObservable').ColdObservable<T> {
     const [marbleValue, value, error] = args;
 
     if (typeof marbleValue === 'string' && marbleValue.indexOf(SubscriptionMarbleToken.SUBSCRIBE) !== -1) {
@@ -86,21 +105,29 @@ class TestScheduler extends VirtualTimeScheduler {
 
     const messages = Array.isArray(marbleValue)
       ? marbleValue
-      : parseObservableMarble(marbleValue, value, error, false, this.frameTimeFactor, this._maxFrame) as any;
-    const observable = new ColdObservable<T>(messages as Array<TestMessage<T | Array<TestMessage<T>>>>, this);
+      : (parseObservableMarble(marbleValue, value, error, false, this.frameTimeFactor, this._maxFrame) as any);
+    const observable = new coldObservableCtor(messages as Array<TestMessage<T | Array<TestMessage<T>>>>, this);
     this.coldObservables.push(observable);
     return observable;
   }
 
-  public createHotObservable<T = string>(marble: string, value?: { [key: string]: T } | null, error?: any): HotObservable<T>;
-  public createHotObservable<T = string>(message: Array<TestMessage<T>>): HotObservable<T>;
-  public createHotObservable<T = string>(...args: Array<any>): HotObservable<T> {
+  public createHotObservable<T = string>(
+    marble: string,
+    value?: { [key: string]: T } | null,
+    error?: any
+  ): import('rxjs/dist/types/internal/testing/HotObservable').HotObservable<T>;
+  public createHotObservable<T = string>(
+    message: Array<TestMessage<T>>
+  ): import('rxjs/dist/types/internal/testing/HotObservable').HotObservable<T>;
+  public createHotObservable<T = string>(
+    ...args: Array<any>
+  ): import('rxjs/dist/types/internal/testing/HotObservable').HotObservable<T> {
     const [marbleValue, value, error] = args;
 
     const messages = Array.isArray(marbleValue)
       ? marbleValue
-      : parseObservableMarble(marbleValue, value, error, false, this.frameTimeFactor, this._maxFrame) as any;
-    const subject = new HotObservable<T>(messages as Array<TestMessage<T | Array<TestMessage<T>>>>, this);
+      : (parseObservableMarble(marbleValue, value, error, false, this.frameTimeFactor, this._maxFrame) as any);
+    const subject = new hotObservableCtor(messages as Array<TestMessage<T | Array<TestMessage<T>>>>, this);
     this.hotObservables.push(subject);
     return subject;
   }
@@ -124,8 +151,8 @@ class TestScheduler extends VirtualTimeScheduler {
       innerObservableMetadata.push(new TestMessageValue<T>(this.frame - outerFrame, notification));
 
     observable.subscribe(
-      value => pushMetaData(Notification.createNext(value)),
-      err => pushMetaData(Notification.createError(err)),
+      (value) => pushMetaData(Notification.createNext(value)),
+      (err) => pushMetaData(Notification.createError(err)),
       () => pushMetaData(Notification.createComplete())
     );
 
@@ -177,4 +204,4 @@ class TestScheduler extends VirtualTimeScheduler {
   }
 }
 
-export { TestScheduler };
+export { TestScheduler, VirtualTimeScheduler };

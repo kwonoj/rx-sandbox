@@ -1,3 +1,24 @@
+<a name="2.0.0-beta.1"></a>
+# [2.0.0-beta.1](https://github.com/kwonoj/rx-sandbox/compare/v1.0.3...v2.0.0-beta.1) (2020-06-02)
+
+
+### build
+
+* **tsconfig:** update tsconfig ([748ea40](https://github.com/kwonoj/rx-sandbox/commit/748ea40))
+
+
+### Features
+
+* **sandbox:** support 7.x ([d8220f8](https://github.com/kwonoj/rx-sandbox/commit/d8220f8))
+
+
+### BREAKING CHANGES
+
+* **tsconfig:** require es2015 supported runtime
+* **sandb8x:** require rx >= 7.x
+
+
+
 <a name="1.0.3"></a>
 ## [1.0.3](https://github.com/kwonoj/rx-sandbox/compare/v1.0.2...v1.0.3) (2019-06-23)
 
