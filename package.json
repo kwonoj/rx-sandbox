@@ -50,8 +50,8 @@
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-angular": "^8.3.4",
     "@types/chai": "^4.2.11",
-    "@types/jest": "^25.2.1",
-    "@types/node": "^13.13.5",
+    "@types/jest": "^25.2.3",
+    "@types/node": "^13.13.9",
     "chai": "^4.2.0",
     "conventional-changelog-cli": "^2.0.34",
     "cz-conventional-changelog": "^3.2.0",
@@ -63,10 +63,10 @@
     "prettier": "^2.0.5",
     "rxjs": "^6.5.5",
     "shx": "^0.3.2",
-    "ts-jest": "^24.3.0",
+    "ts-jest": "^26.1.0",
     "tslint": "^6.1.2",
     "tslint-no-unused-expression-chai": "^0.1.4",
-    "typescript": "^3.8.3"
+    "typescript": "^3.9.3"
   },
   "peerDependencies": {
     "rxjs": "6.x"
