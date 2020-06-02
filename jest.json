@@ -3,6 +3,11 @@
   "testMatch": [
     "**/spec/**/*-spec.ts"
   ],
+  "globals": {
+    "ts-jest": {
+      "diagnostics": false
+    }
+  },
   "bail": true,
   "resetMocks": true,
   "clearMocks": true,
