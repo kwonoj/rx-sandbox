@@ -1,8 +1,15 @@
 import { expect } from 'chai';
-import { ColdObservable } from 'rxjs/internal/testing/ColdObservable';
 import { parseObservableMarble } from '../../src/marbles/parseObservableMarble';
 import { complete, error, next } from '../../src/message/TestMessage';
 import { TestScheduler } from '../../src/scheduler/TestScheduler';
+
+//tslint:disable no-var-requires no-require-imports
+const {
+  ColdObservable,
+}: {
+  ColdObservable: typeof import('rxjs/dist/types/internal/testing/ColdObservable').ColdObservable;
+} = require('rxjs/dist/cjs/internal/testing/ColdObservable');
+//tslint:enable no-var-requires no-require-imports
 
 describe('parseObservableMarble', () => {
   it('should not allow unsubscription token', () => {
@@ -52,7 +59,7 @@ describe('parseObservableMarble', () => {
 
     const customValue = {
       a: new ColdObservable(aMessages, null as any),
-      b: new ColdObservable(bMessages, null as any)
+      b: new ColdObservable(bMessages, null as any),
     };
 
     const messages = parseObservableMarble(marble, customValue, null, true);
@@ -68,7 +75,7 @@ describe('parseObservableMarble', () => {
 
     const customValue = {
       a: new ColdObservable<string>(aMessages, null as any),
-      b: new ColdObservable<string>(bMessages, null as any)
+      b: new ColdObservable<string>(bMessages, null as any),
     };
 
     const messages = parseObservableMarble(marble, customValue, null, false);
@@ -107,7 +114,7 @@ describe('parseObservableMarble', () => {
   it('should parse value literal with custom value', () => {
     const marble = '----a----';
     const customValue = {
-      a: 'qwerty'
+      a: 'qwerty',
     };
 
     const messages = parseObservableMarble(marble, customValue);

@@ -1,4 +1,4 @@
-import { SubscriptionLog } from 'rxjs/internal/testing/SubscriptionLog';
+import { SubscriptionLog } from 'rxjs/dist/types/internal/testing/SubscriptionLog';
 import { ObservableMarbleToken } from '../marbles/ObservableMarbleToken';
 import { SubscriptionMarbleToken } from '../marbles/SubscriptionMarbleToken';
 
@@ -9,7 +9,7 @@ const MAX_FRAME_LENGTH = 30;
  */
 const constructSubscriptionMarble = ({
   subscribedFrame,
-  unsubscribedFrame
+  unsubscribedFrame,
 }: SubscriptionLog): { marbleString: string; frameString: string } => {
   const marble: Array<ObservableMarbleToken | SubscriptionMarbleToken> = Array.from(Array(MAX_FRAME_LENGTH + 1)).map(
     () => ObservableMarbleToken.TIMEFRAME

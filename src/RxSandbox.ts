@@ -1,4 +1,4 @@
-import { SubscriptionLog } from 'rxjs/internal/testing/SubscriptionLog';
+import { SubscriptionLog } from 'rxjs/dist/types/internal/testing/SubscriptionLog';
 import { TestMessage } from './message/TestMessage';
 import { RxSandboxInstance } from './RxSandboxInstance';
 

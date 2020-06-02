@@ -1,7 +1,10 @@
 import { Observable } from 'rxjs';
-import { ColdObservable } from 'rxjs/internal/testing/ColdObservable';
-import { HotObservable } from 'rxjs/internal/testing/HotObservable';
 import { parseSubscriptionMarble } from '../marbles/parseSubscriptionMarble';
+
+//tslint:disable no-var-requires no-require-imports
+const { ColdObservable } = require('rxjs/dist/cjs/internal/testing/ColdObservable');
+const { HotObservable } = require('rxjs/dist/cjs/internal/testing/HotObservable');
+//tslint:enable no-var-requires no-require-imports
 
 const calculateSubscriptionFrame = (
   observable: Observable<any>,
@@ -25,7 +28,7 @@ const calculateSubscriptionFrame = (
       return {
         subscribedFrame: 0,
         unsubscribedFrame:
-          unsubscribedFrame === Number.POSITIVE_INFINITY ? unsubscribedFrame : unsubscribedFrame - subscribedFrame
+          unsubscribedFrame === Number.POSITIVE_INFINITY ? unsubscribedFrame : unsubscribedFrame - subscribedFrame,
       };
     }
     source = (source as any).source;

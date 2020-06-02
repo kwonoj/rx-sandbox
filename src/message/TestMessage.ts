@@ -1,5 +1,12 @@
 import { Notification } from 'rxjs';
-import { SubscriptionLog } from 'rxjs/internal/testing/SubscriptionLog';
+
+//tslint:disable no-var-requires no-require-imports
+const {
+  SubscriptionLog,
+}: {
+  SubscriptionLog: typeof import('rxjs/dist/types/internal/testing/SubscriptionLog').SubscriptionLog;
+} = require('rxjs/dist/cjs/internal/testing/SubscriptionLog');
+//tslint:enable no-var-requires no-require-imports
 
 /**
  * Represents interface for single metadata value emitted by HotObservable<T> or ColdObservable<T>
