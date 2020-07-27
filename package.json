@@ -51,7 +51,7 @@
     "@commitlint/config-angular": "^8.3.4",
     "@types/chai": "^4.2.11",
     "@types/jest": "^25.2.3",
-    "@types/node": "^13.13.9",
+    "@types/node": "^14.0.26",
     "chai": "^4.2.0",
     "conventional-changelog-cli": "^2.0.34",
     "cz-conventional-changelog": "^3.2.0",
