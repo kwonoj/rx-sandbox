@@ -1,14 +1,14 @@
-import { toEqual } from 'jest-matchers/build/matchers';
 import { TestMessage } from '../message/TestMessage';
 import { constructObservableMarble } from './constructObservableMarble';
 import { constructSubscriptionMarble } from './constructSubscriptionMarble';
 
 //tslint:disable:no-require-imports no-var-requires
 const { matcherHint, printExpected, printReceived } = require('jest-matcher-utils');
+const { default: matchers } = require('expect/build/matchers');
 const { SubscriptionLog } = require('rxjs/dist/cjs/internal/testing/SubscriptionLog');
 //tslint:enbale:no-require-imports no-var-requires
 
-const toEqualAssert = toEqual.bind({ expand: false });
+const toEqualAssert = matchers.toEqual.bind({ expand: false });
 
 const subscriptionMarbleAssert = (
   source: Array<import('rxjs/dist/types/internal/testing/SubscriptionLog').SubscriptionLog>
