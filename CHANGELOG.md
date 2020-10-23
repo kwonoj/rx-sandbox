@@ -1,3 +1,15 @@
+# [2.0.0-beta.2](https://github.com/kwonoj/rx-sandbox/compare/v2.0.0-beta.1...v2.0.0-beta.2) (2020-10-23)
+
+
+### Bug Fixes
+
+* **testmessage:** update types, rx@7 support ([f23cf4d](https://github.com/kwonoj/rx-sandbox/commit/f23cf4d49afd72fe4b870b57adec9f8c6152ba49))
+
+
+### BREAKING CHANGES
+
+* **sandbox:** require rx >= 7.0.0-beta.8
+
 <a name="2.0.0-beta.1"></a>
 # [2.0.0-beta.1](https://github.com/kwonoj/rx-sandbox/compare/v1.0.3...v2.0.0-beta.1) (2020-06-02)
 
