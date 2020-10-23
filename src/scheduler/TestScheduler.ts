@@ -1,4 +1,4 @@
-import { Notification, Observable, Subscription } from 'rxjs';
+import { Observable, ObservableNotification, Subscription } from 'rxjs';
 import { AsyncAction } from 'rxjs/dist/types/internal/scheduler/AsyncAction';
 import { parseObservableMarble } from '../marbles/parseObservableMarble';
 import { SubscriptionMarbleToken } from '../marbles/SubscriptionMarbleToken';
@@ -14,6 +14,12 @@ const {
   VirtualAction: typeof import('rxjs/dist/types/internal/scheduler/VirtualTimeScheduler').VirtualAction;
   VirtualTimeScheduler: typeof import('rxjs/dist/types/internal/scheduler/VirtualTimeScheduler').VirtualTimeScheduler;
 } = require('rxjs/dist/cjs/internal/scheduler/VirtualTimeScheduler');
+
+const {
+  COMPLETE_NOTIFICATION,
+  errorNotification,
+  nextNotification,
+}: typeof import('rxjs/dist/types/internal/Notification') = require('rxjs/dist/cjs/internal/Notification');
 
 const hotObservableCtor = require('rxjs/dist/cjs/internal/testing/HotObservable').HotObservable;
 const coldObservableCtor = require('rxjs/dist/cjs/internal/testing/ColdObservable').ColdObservable;
@@ -55,7 +61,7 @@ class TestScheduler extends VirtualTimeScheduler {
     );
 
     const observableMetadata: Array<TestMessage<T | Array<TestMessage<T>>>> = [];
-    const pushMetadata = (notification: Notification<T | Array<TestMessage<T>>>) =>
+    const pushMetadata = (notification: ObservableNotification<T | Array<TestMessage<T>>>) =>
       observableMetadata.push(new TestMessageValue<T | Array<TestMessage<T>>>(this.frame, notification));
 
     let subscription: Subscription | null = null;
@@ -63,12 +69,12 @@ class TestScheduler extends VirtualTimeScheduler {
       subscription = observable.subscribe(
         (value: T) =>
           pushMetadata(
-            Notification.createNext(
+            nextNotification(
               value instanceof Observable ? this.materializeInnerObservable<T>(value, this.frame) : value
             )
           ),
-        (err: any) => pushMetadata(Notification.createError(err)),
-        () => pushMetadata(Notification.createComplete())
+        (err: any) => pushMetadata(errorNotification(err)),
+        () => pushMetadata(COMPLETE_NOTIFICATION)
       );
     }, subscribedFrame);
 
@@ -147,13 +153,13 @@ class TestScheduler extends VirtualTimeScheduler {
 
   private materializeInnerObservable<T>(observable: Observable<any>, outerFrame: number): Array<TestMessage<T>> {
     const innerObservableMetadata: Array<TestMessage<T>> = [];
-    const pushMetaData = (notification: Notification<T>) =>
+    const pushMetaData = (notification: ObservableNotification<T>) =>
       innerObservableMetadata.push(new TestMessageValue<T>(this.frame - outerFrame, notification));
 
     observable.subscribe(
-      (value) => pushMetaData(Notification.createNext(value)),
-      (err) => pushMetaData(Notification.createError(err)),
-      () => pushMetaData(Notification.createComplete())
+      (value) => pushMetaData(nextNotification(value)),
+      (err) => pushMetaData(errorNotification(err)),
+      () => pushMetaData(COMPLETE_NOTIFICATION)
     );
 
     return innerObservableMetadata;

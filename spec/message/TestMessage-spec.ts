@@ -1,10 +1,17 @@
 import { expect } from 'chai';
-import { Notification } from 'rxjs';
 import { complete, error, next, subscribe, TestMessageValue } from '../../src/message/TestMessage';
+
+//tslint:disable no-var-requires no-require-imports
+const {
+  COMPLETE_NOTIFICATION,
+  errorNotification,
+  nextNotification,
+}: typeof import('rxjs/dist/types/internal/Notification') = require('rxjs/dist/cjs/internal/Notification');
+//tslint:enable no-var-requires no-require-imports
 
 describe('TestMessageValue', () => {
   it('should create metadata', () => {
-    const notification = Notification.createNext('meh');
+    const notification = nextNotification('meh');
 
     const message = new TestMessageValue(10, notification);
 
@@ -16,19 +23,19 @@ describe('TestMessageValue', () => {
     it('should create next', () => {
       const value = next(10, 'meh');
 
-      expect(value).to.deep.equal(new TestMessageValue(10, Notification.createNext('meh')));
+      expect(value).to.deep.equal(new TestMessageValue(10, nextNotification('meh')));
     });
 
     it('should create error', () => {
       const errorValue = error(10, 'meh');
 
-      expect(errorValue).to.deep.equal(new TestMessageValue(10, Notification.createError('meh')));
+      expect(errorValue).to.deep.equal(new TestMessageValue(10, errorNotification('meh')));
     });
 
     it('should create complete', () => {
       const completeValue = complete(10);
 
-      expect(completeValue).to.deep.equal(new TestMessageValue(10, Notification.createComplete()));
+      expect(completeValue).to.deep.equal(new TestMessageValue(10, COMPLETE_NOTIFICATION));
     });
 
     it('should create subscription log', () => {
