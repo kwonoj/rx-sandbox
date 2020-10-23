@@ -1,11 +1,15 @@
-import { Notification } from 'rxjs';
+import { ObservableNotification } from 'rxjs';
 
 //tslint:disable no-var-requires no-require-imports
 const {
   SubscriptionLog,
-}: {
-  SubscriptionLog: typeof import('rxjs/dist/types/internal/testing/SubscriptionLog').SubscriptionLog;
-} = require('rxjs/dist/cjs/internal/testing/SubscriptionLog');
+}: typeof import('rxjs/dist/types/internal/testing/SubscriptionLog') = require('rxjs/dist/cjs/internal/testing/SubscriptionLog');
+
+const {
+  COMPLETE_NOTIFICATION,
+  errorNotification,
+  nextNotification,
+}: typeof import('rxjs/dist/types/internal/Notification') = require('rxjs/dist/cjs/internal/Notification');
 //tslint:enable no-var-requires no-require-imports
 
 /**
@@ -14,7 +18,7 @@ const {
  */
 interface TestMessage<T = string> {
   frame: number;
-  notification: Notification<T>;
+  notification: ObservableNotification<T>;
 }
 
 /**
@@ -22,7 +26,7 @@ interface TestMessage<T = string> {
  *
  */
 class TestMessageValue<T = string> implements TestMessage<T> {
-  constructor(public readonly frame: number, public readonly notification: Notification<T>) {}
+  constructor(public readonly frame: number, public readonly notification: ObservableNotification<T>) {}
 }
 
 /**
@@ -32,7 +36,7 @@ class TestMessageValue<T = string> implements TestMessage<T> {
  */
 
 const next = <T = string>(frame: number, value: T): TestMessage<T> =>
-  new TestMessageValue(frame, Notification.createNext(value));
+  new TestMessageValue(frame, nextNotification(value));
 
 /**
  * Utility function to generate TestMessage represents error for Observer::error()
@@ -40,14 +44,13 @@ const next = <T = string>(frame: number, value: T): TestMessage<T> =>
  * @param value
  */
 const error = (frame: number, error: any = '#'): TestMessage<any> =>
-  new TestMessageValue<any>(frame, Notification.createError(error));
+  new TestMessageValue<any>(frame, errorNotification(error));
 
 /**
  * Utility function to generate TestMessage represents completion for Observer::complete()
  * @param frame virtual frame time when value will be emitted
  */
-const complete = <T = void>(frame: number): TestMessage<T> =>
-  new TestMessageValue<T>(frame, Notification.createComplete());
+const complete = <T = void>(frame: number): TestMessage<T> => new TestMessageValue<T>(frame, COMPLETE_NOTIFICATION);
 
 const subscribe = (
   subscribedFrame: number = Number.POSITIVE_INFINITY,

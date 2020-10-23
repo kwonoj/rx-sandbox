@@ -60,8 +60,7 @@ const constructObservableMarble = <T extends Object = string>(
   let shiftedFrame: number = Number.NEGATIVE_INFINITY;
 
   const appendNotificationValue = (message: TestMessage<T>) => {
-    const completed = message.notification.kind === 'C' || message.notification.kind === 'E';
-    if (completed) {
+    if (message.notification.kind === 'C' || message.notification.kind === 'E') {
       marbleString += message.notification.kind === 'C' ? ObservableMarbleToken.COMPLETE : ObservableMarbleToken.ERROR;
       return true;
     } else {
