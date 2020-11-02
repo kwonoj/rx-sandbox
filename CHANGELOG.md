@@ -1,3 +1,12 @@
+## [1.0.4](https://github.com/kwonoj/rx-sandbox/compare/v1.0.3...v1.0.4) (2020-11-02)
+
+
+### Bug Fixes
+
+* Closes https://github.com/kwonoj/rx-sandbox/issues/476
+
+
+
 <a name="1.0.3"></a>
 ## [1.0.3](https://github.com/kwonoj/rx-sandbox/compare/v1.0.2...v1.0.3) (2019-06-23)
 
