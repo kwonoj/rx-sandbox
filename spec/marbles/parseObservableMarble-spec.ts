@@ -52,7 +52,7 @@ describe('parseObservableMarble', () => {
 
     const customValue = {
       a: new ColdObservable(aMessages, null as any),
-      b: new ColdObservable(bMessages, null as any)
+      b: new ColdObservable(bMessages, null as any),
     };
 
     const messages = parseObservableMarble(marble, customValue, null, true);
@@ -68,7 +68,7 @@ describe('parseObservableMarble', () => {
 
     const customValue = {
       a: new ColdObservable<string>(aMessages, null as any),
-      b: new ColdObservable<string>(bMessages, null as any)
+      b: new ColdObservable<string>(bMessages, null as any),
     };
 
     const messages = parseObservableMarble(marble, customValue, null, false);
@@ -107,7 +107,7 @@ describe('parseObservableMarble', () => {
   it('should parse value literal with custom value', () => {
     const marble = '----a----';
     const customValue = {
-      a: 'qwerty'
+      a: 'qwerty',
     };
 
     const messages = parseObservableMarble(marble, customValue);

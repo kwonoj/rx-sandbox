@@ -1,11 +1,10 @@
-import { toEqual } from 'jest-matchers/build/matchers';
 import { SubscriptionLog } from 'rxjs/internal/testing/SubscriptionLog';
 import { TestMessage } from '../message/TestMessage';
 import { constructObservableMarble } from './constructObservableMarble';
 import { constructSubscriptionMarble } from './constructSubscriptionMarble';
 const { matcherHint, printExpected, printReceived } = require('jest-matcher-utils'); //tslint:disable-line:no-require-imports no-var-requires
-
-const toEqualAssert = toEqual.bind({ expand: false });
+const { default: matchers } = require('expect/build/matchers'); //tslint:disable-line:no-require-imports no-var-requires
+const toEqualAssert = matchers.toEqual.bind({ expand: false });
 
 const subscriptionMarbleAssert = (source: Array<SubscriptionLog>) => (expected: Array<SubscriptionLog>) => {
   const asserted = toEqualAssert(source, expected);
@@ -96,12 +95,12 @@ function marbleAssert<T = string>(
     throw new Error('Cannot assert non array');
   }
 
-  const isSourceSubscription = source.length > 0 && (source as Array<any>).every(v => v instanceof SubscriptionLog);
+  const isSourceSubscription = source.length > 0 && (source as Array<any>).every((v) => v instanceof SubscriptionLog);
 
   return {
     to: {
-      equal: isSourceSubscription ? subscriptionMarbleAssert(source as any) : observableMarbleAssert(source as any)
-    }
+      equal: isSourceSubscription ? subscriptionMarbleAssert(source as any) : observableMarbleAssert(source as any),
+    },
   };
 }
 

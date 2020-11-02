@@ -1,9 +1,6 @@
 import { Notification, Observable, Subscription } from 'rxjs';
 import { AsyncAction } from 'rxjs/internal/scheduler/AsyncAction';
-import {
-  VirtualAction,
-  VirtualTimeScheduler
-} from 'rxjs/internal/scheduler/VirtualTimeScheduler';
+import { VirtualAction, VirtualTimeScheduler } from 'rxjs/internal/scheduler/VirtualTimeScheduler';
 import { ColdObservable } from 'rxjs/internal/testing/ColdObservable';
 import { HotObservable } from 'rxjs/internal/testing/HotObservable';
 import { parseObservableMarble } from '../marbles/parseObservableMarble';
@@ -16,19 +13,22 @@ import { calculateSubscriptionFrame } from './calculateSubscriptionFrame';
  * @internal
  */
 class TestScheduler extends VirtualTimeScheduler {
+  // maxFrame is exposed as a property rather than as an accessor method to avoid the
+  // 'error TS1086: An accessor cannot be declared in an ambient context.'
+  // when used with versions of Typescript <= 3.5.
+  // See https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#37-breaking-changes
+  public readonly maxFrame;
   private readonly coldObservables: Array<ColdObservable<any>> = [];
   private readonly hotObservables: Array<HotObservable<any>> = [];
   private flushed: boolean = false;
   private flushing: boolean = false;
 
   private readonly _maxFrame: number;
-  public get maxFrame(): number {
-    return this._maxFrame;
-  }
 
   constructor(private readonly autoFlush: boolean, private readonly frameTimeFactor: number, maxFrameValue: number) {
     super(VirtualAction, Number.POSITIVE_INFINITY);
     this._maxFrame = maxFrameValue * frameTimeFactor;
+    this.maxFrame = this._maxFrame;
   }
 
   public flush(): void {
@@ -74,7 +74,11 @@ class TestScheduler extends VirtualTimeScheduler {
     return observableMetadata;
   }
 
-  public createColdObservable<T = string>(marble: string, value?: { [key: string]: T } | null, error?: any): ColdObservable<T>;
+  public createColdObservable<T = string>(
+    marble: string,
+    value?: { [key: string]: T } | null,
+    error?: any
+  ): ColdObservable<T>;
   public createColdObservable<T = string>(message: Array<TestMessage<T>>): ColdObservable<T>;
   public createColdObservable<T = string>(...args: Array<any>): ColdObservable<T> {
     const [marbleValue, value, error] = args;
@@ -85,20 +89,24 @@ class TestScheduler extends VirtualTimeScheduler {
 
     const messages = Array.isArray(marbleValue)
       ? marbleValue
-      : parseObservableMarble(marbleValue, value, error, false, this.frameTimeFactor, this._maxFrame) as any;
+      : (parseObservableMarble(marbleValue, value, error, false, this.frameTimeFactor, this._maxFrame) as any);
     const observable = new ColdObservable<T>(messages as Array<TestMessage<T | Array<TestMessage<T>>>>, this);
     this.coldObservables.push(observable);
     return observable;
   }
 
-  public createHotObservable<T = string>(marble: string, value?: { [key: string]: T } | null, error?: any): HotObservable<T>;
+  public createHotObservable<T = string>(
+    marble: string,
+    value?: { [key: string]: T } | null,
+    error?: any
+  ): HotObservable<T>;
   public createHotObservable<T = string>(message: Array<TestMessage<T>>): HotObservable<T>;
   public createHotObservable<T = string>(...args: Array<any>): HotObservable<T> {
     const [marbleValue, value, error] = args;
 
     const messages = Array.isArray(marbleValue)
       ? marbleValue
-      : parseObservableMarble(marbleValue, value, error, false, this.frameTimeFactor, this._maxFrame) as any;
+      : (parseObservableMarble(marbleValue, value, error, false, this.frameTimeFactor, this._maxFrame) as any);
     const subject = new HotObservable<T>(messages as Array<TestMessage<T | Array<TestMessage<T>>>>, this);
     this.hotObservables.push(subject);
     return subject;
@@ -123,8 +131,8 @@ class TestScheduler extends VirtualTimeScheduler {
       innerObservableMetadata.push(new TestMessageValue<T>(this.frame - outerFrame, notification));
 
     observable.subscribe(
-      value => pushMetaData(Notification.createNext(value)),
-      err => pushMetaData(Notification.createError(err)),
+      (value) => pushMetaData(Notification.createNext(value)),
+      (err) => pushMetaData(Notification.createError(err)),
       () => pushMetaData(Notification.createComplete())
     );
 
