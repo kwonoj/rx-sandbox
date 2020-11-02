@@ -13,6 +13,11 @@ import { calculateSubscriptionFrame } from './calculateSubscriptionFrame';
  * @internal
  */
 class TestScheduler extends VirtualTimeScheduler {
+  // maxFrame is exposed as a property rather than as an accessor method to avoid the
+  // 'error TS1086: An accessor cannot be declared in an ambient context.'
+  // when used with versions of Typescript <= 3.5.
+  // See https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#37-breaking-changes
+  public readonly maxFrame;
   private readonly coldObservables: Array<ColdObservable<any>> = [];
   private readonly hotObservables: Array<HotObservable<any>> = [];
   private flushed: boolean = false;
@@ -23,19 +28,7 @@ class TestScheduler extends VirtualTimeScheduler {
   constructor(private readonly autoFlush: boolean, private readonly frameTimeFactor: number, maxFrameValue: number) {
     super(VirtualAction, Number.POSITIVE_INFINITY);
     this._maxFrame = maxFrameValue * frameTimeFactor;
-  }
-
-  /*
-  public get maxFrame(): number {
-    return this._maxFrame;
-  }
-  */
-
-  // Use a non-accessor method to avoid the 'error TS1086: An accessor cannot be declared in an ambient context.'
-  // when used with versions of Typescript <= 3.5.
-  // See https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#37-breaking-changes
-  public getMaxFrame(): number {
-    return this._maxFrame;
+    this.maxFrame = this._maxFrame;
   }
 
   public flush(): void {
@@ -151,7 +144,7 @@ class TestScheduler extends VirtualTimeScheduler {
     return actions && actions.length > 0 ? actions[0] : null;
   }
 
-  private flushUntil(toFrame: number = this.getMaxFrame()): void {
+  private flushUntil(toFrame: number = this.maxFrame): void {
     if (this.flushing) {
       return;
     }
@@ -178,7 +171,7 @@ class TestScheduler extends VirtualTimeScheduler {
 
     this.flushing = false;
 
-    if (toFrame >= this.getMaxFrame()) {
+    if (toFrame >= this.maxFrame) {
       this.flushed = true;
     }
 
