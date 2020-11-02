@@ -3,7 +3,7 @@ import { TestMessage } from '../message/TestMessage';
 import { constructObservableMarble } from './constructObservableMarble';
 import { constructSubscriptionMarble } from './constructSubscriptionMarble';
 const { matcherHint, printExpected, printReceived } = require('jest-matcher-utils'); //tslint:disable-line:no-require-imports no-var-requires
-const { default: matchers } = require('expect/build/matchers');
+const { default: matchers } = require('expect/build/matchers'); //tslint:disable-line:no-require-imports no-var-requires
 const toEqualAssert = matchers.toEqual.bind({ expand: false });
 
 const subscriptionMarbleAssert = (source: Array<SubscriptionLog>) => (expected: Array<SubscriptionLog>) => {
