@@ -1,9 +1,6 @@
 import { Notification, Observable, Subscription } from 'rxjs';
 import { AsyncAction } from 'rxjs/internal/scheduler/AsyncAction';
-import {
-  VirtualAction,
-  VirtualTimeScheduler
-} from 'rxjs/internal/scheduler/VirtualTimeScheduler';
+import { VirtualAction, VirtualTimeScheduler } from 'rxjs/internal/scheduler/VirtualTimeScheduler';
 import { ColdObservable } from 'rxjs/internal/testing/ColdObservable';
 import { HotObservable } from 'rxjs/internal/testing/HotObservable';
 import { parseObservableMarble } from '../marbles/parseObservableMarble';
@@ -28,7 +25,16 @@ class TestScheduler extends VirtualTimeScheduler {
     this._maxFrame = maxFrameValue * frameTimeFactor;
   }
 
+  /*
   public get maxFrame(): number {
+    return this._maxFrame;
+  }
+  */
+
+  // Use a non-accessor method to avoid the 'error TS1086: An accessor cannot be declared in an ambient context.'
+  // when used with versions of Typescript <= 3.5.
+  // See https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#37-breaking-changes
+  public getMaxFrame(): number {
     return this._maxFrame;
   }
 
@@ -75,7 +81,11 @@ class TestScheduler extends VirtualTimeScheduler {
     return observableMetadata;
   }
 
-  public createColdObservable<T = string>(marble: string, value?: { [key: string]: T } | null, error?: any): ColdObservable<T>;
+  public createColdObservable<T = string>(
+    marble: string,
+    value?: { [key: string]: T } | null,
+    error?: any
+  ): ColdObservable<T>;
   public createColdObservable<T = string>(message: Array<TestMessage<T>>): ColdObservable<T>;
   public createColdObservable<T = string>(...args: Array<any>): ColdObservable<T> {
     const [marbleValue, value, error] = args;
@@ -86,20 +96,24 @@ class TestScheduler extends VirtualTimeScheduler {
 
     const messages = Array.isArray(marbleValue)
       ? marbleValue
-      : parseObservableMarble(marbleValue, value, error, false, this.frameTimeFactor, this._maxFrame) as any;
+      : (parseObservableMarble(marbleValue, value, error, false, this.frameTimeFactor, this._maxFrame) as any);
     const observable = new ColdObservable<T>(messages as Array<TestMessage<T | Array<TestMessage<T>>>>, this);
     this.coldObservables.push(observable);
     return observable;
   }
 
-  public createHotObservable<T = string>(marble: string, value?: { [key: string]: T } | null, error?: any): HotObservable<T>;
+  public createHotObservable<T = string>(
+    marble: string,
+    value?: { [key: string]: T } | null,
+    error?: any
+  ): HotObservable<T>;
   public createHotObservable<T = string>(message: Array<TestMessage<T>>): HotObservable<T>;
   public createHotObservable<T = string>(...args: Array<any>): HotObservable<T> {
     const [marbleValue, value, error] = args;
 
     const messages = Array.isArray(marbleValue)
       ? marbleValue
-      : parseObservableMarble(marbleValue, value, error, false, this.frameTimeFactor, this._maxFrame) as any;
+      : (parseObservableMarble(marbleValue, value, error, false, this.frameTimeFactor, this._maxFrame) as any);
     const subject = new HotObservable<T>(messages as Array<TestMessage<T | Array<TestMessage<T>>>>, this);
     this.hotObservables.push(subject);
     return subject;
@@ -124,8 +138,8 @@ class TestScheduler extends VirtualTimeScheduler {
       innerObservableMetadata.push(new TestMessageValue<T>(this.frame - outerFrame, notification));
 
     observable.subscribe(
-      value => pushMetaData(Notification.createNext(value)),
-      err => pushMetaData(Notification.createError(err)),
+      (value) => pushMetaData(Notification.createNext(value)),
+      (err) => pushMetaData(Notification.createError(err)),
       () => pushMetaData(Notification.createComplete())
     );
 
@@ -137,7 +151,7 @@ class TestScheduler extends VirtualTimeScheduler {
     return actions && actions.length > 0 ? actions[0] : null;
   }
 
-  private flushUntil(toFrame: number = this.maxFrame): void {
+  private flushUntil(toFrame: number = this.getMaxFrame()): void {
     if (this.flushing) {
       return;
     }
@@ -164,7 +178,7 @@ class TestScheduler extends VirtualTimeScheduler {
 
     this.flushing = false;
 
-    if (toFrame >= this.maxFrame) {
+    if (toFrame >= this.getMaxFrame()) {
       this.flushed = true;
     }
 
