@@ -1,4 +1,6 @@
-{
+const isWallaby = !!process.env.WALLABY_ENV;
+
+module.exports = {
   "preset": "ts-jest",
   "testMatch": [
     "**/spec/**/*-spec.ts"
@@ -26,9 +28,7 @@
   "coverageReporters": [
     "lcov"
   ],
-  "reporters": [
-    "jest-spin-reporter"
-  ],
+  reporters: !isWallaby ? [ "jest-spin-reporter" ] : undefined,
   "collectCoverageFrom": [
     "src/**/*.{ts, tsx}",
     "!**/*.d.ts"

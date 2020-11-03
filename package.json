@@ -17,7 +17,7 @@
   },
   "scripts": {
     "prepublishOnly": "npm-run-all build:clean build",
-    "test": "jest --config jest.json --coverage",
+    "test": "jest --coverage",
     "lint": "tslint -c tslint.json -p tsconfig.json \"src/**/*.ts\" \"spec/**/*.ts\"",
     "lint:staged": "lint-staged",
     "build": "tsc -b --verbose src/tsconfig.json spec/tsconfig.json",
