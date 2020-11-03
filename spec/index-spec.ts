@@ -1,10 +1,9 @@
-import { expect } from 'chai';
 import { mapTo } from 'rxjs/operators';
 import * as idx from '../src/index';
 
 describe('rxSandbox', () => {
   it('should export', () => {
-    expect(idx).to.have.property('rxSandbox');
+    expect(idx).toHaveProperty('rxSandbox');
   });
 
   it('should able to create instance', () => {
@@ -13,7 +12,7 @@ describe('rxSandbox', () => {
     const first = sandbox.create();
     const second = sandbox.create();
 
-    expect(first).to.not.equal(second);
+    expect(first).not.toEqual(second);
   });
 
   it('should able to create instance with autoflush', () => {
@@ -24,7 +23,7 @@ describe('rxSandbox', () => {
     const expected = [idx.next(2, 'a'), idx.complete(5)];
 
     const v = getMessages(source.pipe(mapTo('a')));
-    expect(v).to.deep.equal(expected);
+    expect(v).toEqual(expected);
   });
 
   it('should allow specify frameTimeFactor', () => {
@@ -35,7 +34,7 @@ describe('rxSandbox', () => {
     const expected = [idx.next(2, 'a')];
 
     const v = getMessages(source.pipe(mapTo('a')));
-    expect(v).to.deep.equal(expected);
+    expect(v).toEqual(expected);
   });
 
   it('should allow specify maxFrameValue', () => {
@@ -46,7 +45,7 @@ describe('rxSandbox', () => {
     const expected = [idx.next(2, 'a')];
 
     const v = getMessages(source.pipe(mapTo('a')));
-    expect(v).to.deep.equal(expected);
+    expect(v).toEqual(expected);
   });
 
   it('should able to create instance with custom frame', () => {
@@ -56,7 +55,7 @@ describe('rxSandbox', () => {
     const v = e('--a--|');
     const expected = [idx.next(20, 'a'), idx.complete(50)];
 
-    expect(v).to.deep.equal(expected);
+    expect(v).toEqual(expected);
   });
 
   it('should able to create instance with custom maxFrame', () => {
@@ -66,7 +65,7 @@ describe('rxSandbox', () => {
     const v = e('--a------|');
     const expected = [idx.next(2, 'a')];
 
-    expect(v).to.deep.equal(expected);
+    expect(v).toEqual(expected);
   });
 
   it('should able to create expected message values', () => {
@@ -75,7 +74,7 @@ describe('rxSandbox', () => {
     const v = e('---a--|');
     const expected = [idx.next(3, 'a'), idx.complete(6)];
 
-    expect(v).to.deep.equal(expected);
+    expect(v).toEqual(expected);
   });
 
   it('should able to create expected subscription values', () => {
@@ -83,12 +82,12 @@ describe('rxSandbox', () => {
 
     const v = s('--^--!');
 
-    expect(v).to.deep.equal(idx.subscribe(2, 5));
+    expect(v).toEqual(idx.subscribe(2, 5));
   });
 
   it('should export assert utility', () => {
     const { marbleAssert } = idx.rxSandbox;
 
-    expect(marbleAssert).to.be.a('function');
+    expect(marbleAssert).toBeInstanceOf(Function);
   });
 });

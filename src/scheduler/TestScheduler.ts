@@ -10,10 +10,7 @@ import { calculateSubscriptionFrame } from './calculateSubscriptionFrame';
 const {
   VirtualAction,
   VirtualTimeScheduler,
-}: {
-  VirtualAction: typeof import('rxjs/dist/types/internal/scheduler/VirtualTimeScheduler').VirtualAction;
-  VirtualTimeScheduler: typeof import('rxjs/dist/types/internal/scheduler/VirtualTimeScheduler').VirtualTimeScheduler;
-} = require('rxjs/dist/cjs/internal/scheduler/VirtualTimeScheduler');
+}: typeof import('rxjs/dist/types/internal/scheduler/VirtualTimeScheduler') = require('rxjs/dist/cjs/internal/scheduler/VirtualTimeScheduler');
 
 const {
   COMPLETE_NOTIFICATION,

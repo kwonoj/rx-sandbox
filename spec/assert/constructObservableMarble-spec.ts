@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { constructObservableMarble } from '../../src/assert/constructObservableMarble';
 import { parseObservableMarble as p } from '../../src/marbles/parseObservableMarble';
 import { TestScheduler } from '../../src/scheduler/TestScheduler';
@@ -11,7 +10,7 @@ describe('constructObservableMarble', () => {
     const source = p(s);
     const marble = constructObservableMarble(source);
 
-    expect(marble).to.equal(e);
+    expect(marble).toEqual(e);
   });
 
   it('should create marble', () => {
@@ -21,7 +20,7 @@ describe('constructObservableMarble', () => {
     const source = p(s);
     const marble = constructObservableMarble(source);
 
-    expect(marble).to.equal(e);
+    expect(marble).toEqual(e);
   });
 
   it('should support custom value', () => {
@@ -38,7 +37,7 @@ describe('constructObservableMarble', () => {
     const source = p(s, custom);
     const marble = constructObservableMarble(source);
 
-    expect(marble).to.equal(e);
+    expect(marble).toEqual(e);
   });
 
   it('should create marble with custom timeframe out of range', () => {
@@ -48,7 +47,7 @@ describe('constructObservableMarble', () => {
     const source = p(s, null, null, false, 10);
     const marble = constructObservableMarble(source);
 
-    expect(marble).to.equal(e);
+    expect(marble).toEqual(e);
   });
 
   it('should create marble start off immediately', () => {
@@ -58,7 +57,7 @@ describe('constructObservableMarble', () => {
     const source = p(s);
     const marble = constructObservableMarble(source);
 
-    expect(marble).to.equal(e);
+    expect(marble).toEqual(e);
   });
 
   it('should create marble with completion', () => {
@@ -68,7 +67,7 @@ describe('constructObservableMarble', () => {
     const source = p(s);
     const marble = constructObservableMarble(source);
 
-    expect(marble).to.equal(e);
+    expect(marble).toEqual(e);
   });
 
   it('should create marble with error', () => {
@@ -78,7 +77,7 @@ describe('constructObservableMarble', () => {
     const source = p(s);
     const marble = constructObservableMarble(source);
 
-    expect(marble).to.equal(e);
+    expect(marble).toEqual(e);
   });
 
   it('should create marble with custom error', () => {
@@ -88,7 +87,7 @@ describe('constructObservableMarble', () => {
     const source = p(s, null, 'meh');
     const marble = constructObservableMarble(source);
 
-    expect(marble).to.equal(e);
+    expect(marble).toEqual(e);
   });
 
   it('should create marble with noop', () => {
@@ -98,7 +97,7 @@ describe('constructObservableMarble', () => {
     const source = p(s);
     const marble = constructObservableMarble(source);
 
-    expect(marble).to.equal(e);
+    expect(marble).toEqual(e);
   });
 
   it('should create marble with grouped value', () => {
@@ -108,7 +107,7 @@ describe('constructObservableMarble', () => {
     const source = p(s);
     const marble = constructObservableMarble(source);
 
-    expect(marble).to.equal(e);
+    expect(marble).toEqual(e);
   });
 
   it('should create marble with synchronous grouped', () => {
@@ -118,7 +117,7 @@ describe('constructObservableMarble', () => {
     const source = p(s);
     const marble = constructObservableMarble(source);
 
-    expect(marble).to.equal(e);
+    expect(marble).toEqual(e);
   });
 
   it('should create marble with grouped value with noop', () => {
@@ -128,7 +127,7 @@ describe('constructObservableMarble', () => {
     const source = p(s);
     const marble = constructObservableMarble(source);
 
-    expect(marble).to.equal(e);
+    expect(marble).toEqual(e);
   });
 
   it('should create marble with subscription, without minus emit', () => {
@@ -138,7 +137,7 @@ describe('constructObservableMarble', () => {
     const source = p(s);
     const marble = constructObservableMarble(source);
 
-    expect(marble).to.equal(e);
+    expect(marble).toEqual(e);
   });
 
   it('should create marble with subscription, with minus emit', () => {
@@ -150,7 +149,7 @@ describe('constructObservableMarble', () => {
     const source = p(s);
     const marble = constructObservableMarble(source);
 
-    expect(marble).to.equal(e);
+    expect(marble).toEqual(e);
   });
 
   it('should create marble with higher order obsrevables', () => {
@@ -164,6 +163,6 @@ describe('constructObservableMarble', () => {
     const source = p(s, { a, b }, null, true);
     const marble = constructObservableMarble(source);
 
-    expect(marble).to.equal(e);
+    expect(marble).toEqual(e);
   });
 });
