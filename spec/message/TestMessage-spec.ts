@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { complete, error, next, subscribe, TestMessageValue } from '../../src/message/TestMessage';
 
 //tslint:disable no-var-requires no-require-imports
@@ -15,27 +14,27 @@ describe('TestMessageValue', () => {
 
     const message = new TestMessageValue(10, notification);
 
-    expect(message.frame).to.equal(10);
-    expect(message.notification).to.deep.equal(notification);
+    expect(message.frame).toEqual(10);
+    expect(message.notification).toEqual(notification);
   });
 
   describe('utility function', () => {
     it('should create next', () => {
       const value = next(10, 'meh');
 
-      expect(value).to.deep.equal(new TestMessageValue(10, nextNotification('meh')));
+      expect(value).toEqual(new TestMessageValue(10, nextNotification('meh')));
     });
 
     it('should create error', () => {
       const errorValue = error(10, 'meh');
 
-      expect(errorValue).to.deep.equal(new TestMessageValue(10, errorNotification('meh')));
+      expect(errorValue).toEqual(new TestMessageValue(10, errorNotification('meh')));
     });
 
     it('should create complete', () => {
       const completeValue = complete(10);
 
-      expect(completeValue).to.deep.equal(new TestMessageValue(10, COMPLETE_NOTIFICATION));
+      expect(completeValue).toEqual(new TestMessageValue(10, COMPLETE_NOTIFICATION));
     });
 
     it('should create subscription log', () => {
@@ -43,9 +42,9 @@ describe('TestMessageValue', () => {
       const withoutSub = subscribe(10);
       const emptySub = subscribe();
 
-      expect(withUnsub).to.deep.equal(subscribe(10, 20));
-      expect(withoutSub).to.deep.equal(subscribe(10, Number.POSITIVE_INFINITY));
-      expect(emptySub).to.deep.equal(subscribe(Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY));
+      expect(withUnsub).toEqual(subscribe(10, 20));
+      expect(withoutSub).toEqual(subscribe(10, Number.POSITIVE_INFINITY));
+      expect(emptySub).toEqual(subscribe(Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY));
     });
   });
 });

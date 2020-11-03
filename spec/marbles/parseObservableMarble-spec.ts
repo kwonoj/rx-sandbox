@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { parseObservableMarble } from '../../src/marbles/parseObservableMarble';
 import { complete, error, next } from '../../src/message/TestMessage';
 import { TestScheduler } from '../../src/scheduler/TestScheduler';
@@ -15,14 +14,14 @@ describe('parseObservableMarble', () => {
   it('should not allow unsubscription token', () => {
     const marble = '----!';
 
-    expect(() => parseObservableMarble(marble)).to.throw();
+    expect(() => parseObservableMarble(marble)).toThrow();
   });
 
   it('should parse timeframe without value', () => {
     const marble = '------';
 
     const messages = parseObservableMarble(marble);
-    expect(messages).to.be.empty;
+    expect(messages).toHaveLength(0);
   });
 
   it('should parse timeframe with value', () => {
@@ -31,7 +30,7 @@ describe('parseObservableMarble', () => {
     const messages = parseObservableMarble(marble);
     const expected = [next(7, 'a')];
 
-    expect(messages).to.deep.equal(expected);
+    expect(messages).toEqual(expected);
   });
 
   it('should correctly parse falsy timeframe values', () => {
@@ -40,7 +39,7 @@ describe('parseObservableMarble', () => {
     const messages = parseObservableMarble(marble, { a: null, b: false, c: 0, d: undefined });
     const expected = [next(2, null), next(4, false), next(6, 0), next(8, undefined)];
 
-    expect(messages).to.deep.equal(expected);
+    expect(messages).toEqual(expected);
   });
 
   it('should parse timeframe with maxFrame', () => {
@@ -49,7 +48,7 @@ describe('parseObservableMarble', () => {
     const messages = parseObservableMarble(marble, null, null, false, 1, 5);
     const expected = [next(2, 'a')];
 
-    expect(messages).to.deep.equal(expected);
+    expect(messages).toEqual(expected);
   });
 
   it('should flatten custom value with inner observable when specified', () => {
@@ -65,7 +64,7 @@ describe('parseObservableMarble', () => {
     const messages = parseObservableMarble(marble, customValue, null, true);
     const expected = [next(4, aMessages), next(7, bMessages)];
 
-    expect(messages).to.deep.equal(expected);
+    expect(messages).toEqual(expected);
   });
 
   it('should not flatten custom value with inner observable when not specified', () => {
@@ -81,7 +80,7 @@ describe('parseObservableMarble', () => {
     const messages = parseObservableMarble(marble, customValue, null, false);
     const expected = [next(4, customValue.a), next(7, customValue.b)];
 
-    expect(messages).to.deep.equal(expected);
+    expect(messages).toEqual(expected);
   });
 
   it('should support custom timeframe value', () => {
@@ -90,7 +89,7 @@ describe('parseObservableMarble', () => {
     const messages = parseObservableMarble(marble, null, null, false, 10);
     const expected = [next(70, 'a')];
 
-    expect(messages).to.deep.equal(expected);
+    expect(messages).toEqual(expected);
   });
 
   it('should support custom timeframe value with maxFrame', () => {
@@ -99,7 +98,7 @@ describe('parseObservableMarble', () => {
     const messages = parseObservableMarble(marble, null, null, false, 10, 50);
     const expected = [next(20, 'a')];
 
-    expect(messages).to.deep.equal(expected);
+    expect(messages).toEqual(expected);
   });
 
   it('should parse value literal', () => {
@@ -108,7 +107,7 @@ describe('parseObservableMarble', () => {
     const messages = parseObservableMarble(marble);
     const expected = [next(0, marble)];
 
-    expect(messages[0]).to.deep.equal(expected[0]);
+    expect(messages[0]).toEqual(expected[0]);
   });
 
   it('should parse value literal with custom value', () => {
@@ -120,7 +119,7 @@ describe('parseObservableMarble', () => {
     const messages = parseObservableMarble(marble, customValue);
     const expected = [next(4, customValue.a)];
 
-    expect(messages).to.deep.equal(expected);
+    expect(messages).toEqual(expected);
   });
 
   it('should allow whitespace', () => {
@@ -129,7 +128,7 @@ describe('parseObservableMarble', () => {
     const messages = parseObservableMarble(marble);
     const expected = [next(8, 'a')];
 
-    expect(messages).to.deep.equal(expected);
+    expect(messages).toEqual(expected);
   });
 
   it('should allow expanding timeframe', () => {
@@ -138,19 +137,19 @@ describe('parseObservableMarble', () => {
     const messages = parseObservableMarble(marble);
     const expected = [next(22, 'a')];
 
-    expect(messages).to.deep.equal(expected);
+    expect(messages).toEqual(expected);
   });
 
   it('should throw if expanding timeframe does not contain values', () => {
     const marble = '----......----a----';
 
-    expect(() => parseObservableMarble(marble)).to.throw();
+    expect(() => parseObservableMarble(marble)).toThrow();
   });
 
   it('should throw when try to set timeframe in expanding timeframe', () => {
     const marble = '-------...-14...-';
 
-    expect(() => parseObservableMarble(marble)).to.throw();
+    expect(() => parseObservableMarble(marble)).toThrow();
   });
 
   it('should parse simultaneous value', () => {
@@ -160,19 +159,19 @@ describe('parseObservableMarble', () => {
     const messages = parseObservableMarble(marble);
     const expected = [next(7, 'a'), next(7, 'b'), next(12, 'c'), complete(12)];
 
-    expect(messages).to.deep.equal(expected);
+    expect(messages).toEqual(expected);
   });
 
   it('should throw when try to nest simultaneous value', () => {
     const marble = '-----(a(b|))';
 
-    expect(() => parseObservableMarble(marble)).to.throw();
+    expect(() => parseObservableMarble(marble)).toThrow();
   });
 
   it('should throw when try to set timeframe in simultaneous value', () => {
     const marble = '-------(a-b)';
 
-    expect(() => parseObservableMarble(marble)).to.throw();
+    expect(() => parseObservableMarble(marble)).toThrow();
   });
 
   it('should parse complete', () => {
@@ -181,7 +180,7 @@ describe('parseObservableMarble', () => {
     const messages = parseObservableMarble(marble);
     const expected = [next(3, 'a'), complete(7)];
 
-    expect(messages).to.deep.equal(expected);
+    expect(messages).toEqual(expected);
   });
 
   it('should parse error', () => {
@@ -190,7 +189,7 @@ describe('parseObservableMarble', () => {
     const messages = parseObservableMarble(marble);
     const expected = [error(4)];
 
-    expect(messages).to.deep.equal(expected);
+    expect(messages).toEqual(expected);
   });
 
   it('should parse error with custom value', () => {
@@ -200,7 +199,7 @@ describe('parseObservableMarble', () => {
     const messages = parseObservableMarble(marble, null, e);
     const expected = [error(4, e)];
 
-    expect(messages).to.deep.equal(expected);
+    expect(messages).toEqual(expected);
   });
 
   it('should support subscription offset for hot observable', () => {
@@ -209,7 +208,7 @@ describe('parseObservableMarble', () => {
     const messages = parseObservableMarble(marble);
     const expected = [next(5, 'a')];
 
-    expect(messages).to.deep.equal(expected);
+    expect(messages).toEqual(expected);
   });
 
   it('should able to flatten inner observable', () => {
@@ -221,6 +220,6 @@ describe('parseObservableMarble', () => {
     const messages = parseObservableMarble(marble, { a: inner }, null, true);
     const expected = [next(2, [next(3, '1')]), complete(5)];
 
-    expect(messages).to.deep.equal(expected);
+    expect(messages).toEqual(expected);
   });
 });

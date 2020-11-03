@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { constructSubscriptionMarble } from '../../src/assert/constructSubscriptionMarble';
 import { subscribe } from '../../src/message/TestMessage';
 
@@ -10,7 +9,7 @@ describe('constructSubscriptionMarble', () => {
     const m = '----------^--------------------';
     const f = '          10';
 
-    expect(marble).to.deep.equal({ marbleString: m, frameString: f });
+    expect(marble).toEqual({ marbleString: m, frameString: f });
   });
 
   it('should create marble with unsubscription in range', () => {
@@ -20,7 +19,7 @@ describe('constructSubscriptionMarble', () => {
     const m = '------------------------------!';
     const f = '                              30';
 
-    expect(marble).to.deep.equal({ marbleString: m, frameString: f });
+    expect(marble).toEqual({ marbleString: m, frameString: f });
   });
 
   it('should create marble with subscription and unsubscription both in range', () => {
@@ -30,9 +29,9 @@ describe('constructSubscriptionMarble', () => {
     const m = '----------^--------------!';
     const f = '          10             25';
 
-    expect(marble.frameString).to.equal(f);
+    expect(marble.frameString).toEqual(f);
 
-    expect(marble).to.deep.equal({ marbleString: m, frameString: f });
+    expect(marble).toEqual({ marbleString: m, frameString: f });
   });
 
   it('should strip timeframe after unsubscription', () => {
@@ -42,7 +41,7 @@ describe('constructSubscriptionMarble', () => {
     const m = '-------------------------!';
     const f = '                         25';
 
-    expect(marble).to.deep.equal({ marbleString: m, frameString: f });
+    expect(marble).toEqual({ marbleString: m, frameString: f });
   });
 
   it('should create marble with subscription out of range', () => {
@@ -52,7 +51,7 @@ describe('constructSubscriptionMarble', () => {
     const m = '---...34...---^----------------';
     const f = '              40';
 
-    expect(marble).to.deep.equal({ marbleString: m, frameString: f });
+    expect(marble).toEqual({ marbleString: m, frameString: f });
   });
 
   it('should create marble with unsubscription out of range', () => {
@@ -62,8 +61,8 @@ describe('constructSubscriptionMarble', () => {
     //'------------------------------!';
     const m = '-------------------...17...---!';
     const f = '                              40';
-    expect(marble.marbleString).to.equal(m);
-    expect(marble).to.deep.equal({ marbleString: m, frameString: f });
+    expect(marble.marbleString).toEqual(m);
+    expect(marble).toEqual({ marbleString: m, frameString: f });
   });
 
   it('should create marble with unsubscription out of range, subscription in range', () => {
@@ -74,8 +73,8 @@ describe('constructSubscriptionMarble', () => {
     const m = '----------^--------...46...---!';
     const f = '          10                  68';
 
-    expect(marble.marbleString).to.equal(m);
-    expect(marble).to.deep.equal({ marbleString: m, frameString: f });
+    expect(marble.marbleString).toEqual(m);
+    expect(marble).toEqual({ marbleString: m, frameString: f });
   });
 
   it('should create marble with unsubscription out of range, subscription in expand range', () => {
@@ -86,7 +85,7 @@ describe('constructSubscriptionMarble', () => {
     const m = '---...34...---^----...20...---!';
     const f = '              40              68';
 
-    expect(marble).to.deep.equal({ marbleString: m, frameString: f });
+    expect(marble).toEqual({ marbleString: m, frameString: f });
   });
 
   it('should create marble with unsubscription out of range, subscription in collapsable expand range', () => {
@@ -96,6 +95,6 @@ describe('constructSubscriptionMarble', () => {
     const m = '---------------------------^...37...---!';
     const f = '                           27          68';
 
-    expect(marble).to.deep.equal({ marbleString: m, frameString: f });
+    expect(marble).toEqual({ marbleString: m, frameString: f });
   });
 });
