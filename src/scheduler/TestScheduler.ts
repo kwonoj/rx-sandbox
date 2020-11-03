@@ -46,11 +46,11 @@ class TestScheduler extends VirtualTimeScheduler {
     return this._maxFrame;
   }
 
-  public flush(): void {
-    this.flushUntil();
+  public async flush(): Promise<void> {
+    await this.flushUntil();
   }
 
-  public getMessages<T = string>(observable: Observable<T>, unsubscriptionMarbles: string | null = null) {
+  public async getMessages<T = string>(observable: Observable<T>, unsubscriptionMarbles: string | null = null) {
     const { subscribedFrame, unsubscribedFrame } = calculateSubscriptionFrame(
       observable,
       unsubscriptionMarbles,
@@ -83,7 +83,7 @@ class TestScheduler extends VirtualTimeScheduler {
       if (this.flushed) {
         throw new Error(`Cannot schedule to get marbles, scheduler's already flushed`);
       }
-      this.flush();
+      await this.flush();
     }
 
     return observableMetadata;
@@ -135,7 +135,7 @@ class TestScheduler extends VirtualTimeScheduler {
     return subject;
   }
 
-  public advanceTo(toFrame: number): void {
+  public async advanceTo(toFrame: number): Promise<void> {
     if (this.autoFlush) {
       throw new Error('Cannot advance frame manually with autoflushing scheduler');
     }
@@ -144,7 +144,7 @@ class TestScheduler extends VirtualTimeScheduler {
       throw new Error(`Cannot advance frame, given frame is either negative or smaller than current frame`);
     }
 
-    this.flushUntil(toFrame);
+    await this.flushUntil(toFrame);
     this.frame = toFrame;
   }
 
@@ -167,7 +167,7 @@ class TestScheduler extends VirtualTimeScheduler {
     return actions && actions.length > 0 ? actions[0] : null;
   }
 
-  private flushUntil(toFrame: number = this.maxFrame): void {
+  private async flushUntil(toFrame: number = this.maxFrame): Promise<void> {
     if (this.flushing) {
       return;
     }
@@ -190,6 +190,8 @@ class TestScheduler extends VirtualTimeScheduler {
       if ((error = action.execute(action.state, action.delay))) {
         break;
       }
+
+      await new Promise(resolve => resolve());
     }
 
     this.flushing = false;

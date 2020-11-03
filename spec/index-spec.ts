@@ -15,36 +15,36 @@ describe('rxSandbox', () => {
     expect(first).not.toEqual(second);
   });
 
-  it('should able to create instance with autoflush', () => {
+  it('should able to create instance with autoflush', async () => {
     const sandbox = idx.rxSandbox;
 
     const { hot, getMessages } = sandbox.create(true);
     const source = hot('--a--|');
     const expected = [idx.next(2, 'a'), idx.complete(5)];
 
-    const v = getMessages(source.pipe(mapTo('a')));
+    const v = await getMessages(source.pipe(mapTo('a')));
     expect(v).toEqual(expected);
   });
 
-  it('should allow specify frameTimeFactor', () => {
+  it('should allow specify frameTimeFactor', async () => {
     const sandbox = idx.rxSandbox;
 
     const { hot, getMessages } = sandbox.create(true, 2, 8);
     const source = hot('-a--b');
     const expected = [idx.next(2, 'a')];
 
-    const v = getMessages(source.pipe(mapTo('a')));
+    const v = await getMessages(source.pipe(mapTo('a')));
     expect(v).toEqual(expected);
   });
 
-  it('should allow specify maxFrameValue', () => {
+  it('should allow specify maxFrameValue', async () => {
     const sandbox = idx.rxSandbox;
 
     const { hot, getMessages } = sandbox.create(true, 1, 4);
     const source = hot('--a--|');
     const expected = [idx.next(2, 'a')];
 
-    const v = getMessages(source.pipe(mapTo('a')));
+    const v = await getMessages(source.pipe(mapTo('a')));
     expect(v).toEqual(expected);
   });
 
