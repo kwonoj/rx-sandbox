@@ -14,7 +14,7 @@ type expectedObservable = <T = string>(
 ) => Readonly<Array<TestMessage<T | Array<TestMessage<T>>>>>;
 type expectedSubscription = (marble: string) => SubscriptionLog;
 
-type RxSandboxInstance = {
+interface RxSandboxInstance {
   /**
    * Test scheduler created for sandbox instance
    */
@@ -49,7 +49,7 @@ type RxSandboxInstance = {
    * Utility function to generate `expected` subscriptions via marble diagram.
    */
   s: expectedSubscription;
-};
+}
 
 export {
   hotObservable,

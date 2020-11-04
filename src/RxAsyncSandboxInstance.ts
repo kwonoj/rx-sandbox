@@ -1,0 +1,3 @@
+interface RxAsyncSandboxInstance {}
+
+export { RxAsyncSandboxInstance };
