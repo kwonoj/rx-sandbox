@@ -1,4 +1,5 @@
 import { marbleAssert } from './assert/marbleAssert';
+import { interopOptionsFromArgument } from './interopOptionsFromArgument';
 import { parseObservableMarble } from './marbles/parseObservableMarble';
 import { parseSubscriptionMarble } from './marbles/parseSubscriptionMarble';
 import { TestMessage } from './message/TestMessage';
@@ -19,7 +20,9 @@ export {
 type marbleAssertion = typeof marbleAssert;
 
 const rxSandbox: RxSandbox = {
-  create: (autoFlush: boolean = false, frameTimeFactor: number = 1, maxFrameValue = 1000) => {
+  create: (...args: Array<any>) => {
+    const { autoFlush, frameTimeFactor, maxFrameValue } = interopOptionsFromArgument(args);
+
     const scheduler = new TestScheduler(autoFlush, frameTimeFactor, Math.round(maxFrameValue / frameTimeFactor));
 
     return {
