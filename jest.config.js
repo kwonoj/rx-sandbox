@@ -11,9 +11,6 @@ module.exports = {
     }
   },
   "bail": true,
-  "resetMocks": true,
-  "clearMocks": true,
-  "resetModules": true,
   "testEnvironment": "node",
   "moduleFileExtensions": [
     "js",
