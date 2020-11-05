@@ -1,6 +1,6 @@
 import { constructObservableMarble } from '../../src/assert/constructObservableMarble';
 import { parseObservableMarble as p } from '../../src/marbles/parseObservableMarble';
-import { createTestScheduler } from '../../src/scheduler/TestScheduler';
+import { createTestScheduler } from '../../src/scheduler/createTestScheduler';
 
 describe('constructObservableMarble', () => {
   it('should create empty marble', () => {
@@ -153,11 +153,11 @@ describe('constructObservableMarble', () => {
   });
 
   it('should create marble with higher order obsrevables', () => {
-    const scheduler = createTestScheduler(false, 1, 1000);
+    const { createHotObservable } = createTestScheduler(false, 1, 1000);
 
     const s = '--a--b--|';
-    const a = scheduler.createHotObservable('--1--2--|');
-    const b = scheduler.createHotObservable('--3--4--|');
+    const a = createHotObservable('--1--2--|');
+    const b = createHotObservable('--3--4--|');
     const e = '--ä--ḅ--|';
 
     const source = p(s, { a, b }, null, true);

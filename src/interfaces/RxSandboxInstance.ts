@@ -1,13 +1,13 @@
 import { SchedulerLike } from 'rxjs';
 import { TestMessage } from '../message/TestMessage';
-import { TestScheduler } from '../scheduler/TestScheduler';
+import { createTestScheduler } from '../scheduler/createTestScheduler';
 import { SubscriptionLog } from '../utils/coreInternalImport';
 
-type hotObservable = typeof TestScheduler.prototype.createHotObservable;
-type coldObservable = typeof TestScheduler.prototype.createColdObservable;
-type flushScheduler = typeof TestScheduler.prototype.flush;
-type advanceToScheduler = typeof TestScheduler.prototype.advanceTo;
-type getObservableMessage = typeof TestScheduler.prototype.getMessages;
+type hotObservable = ReturnType<typeof createTestScheduler>['createHotObservable'];
+type coldObservable = ReturnType<typeof createTestScheduler>['createColdObservable'];
+type flushScheduler = ReturnType<typeof createTestScheduler>['flush'];
+type advanceToScheduler = ReturnType<typeof createTestScheduler>['advanceTo'];
+type getObservableMessage = ReturnType<typeof createTestScheduler>['getMessages'];
 type expectedObservable = <T = string>(
   marble: string,
   value?: { [key: string]: T } | null,
@@ -19,7 +19,13 @@ interface RxSandboxInstance {
   /**
    * Test scheduler created for sandbox instance
    */
-  scheduler: SchedulerLike & Pick<TestScheduler, 'maxFrame'>;
+  scheduler: SchedulerLike & {
+    /**
+     * @deprecated: Testscheduler will not expose this property anymore.
+     * Use return value from createTestScheduler instead.
+     */
+    maxFrame: number;
+  };
   /**
    * Creates a hot observable using marble diagram DSL, or TestMessage.
    */
@@ -50,6 +56,8 @@ interface RxSandboxInstance {
    * Utility function to generate `expected` subscriptions via marble diagram.
    */
   s: expectedSubscription;
+
+  maxFrame: number;
 }
 
 export {
