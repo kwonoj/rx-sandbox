@@ -6,7 +6,7 @@ import { SubscriptionLog } from '../utils/coreInternalImport';
  * Sandbox instance with test scheduler. All actions scheduled via scheduler
  * will be flushed synchronously.
  */
-interface RxSandboxInstance extends Omit<SchedulerInstance, 'scheduler'> {
+interface RxSandboxInstance extends SchedulerInstance {
   e: expectedObservable;
   /**
    * Utility function to generate `expected` subscriptions via marble diagram.
@@ -25,7 +25,7 @@ interface RxSandboxInstance extends Omit<SchedulerInstance, 'scheduler'> {
  * @experimental Not a final implementation. Either interface or implementation can change
  * without major breaking version bump.
  */
-interface RxAsyncSandboxInstance extends Omit<AsyncSchedulerInstance, 'scheduler'> {
+interface RxAsyncSandboxInstance extends AsyncSchedulerInstance {
   e: expectedObservable;
   /**
    * Utility function to generate `expected` subscriptions via marble diagram.

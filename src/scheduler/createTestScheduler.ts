@@ -286,7 +286,7 @@ function createGetMessages(state: SandboxState, flush: Function): Function {
 
 const initializeSandboxState = (autoFlush: boolean, frameTimeFactor: number, maxFrameValue: number): SandboxState => {
   const maxFrame = maxFrameValue * frameTimeFactor;
-  const result = {
+  return {
     coldObservables: [],
     hotObservables: [],
     flushed: false,
@@ -296,23 +296,13 @@ const initializeSandboxState = (autoFlush: boolean, frameTimeFactor: number, max
     scheduler: new VirtualTimeScheduler(VirtualAction, Number.POSITIVE_INFINITY),
     autoFlush
   };
-
-  // @deprecated: will be deprecated, use return value of createScheduler instead
-  (result.scheduler as any).maxFrame = maxFrame;
-  return result;
 };
 
 interface BaseSchedulerInstance {
   /**
    * Test scheduler created for sandbox instance
    */
-  scheduler: SchedulerLike & {
-    /**
-     * @deprecated: Testscheduler will not expose this property anymore.
-     * Use return value from createTestScheduler instead.
-     */
-    maxFrame: number;
-  };
+  scheduler: SchedulerLike;
 
   /**
    * Creates a hot observable using marble diagram DSL, or TestMessage.
@@ -374,8 +364,7 @@ function createTestScheduler(autoFlush: boolean, frameTimeFactor: number, maxFra
   const flush = () => flushUntil();
 
   return {
-    //todo: remove casting once maxFrame is deprecated
-    scheduler: sandboxState.scheduler as any,
+    scheduler: sandboxState.scheduler,
     advanceTo,
     getMessages: createGetMessages(sandboxState, flush),
     cold: getCreateColdObservable(sandboxState),
