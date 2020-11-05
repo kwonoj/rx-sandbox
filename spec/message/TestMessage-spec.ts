@@ -1,12 +1,5 @@
 import { complete, error, next, subscribe, TestMessageValue } from '../../src/message/TestMessage';
-
-//tslint:disable no-var-requires no-require-imports
-const {
-  COMPLETE_NOTIFICATION,
-  errorNotification,
-  nextNotification,
-}: typeof import('rxjs/dist/types/internal/Notification') = require('rxjs/dist/cjs/internal/Notification');
-//tslint:enable no-var-requires no-require-imports
+import { COMPLETE_NOTIFICATION, errorNotification, nextNotification } from '../../src/utils/coreInternalImport';
 
 describe('TestMessageValue', () => {
   it('should create metadata', () => {

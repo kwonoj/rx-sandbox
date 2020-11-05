@@ -1,5 +1,5 @@
-import { SubscriptionLog } from 'rxjs/dist/types/internal/testing/SubscriptionLog';
-import { TestMessage } from './message/TestMessage';
+import { TestMessage } from '../message/TestMessage';
+import { SubscriptionLog } from '../utils/coreInternalImport';
 import { RxAsyncSandboxInstance } from './RxAsyncSandboxInstance';
 import { RxSandboxInstance } from './RxSandboxInstance';
 import { AsyncFlushSandboxOption, SandboxOption } from './SandboxOption';

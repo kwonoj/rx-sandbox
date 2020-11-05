@@ -1,10 +1,6 @@
 import { Observable } from 'rxjs';
 import { parseSubscriptionMarble } from '../marbles/parseSubscriptionMarble';
-
-//tslint:disable no-var-requires no-require-imports
-const { ColdObservable } = require('rxjs/dist/cjs/internal/testing/ColdObservable');
-const { HotObservable } = require('rxjs/dist/cjs/internal/testing/HotObservable');
-//tslint:enable no-var-requires no-require-imports
+import { ColdObservable, HotObservable } from '../utils/coreInternalImport';
 
 const calculateSubscriptionFrame = (
   observable: Observable<any>,

@@ -1,4 +1,4 @@
-import { SandboxOption } from './SandboxOption';
+import { SandboxOption } from '../interfaces/SandboxOption';
 
 const defaultOption = {
   autoFlush: false,

@@ -1,11 +1,11 @@
 import { marbleAssert } from './assert/marbleAssert';
-import { interopOptionsFromArgument } from './interopOptionsFromArgument';
+import { RxSandbox } from './interfaces/RxSandbox';
 import { parseObservableMarble } from './marbles/parseObservableMarble';
 import { parseSubscriptionMarble } from './marbles/parseSubscriptionMarble';
 import { TestMessage } from './message/TestMessage';
 import { complete, error, next, subscribe } from './message/TestMessage';
-import { RxSandbox } from './RxSandbox';
 import { TestScheduler } from './scheduler/TestScheduler';
+import { interopOptionsFromArgument } from './utils/interopOptionsFromArgument';
 export {
   hotObservable,
   coldObservable,
@@ -15,7 +15,7 @@ export {
   expectedObservable,
   expectedSubscription,
   RxSandboxInstance,
-} from './RxSandboxInstance';
+} from './interfaces/RxSandboxInstance';
 
 type marbleAssertion = typeof marbleAssert;
 

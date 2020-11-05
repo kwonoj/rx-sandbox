@@ -1,16 +1,10 @@
 import { ObservableNotification } from 'rxjs';
-
-//tslint:disable no-var-requires no-require-imports
-const {
-  SubscriptionLog,
-}: typeof import('rxjs/dist/types/internal/testing/SubscriptionLog') = require('rxjs/dist/cjs/internal/testing/SubscriptionLog');
-
-const {
+import {
   COMPLETE_NOTIFICATION,
   errorNotification,
   nextNotification,
-}: typeof import('rxjs/dist/types/internal/Notification') = require('rxjs/dist/cjs/internal/Notification');
-//tslint:enable no-var-requires no-require-imports
+  SubscriptionLog,
+} from '../utils/coreInternalImport';
 
 /**
  * Represents interface for single metadata value emitted by HotObservable<T> or ColdObservable<T>

@@ -1,14 +1,7 @@
 import { parseObservableMarble } from '../../src/marbles/parseObservableMarble';
 import { complete, error, next } from '../../src/message/TestMessage';
 import { TestScheduler } from '../../src/scheduler/TestScheduler';
-
-//tslint:disable no-var-requires no-require-imports
-const {
-  ColdObservable,
-}: {
-  ColdObservable: typeof import('rxjs/dist/types/internal/testing/ColdObservable').ColdObservable;
-} = require('rxjs/dist/cjs/internal/testing/ColdObservable');
-//tslint:enable no-var-requires no-require-imports
+import { ColdObservable } from '../../src/utils/coreInternalImport';
 
 describe('parseObservableMarble', () => {
   it('should not allow unsubscription token', () => {

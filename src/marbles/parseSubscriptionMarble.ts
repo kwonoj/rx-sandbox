@@ -1,13 +1,6 @@
+import { SubscriptionLog } from '../utils/coreInternalImport';
 import { ObservableMarbleToken } from './ObservableMarbleToken';
 import { subscriptionTokenParseReducer } from './tokenParseReducer';
-
-//tslint:disable no-var-requires no-require-imports
-const {
-  SubscriptionLog,
-}: {
-  SubscriptionLog: typeof import('rxjs/dist/types/internal/testing/SubscriptionLog').SubscriptionLog;
-} = require('rxjs/dist/cjs/internal/testing/SubscriptionLog');
-//tslint:enable no-var-requires no-require-imports
 
 const parseSubscriptionMarble = (marble: string | null, frameTimeFactor: number = 1, maxFrame = 1000) => {
   if (!marble) {
