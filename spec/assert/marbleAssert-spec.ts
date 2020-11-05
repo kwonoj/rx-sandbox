@@ -7,6 +7,11 @@ describe('marbleAssert', () => {
     expect(() => marbleAssert(1 as any)).toThrow();
   });
 
+  it('should export jasmine matcher style interface', () => {
+    const assert = marbleAssert([]);
+    expect(assert.to.equal).toBe(assert.toEqual);
+  });
+
   describe('TestMessage', () => {
     it('shoud pass empty', () => {
       marbleAssert(p('------')).to.equal(p('------'));

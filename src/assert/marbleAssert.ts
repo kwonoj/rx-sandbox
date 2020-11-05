@@ -84,27 +84,37 @@ function marbleAssert<T = string>(
       expected: TestMessage<T | Array<TestMessage<T>>> | Readonly<Array<TestMessage<T | Array<TestMessage<T>>>>>
     ): void;
   };
+  toEqual(
+    expected: TestMessage<T | Array<TestMessage<T>>> | Readonly<Array<TestMessage<T | Array<TestMessage<T>>>>>
+  ): void;
 };
 function marbleAssert<T = void>(
   source: Array<SubscriptionLog>
-): { to: { equal(expected: Array<SubscriptionLog>): void } };
+): {
+  to: { equal(expected: Array<SubscriptionLog>): void };
+  toEqual(expected: Array<SubscriptionLog>): void;
+};
 function marbleAssert<T = string>(
   source:
     | Array<SubscriptionLog>
     | Array<TestMessage<T | Array<TestMessage<T>>>>
     | Readonly<Array<TestMessage<T | Array<TestMessage<T>>>>>
-): { to: { equal(expected: object): void } } {
+): {
+  to: { equal(expected: object): void };
+  toEqual(expected: object): void;
+} {
   const isSourceArray = Array.isArray(source);
   if (!isSourceArray) {
     throw new Error('Cannot assert non array');
   }
 
   const isSourceSubscription = source.length > 0 && (source as Array<any>).every((v) => v instanceof SubscriptionLog);
-
+  const equal = isSourceSubscription ? subscriptionMarbleAssert(source as any) : observableMarbleAssert(source as any);
   return {
     to: {
-      equal: isSourceSubscription ? subscriptionMarbleAssert(source as any) : observableMarbleAssert(source as any),
+      equal,
     },
+    toEqual: equal,
   };
 }
 
