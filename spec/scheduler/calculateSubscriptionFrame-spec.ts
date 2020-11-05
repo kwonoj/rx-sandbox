@@ -11,28 +11,28 @@ describe('calculateSubscriptionFrame', () => {
   });
 
   it('should preserve subscription frame with hot observable', () => {
-    const { createHotObservable } = createTestScheduler(false, 1, 1000);
-    const hot = createHotObservable('');
+    const { hot } = createTestScheduler(false, 1, 1000, false);
+    const value = hot('');
 
-    const { subscribedFrame, unsubscribedFrame } = calculateSubscriptionFrame(hot, '--^---!', 1);
+    const { subscribedFrame, unsubscribedFrame } = calculateSubscriptionFrame(value, '--^---!', 1);
 
     expect(subscribedFrame).toEqual(2);
     expect(unsubscribedFrame).toEqual(6);
   });
 
   it('should allow custom frameTimeFactor', () => {
-    const { createHotObservable } = createTestScheduler(false, 1, 1000);
-    const hot = createHotObservable('');
+    const { hot } = createTestScheduler(false, 1, 1000, false);
+    const value = hot('');
 
-    const { subscribedFrame, unsubscribedFrame } = calculateSubscriptionFrame(hot, '--^---!', 10);
+    const { subscribedFrame, unsubscribedFrame } = calculateSubscriptionFrame(value, '--^---!', 10);
 
     expect(subscribedFrame).toEqual(20);
     expect(unsubscribedFrame).toEqual(60);
   });
 
   it('should return adjusted subscription frame with cold observable', () => {
-    const { createColdObservable } = createTestScheduler(false, 1, 1000);
-    const hot = createColdObservable('');
+    const { cold } = createTestScheduler(false, 1, 1000, false);
+    const hot = cold('');
 
     const { subscribedFrame, unsubscribedFrame } = calculateSubscriptionFrame(hot, '--^---!', 1);
 
@@ -41,8 +41,8 @@ describe('calculateSubscriptionFrame', () => {
   });
 
   it('should preserve immediate subscription with cold observable', () => {
-    const { createColdObservable } = createTestScheduler(false, 1, 1000);
-    const hot = createColdObservable('');
+    const { cold } = createTestScheduler(false, 1, 1000, false);
+    const hot = cold('');
 
     const { subscribedFrame, unsubscribedFrame } = calculateSubscriptionFrame(hot, '^---!', 1);
 
@@ -51,18 +51,18 @@ describe('calculateSubscriptionFrame', () => {
   });
 
   it('should return subscription only frame with hot obsrevable', () => {
-    const { createHotObservable } = createTestScheduler(false, 1, 1000);
-    const hot = createHotObservable('');
+    const { hot } = createTestScheduler(false, 1, 1000, false);
+    const value = hot('');
 
-    const { subscribedFrame, unsubscribedFrame } = calculateSubscriptionFrame(hot, '--^---', 1);
+    const { subscribedFrame, unsubscribedFrame } = calculateSubscriptionFrame(value, '--^---', 1);
 
     expect(subscribedFrame).toEqual(2);
     expect(unsubscribedFrame).toEqual(Number.POSITIVE_INFINITY);
   });
 
   it('should return adjusted subscription only frame with cold obsrevable', () => {
-    const { createColdObservable } = createTestScheduler(false, 1, 1000);
-    const hot = createColdObservable('');
+    const { cold } = createTestScheduler(false, 1, 1000, false);
+    const hot = cold('');
 
     const { subscribedFrame, unsubscribedFrame } = calculateSubscriptionFrame(hot, '--^---', 1);
 

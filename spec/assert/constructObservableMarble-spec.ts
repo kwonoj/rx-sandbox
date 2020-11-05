@@ -153,11 +153,11 @@ describe('constructObservableMarble', () => {
   });
 
   it('should create marble with higher order obsrevables', () => {
-    const { createHotObservable } = createTestScheduler(false, 1, 1000);
+    const { hot } = createTestScheduler(false, 1, 1000, false);
 
     const s = '--a--b--|';
-    const a = createHotObservable('--1--2--|');
-    const b = createHotObservable('--3--4--|');
+    const a = hot('--1--2--|');
+    const b = hot('--3--4--|');
     const e = '--ä--ḅ--|';
 
     const source = p(s, { a, b }, null, true);
