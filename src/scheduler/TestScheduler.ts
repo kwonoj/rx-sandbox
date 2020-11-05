@@ -187,4 +187,9 @@ class TestScheduler extends VirtualTimeScheduler {
   }
 }
 
-export { TestScheduler };
+const createTestScheduler = (() => {
+  return (autoFlush: boolean, frameTimeFactor: number, maxFrameValue: number) =>
+    new TestScheduler(autoFlush, frameTimeFactor, maxFrameValue);
+})();
+
+export { createTestScheduler };
