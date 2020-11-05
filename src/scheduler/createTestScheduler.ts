@@ -1,5 +1,6 @@
-import { VirtualAction, VirtualTimeScheduler } from 'rxjs';
+import { SchedulerLike, VirtualAction, VirtualTimeScheduler } from 'rxjs';
 import { Observable, ObservableNotification, Subscription } from 'rxjs';
+import { ReturnTypeWithArgs } from '../interfaces/ReturnTypeWithArgs';
 import { parseObservableMarble } from '../marbles/parseObservableMarble';
 import { SubscriptionMarbleToken } from '../marbles/SubscriptionMarbleToken';
 import { TestMessage } from '../message/TestMessage';
@@ -14,60 +15,30 @@ import {
 } from '../utils/coreInternalImport';
 import { calculateSubscriptionFrame } from './calculateSubscriptionFrame';
 
-const createTestScheduler = (autoFlush: boolean, frameTimeFactor: number, maxFrameValue: number) => {
-  const coldObservables: Array<ColdObservable<any>> = [];
-  const hotObservables: Array<HotObservable<any>> = [];
-  let flushed = false;
-  let flushing = false;
-  const maxFrame = maxFrameValue * frameTimeFactor;
+/**
+ * State to be bind into each function we'll create for testscheduler.
+ */
+interface SandboxState {
+  coldObservables: Array<ColdObservable<any>>;
+  hotObservables: Array<HotObservable<any>>;
+  flushed: boolean;
+  flushing: boolean;
+  maxFrame: Readonly<number>;
+  frameTimeFactor: number;
+  scheduler: VirtualTimeScheduler;
+  autoFlush: boolean;
+}
 
-  const peek = (schedulerInstance: VirtualTimeScheduler) => {
-    const { actions } = schedulerInstance;
-    return actions?.[0] ?? null;
-  };
+/**
+ * Naive utility fn to determine if given object is promise.
+ */
+const isPromise = <T = void>(obj: any): obj is Promise<T> => !!obj && Promise.resolve(obj) == obj;
 
-  const flushUntil = (schedulerInstance: VirtualTimeScheduler, toFrame: number = maxFrame) => {
-    if (flushing) {
-      return;
-    }
-    while (hotObservables.length > 0) {
-      hotObservables.shift()!.setup();
-    }
-
-    flushing = true;
-
-    const { actions } = schedulerInstance;
-    let error: any;
-    let action: AsyncAction<any> | null | undefined = null;
-
-    while (flushing && (action = peek(schedulerInstance)) && action.delay <= toFrame) {
-      const action: AsyncAction<any> = actions.shift()!;
-      schedulerInstance.frame = action.delay;
-
-      if ((error = action.execute(action.state, action.delay))) {
-        break;
-      }
-    }
-
-    flushing = false;
-
-    if (toFrame >= maxFrame) {
-      flushed = true;
-    }
-
-    if (error) {
-      while ((action = actions.shift())) {
-        action.unsubscribe();
-      }
-      throw error;
-    }
-  };
-
-  const scheduler = new VirtualTimeScheduler(VirtualAction, Number.POSITIVE_INFINITY);
-  // @deprecated: will be deprecated, use return value of createScheduler instead
-  (scheduler as any).maxFrame = maxFrame;
-
-  const flush = () => flushUntil(scheduler);
+/**
+ * Creates `createColdObservable` function.
+ */
+const getCreateColdObservable = (state: SandboxState) => {
+  const { frameTimeFactor, maxFrame, scheduler } = state;
 
   function createColdObservable<T = string>(
     marble: string,
@@ -86,9 +57,18 @@ const createTestScheduler = (autoFlush: boolean, frameTimeFactor: number, maxFra
       ? marbleValue
       : (parseObservableMarble(marbleValue, value, error, false, frameTimeFactor, maxFrame) as any);
     const observable = new ColdObservable<T>(messages as Array<TestMessage<T | Array<TestMessage<T>>>>, scheduler);
-    coldObservables.push(observable);
+    state.coldObservables.push(observable);
     return observable;
   }
+
+  return createColdObservable;
+};
+
+/**
+ * Creates `createHotObservable` function.
+ */
+const getCreateHotObservable = (state: SandboxState) => {
+  const { frameTimeFactor, maxFrame, scheduler } = state;
 
   function createHotObservable<T = string>(
     marble: string,
@@ -103,27 +83,157 @@ const createTestScheduler = (autoFlush: boolean, frameTimeFactor: number, maxFra
       ? marbleValue
       : (parseObservableMarble(marbleValue, value, error, false, frameTimeFactor, maxFrame) as any);
     const subject = new HotObservable<T>(messages as Array<TestMessage<T | Array<TestMessage<T>>>>, scheduler);
-    hotObservables.push(subject);
+    state.hotObservables.push(subject);
     return subject;
   }
 
+  return createHotObservable;
+};
+
+/**
+ * Create `flush` functions for given scheduler. If `flushWithAsyncTick` specified,
+ * will create flush function to schedule individual actions into native tick.
+ *
+ * As we don't inherit virtualtimescheduler anymore, only these functions should be
+ * used to properly flush out actions. Calling `scheduler.flush()` will not do any work.
+ */
+function getSchedulerFlushFunctions(state: SandboxState, flushWithAsyncTick: true): {
+  flushUntil: (toFrame?: number) => Promise<void>;
+  advanceTo: (toFrame?: number) => Promise<void>;
+};
+function getSchedulerFlushFunctions(state: SandboxState, flushWithAsyncTick: false): {
+  flushUntil: (toFrame?: number) => void;
+  advanceTo: (toFrame?: number) => void;
+};
+function getSchedulerFlushFunctions(state: SandboxState, flushWithAsyncTick: boolean): any {
+  const { maxFrame, autoFlush } = state;
+
+  const flushUntil = (toFrame: number = maxFrame): Promise<void> | void => {
+    if (state.flushing) {
+      if (flushWithAsyncTick) {
+        return Promise.resolve();
+      }
+    }
+
+    if (state.flushed) {
+      throw new Error(`Cannot schedule to get marbles, scheduler's already flushed`);
+    }
+
+    while (state.hotObservables.length > 0) {
+      state.hotObservables.shift()!.setup();
+    }
+
+    state.flushing = true;
+
+    /**
+     * Custom loop actions to schedule flusing actions synchronously or asynchronously based on flag.
+     *
+     * For synchronous loop, it'll use plain `while` loop. In case of flushing with tick, each action
+     * will be scheduled into promise instead.
+     */
+    function loopActions(loopState: SandboxState,
+                         condition: (loopState: SandboxState) => boolean,
+                         fn: (loopState: SandboxState) => Error | undefined): Promise<Error | undefined> | Error | undefined {
+      if (!flushWithAsyncTick) {
+        let fnResult;
+        while (condition(loopState)) {
+          fnResult = fn(loopState);
+          if (!!fnResult) {
+            break;
+          }
+        }
+
+        return fnResult;
+      } else {
+        function loopWithTick(tickState: SandboxState, error?: Error): Promise<Error | undefined> {
+          if (condition(tickState) && !error) {
+            const p = new Promise<Error | undefined>((res) => res(fn(tickState)));
+            return p.then((result: Error | undefined) => loopWithTick(tickState, result));
+          } else {
+            return Promise.resolve(error);
+          }
+        }
+
+        return loopWithTick(state);
+      }
+    }
+
+    // flush actions via custom loop fn, as same as
+    // https://github.com/kwonoj/rx-sandbox/blob/c2922e5c5e2503739c64af626f2861b1e1f38159/src/scheduler/TestScheduler.ts#L166-L173
+    const loopResult = loopActions(state, (flushState) => {
+      const action = flushState.scheduler.actions[0];
+      return !!action && action.delay <= toFrame;
+    }, (flushState) => {
+      const action = flushState.scheduler.actions.shift()!;
+      flushState.scheduler.frame = action.delay;
+
+      return action.execute(action.state, action.delay);
+    });
+
+    const tearDown = (error?: Error) => {
+      state.flushing = false;
+
+      if (toFrame >= maxFrame) {
+        state.flushed = true;
+      }
+
+      if (error) {
+        const { actions } = state.scheduler;
+        let action: AsyncAction<any> | null | undefined = null;
+        while ((action = actions.shift())) {
+          action.unsubscribe();
+        }
+        throw error;
+      }
+    };
+
+    if (isPromise<Error | undefined>(loopResult)) {
+      return loopResult.then((result) => tearDown(result));
+    } else {
+      tearDown(loopResult);
+    }
+  };
+
   const advanceTo = (toFrame: number) => {
     if (autoFlush) {
-      throw new Error('Cannot advance frame manually with autoflushing scheduler');
+      const error = new Error('Cannot advance frame manually with autoflushing scheduler');
+      if (flushWithAsyncTick) {
+        return Promise.reject(error);
+      }
+      throw error;
     }
 
-    if (toFrame < 0 || toFrame < scheduler.frame) {
-      throw new Error(`Cannot advance frame, given frame is either negative or smaller than current frame`);
+    if (toFrame < 0 || toFrame < state.scheduler.frame) {
+      const error = new Error(`Cannot advance frame, given frame is either negative or smaller than current frame`);
+      if (flushWithAsyncTick) {
+        return Promise.reject(error);
+      }
+      throw error;
     }
 
-    flushUntil(scheduler, toFrame);
-    scheduler.frame = toFrame;
+    const flushResult = flushUntil(toFrame);
+    const tearDown = () => { state.scheduler.frame = toFrame; };
+    return isPromise(flushResult) ? flushResult.then(() => tearDown()) : tearDown();
   };
+
+  return { flushUntil, advanceTo };
+}
+
+type getMessages = <T = string>(observable: Observable<T>, unsubscriptionMarbles?: string | null) => void;
+type getMessagesWithTick = <T = string>(observable: Observable<T>, unsubscriptionMarbles?: string | null) => Promise<void>;
+
+/**
+ * create getMessages function. Depends on flush, this'll either work asynchronously or synchronously.
+ */
+function createGetMessages(state: SandboxState, flush: () => Promise<any>): getMessagesWithTick;
+function createGetMessages(state: SandboxState, flush: () => void): getMessages;
+function createGetMessages(state: SandboxState, flush: Function): Function {
+  const { frameTimeFactor, autoFlush } = state;
 
   const materializeInnerObservable = <T>(observable: Observable<any>, outerFrame: number): Array<TestMessage<T>> => {
     const innerObservableMetadata: Array<TestMessage<T>> = [];
     const pushMetaData = (notification: ObservableNotification<T>) =>
-      innerObservableMetadata.push(new TestMessageValue<T>(scheduler.frame - outerFrame, notification));
+      innerObservableMetadata.push(new TestMessageValue<T>(state.scheduler.frame - outerFrame, notification));
 
     observable.subscribe(
       (value) => pushMetaData(nextNotification(value)),
@@ -143,15 +253,15 @@ const createTestScheduler = (autoFlush: boolean, frameTimeFactor: number, maxFra
 
     const observableMetadata: Array<TestMessage<T | Array<TestMessage<T>>>> = [];
     const pushMetadata = (notification: ObservableNotification<T | Array<TestMessage<T>>>) =>
-      observableMetadata.push(new TestMessageValue<T | Array<TestMessage<T>>>(scheduler.frame, notification));
+      observableMetadata.push(new TestMessageValue<T | Array<TestMessage<T>>>(state.scheduler.frame, notification));
 
     let subscription: Subscription | null = null;
-    scheduler.schedule(() => {
+    state.scheduler.schedule(() => {
       subscription = observable.subscribe(
         (value: T) =>
           pushMetadata(
             nextNotification(
-              value instanceof Observable ? materializeInnerObservable<T>(value, scheduler.frame) : value
+              value instanceof Observable ? materializeInnerObservable<T>(value, state.scheduler.frame) : value
             )
           ),
         (err: any) => pushMetadata(errorNotification(err)),
@@ -160,28 +270,119 @@ const createTestScheduler = (autoFlush: boolean, frameTimeFactor: number, maxFra
     }, subscribedFrame);
 
     if (unsubscribedFrame !== Number.POSITIVE_INFINITY) {
-      scheduler.schedule(() => subscription!.unsubscribe(), unsubscribedFrame);
+      state.scheduler.schedule(() => subscription?.unsubscribe(), unsubscribedFrame);
     }
 
-    if (autoFlush) {
-      if (flushed) {
-        throw new Error(`Cannot schedule to get marbles, scheduler's already flushed`);
-      }
-      flushUntil(scheduler);
+    const flushResult = autoFlush ? flush() : null;
+    if (!isPromise(flushResult)) {
+      return observableMetadata;
     }
 
-    return observableMetadata;
+    return flushResult.then(() => observableMetadata);
   };
 
-  return {
-    scheduler,
-    advanceTo,
-    getMessages,
-    createColdObservable,
-    createHotObservable,
-    flush,
+  return getMessages;
+}
+
+const initializeSandboxState = (autoFlush: boolean, frameTimeFactor: number, maxFrameValue: number): SandboxState => {
+  const maxFrame = maxFrameValue * frameTimeFactor;
+  const result = {
+    coldObservables: [],
+    hotObservables: [],
+    flushed: false,
+    flushing: false,
     maxFrame,
+    frameTimeFactor,
+    scheduler: new VirtualTimeScheduler(VirtualAction, Number.POSITIVE_INFINITY),
+    autoFlush
   };
+
+  // @deprecated: will be deprecated, use return value of createScheduler instead
+  (result.scheduler as any).maxFrame = maxFrame;
+  return result;
 };
 
-export { createTestScheduler };
+interface BaseSchedulerInstance {
+  /**
+   * Test scheduler created for sandbox instance
+   */
+  scheduler: SchedulerLike & {
+    /**
+     * @deprecated: Testscheduler will not expose this property anymore.
+     * Use return value from createTestScheduler instead.
+     */
+    maxFrame: number;
+  };
+
+  /**
+   * Creates a hot observable using marble diagram DSL, or TestMessage.
+   */
+  hot: ReturnType<typeof getCreateHotObservable>;
+  /**
+   * Creates a cold obsrevable using marbld diagram DSL, or TestMessage.
+   */
+  cold: ReturnType<typeof getCreateColdObservable>;
+  /**
+   * Maxmium frame number scheduler will flush into.
+   */
+  maxFrame: number;
+}
+
+interface SchedulerInstance extends BaseSchedulerInstance {
+  /**
+   * Flush out currently scheduled observables, only until reaches frame specfied.
+   */
+  advanceTo: ReturnType<typeof getSchedulerFlushFunctions>['advanceTo'];
+  /**
+   * Flush out currently scheduled observables, fill values returned by `getMarbles`.
+   */
+  flush: () => void;
+  /**
+   * Get array of observable value's metadata TestMessage<T> from observable
+   * created via `hot` or `cold`. Returned array will be filled once scheduler flushes
+   * scheduled actions, either via explicit `flush` or implicit `autoFlush`.
+   */
+  getMessages: ReturnType<typeof createGetMessages>;
+}
+
+interface AsyncSchedulerInstance extends BaseSchedulerInstance {
+  /**
+     * Flush out currently scheduled observables, only until reaches frame specfied.
+     */
+  advanceTo: ReturnTypeWithArgs<typeof getSchedulerFlushFunctions, [SandboxState, true]>['advanceTo'];
+  /**
+   * Flush out currently scheduled observables, fill values returned by `getMarbles`.
+   */
+  flush: () => Promise<void>;
+  /**
+   * Get array of observable value's metadata TestMessage<T> from observable
+   * created via `hot` or `cold`. Returned array will be filled once scheduler flushes
+   * scheduled actions, either via explicit `flush` or implicit `autoFlush`.
+   */
+  getMessages: ReturnTypeWithArgs<typeof createGetMessages, [SandboxState, () => Promise<void>]>;
+}
+
+/**
+ * Creates a new instance of virtualScheduler, along with utility functions for sandbox assertions.
+ */
+function createTestScheduler(autoFlush: boolean, frameTimeFactor: number, maxFrameValue: number, flushWithAsyncTick: true): AsyncSchedulerInstance;
+function createTestScheduler(autoFlush: boolean, frameTimeFactor: number, maxFrameValue: number, flushWithAsyncTick: false): SchedulerInstance;
+function createTestScheduler(autoFlush: boolean, frameTimeFactor: number, maxFrameValue: number, flushWithAsyncTick: boolean): any {
+  const sandboxState = initializeSandboxState(autoFlush, frameTimeFactor, maxFrameValue);
+
+  const { flushUntil, advanceTo } = getSchedulerFlushFunctions(sandboxState, flushWithAsyncTick as any);
+  const flush = () => flushUntil();
+
+  return {
+    //todo: remove casting once maxFrame is deprecated
+    scheduler: sandboxState.scheduler as any,
+    advanceTo,
+    getMessages: createGetMessages(sandboxState, flush),
+    cold: getCreateColdObservable(sandboxState),
+    hot: getCreateHotObservable(sandboxState),
+    flush,
+    maxFrame: sandboxState.maxFrame,
+  };
+}
+
+export { createTestScheduler, SchedulerInstance, AsyncSchedulerInstance };
