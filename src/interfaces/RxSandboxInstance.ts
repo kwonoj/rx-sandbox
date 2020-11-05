@@ -1,6 +1,7 @@
-import { SubscriptionLog } from 'rxjs/dist/types/internal/testing/SubscriptionLog';
-import { TestMessage } from './message/TestMessage';
-import { TestScheduler } from './scheduler/TestScheduler';
+import { SchedulerLike } from 'rxjs';
+import { TestMessage } from '../message/TestMessage';
+import { TestScheduler } from '../scheduler/TestScheduler';
+import { SubscriptionLog } from '../utils/coreInternalImport';
 
 type hotObservable = typeof TestScheduler.prototype.createHotObservable;
 type coldObservable = typeof TestScheduler.prototype.createColdObservable;
@@ -14,11 +15,11 @@ type expectedObservable = <T = string>(
 ) => Readonly<Array<TestMessage<T | Array<TestMessage<T>>>>>;
 type expectedSubscription = (marble: string) => SubscriptionLog;
 
-type RxSandboxInstance = {
+interface RxSandboxInstance {
   /**
    * Test scheduler created for sandbox instance
    */
-  scheduler: TestScheduler;
+  scheduler: SchedulerLike & Pick<TestScheduler, 'maxFrame'>;
   /**
    * Creates a hot observable using marble diagram DSL, or TestMessage.
    */
@@ -49,7 +50,7 @@ type RxSandboxInstance = {
    * Utility function to generate `expected` subscriptions via marble diagram.
    */
   s: expectedSubscription;
-};
+}
 
 export {
   hotObservable,

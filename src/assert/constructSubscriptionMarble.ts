@@ -1,6 +1,6 @@
-import { SubscriptionLog } from 'rxjs/dist/types/internal/testing/SubscriptionLog';
 import { ObservableMarbleToken } from '../marbles/ObservableMarbleToken';
 import { SubscriptionMarbleToken } from '../marbles/SubscriptionMarbleToken';
+import { SubscriptionLog } from '../utils/coreInternalImport';
 
 const MAX_FRAME_LENGTH = 30;
 

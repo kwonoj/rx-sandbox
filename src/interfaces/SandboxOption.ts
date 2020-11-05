@@ -18,4 +18,14 @@ interface SandboxOption {
   maxFrameValue: number;
 }
 
-export { SandboxOption };
+interface AsyncFlushSandboxOption extends Partial<SandboxOption> {
+  /**
+   * Scheduling each actions into next available tick when flush
+   * along with native promises chained in inner observables.
+   *
+   * Scheduler's flush will no longer resolve synchronously.
+   */
+  flushWithAsyncTick: true;
+}
+
+export { SandboxOption, AsyncFlushSandboxOption };

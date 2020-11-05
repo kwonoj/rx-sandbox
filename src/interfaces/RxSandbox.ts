@@ -1,7 +1,8 @@
-import { SubscriptionLog } from 'rxjs/dist/types/internal/testing/SubscriptionLog';
-import { TestMessage } from './message/TestMessage';
+import { TestMessage } from '../message/TestMessage';
+import { SubscriptionLog } from '../utils/coreInternalImport';
+import { RxAsyncSandboxInstance } from './RxAsyncSandboxInstance';
 import { RxSandboxInstance } from './RxSandboxInstance';
-import { SandboxOption } from './SandboxOption';
+import { AsyncFlushSandboxOption, SandboxOption } from './SandboxOption';
 
 export interface RxSandbox {
   /**
@@ -11,6 +12,7 @@ export interface RxSandbox {
    * @return {RxSandboxInstance} instance of test scheduler interfaces.
    */
   create(autoFlush?: boolean, frameTimeFactor?: number, maxFrameValue?: number): RxSandboxInstance;
+  create(options: AsyncFlushSandboxOption): RxAsyncSandboxInstance;
   create(options?: Partial<SandboxOption>): RxSandboxInstance;
   /**
    * Utility assertion method to assert marble based observable test messages.

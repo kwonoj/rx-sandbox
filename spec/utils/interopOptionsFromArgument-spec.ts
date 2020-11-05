@@ -1,4 +1,4 @@
-import { defaultOption, interopOptionsFromArgument } from '../src/interopOptionsFromArgument';
+import { defaultOption, interopOptionsFromArgument } from '../../src/utils/interopOptionsFromArgument';
 
 describe('interopOptionsFromArgument', () => {
   it('should support empty args', () => {

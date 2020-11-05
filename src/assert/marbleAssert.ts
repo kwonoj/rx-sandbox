@@ -1,18 +1,16 @@
 import { TestMessage } from '../message/TestMessage';
+import { SubscriptionLog } from '../utils/coreInternalImport';
 import { constructObservableMarble } from './constructObservableMarble';
 import { constructSubscriptionMarble } from './constructSubscriptionMarble';
 
 //tslint:disable:no-require-imports no-var-requires
 const { matcherHint, printExpected, printReceived } = require('jest-matcher-utils');
 const { default: matchers } = require('expect/build/matchers');
-const { SubscriptionLog } = require('rxjs/dist/cjs/internal/testing/SubscriptionLog');
 //tslint:enbale:no-require-imports no-var-requires
 
 const toEqualAssert = matchers.toEqual.bind({ expand: false });
 
-const subscriptionMarbleAssert = (
-  source: Array<import('rxjs/dist/types/internal/testing/SubscriptionLog').SubscriptionLog>
-) => (expected: Array<import('rxjs/dist/types/internal/testing/SubscriptionLog').SubscriptionLog>) => {
+const subscriptionMarbleAssert = (source: Array<SubscriptionLog>) => (expected: Array<SubscriptionLog>) => {
   const asserted = toEqualAssert(source, expected);
 
   if (!asserted.pass) {
@@ -57,7 +55,6 @@ const observableMarbleAssert = <T = string>(source: Array<TestMessage<T>> | Read
 
   //polymorphic picks up observablemarbleassert first when empty array, manually falls back
   //if expected is subscriptionlog
-  //tslint:disable-next-line no-var-requires no-require-imports
   if ((expected as any).every((x: any) => x instanceof SubscriptionLog)) {
     subscriptionMarbleAssert(source as any)(expected as any);
     return;
@@ -89,11 +86,11 @@ function marbleAssert<T = string>(
   };
 };
 function marbleAssert<T = void>(
-  source: Array<import('rxjs/dist/types/internal/testing/SubscriptionLog').SubscriptionLog>
-): { to: { equal(expected: Array<import('rxjs/dist/types/internal/testing/SubscriptionLog').SubscriptionLog>): void } };
+  source: Array<SubscriptionLog>
+): { to: { equal(expected: Array<SubscriptionLog>): void } };
 function marbleAssert<T = string>(
   source:
-    | Array<import('rxjs/dist/types/internal/testing/SubscriptionLog').SubscriptionLog>
+    | Array<SubscriptionLog>
     | Array<TestMessage<T | Array<TestMessage<T>>>>
     | Readonly<Array<TestMessage<T | Array<TestMessage<T>>>>>
 ): { to: { equal(expected: object): void } } {

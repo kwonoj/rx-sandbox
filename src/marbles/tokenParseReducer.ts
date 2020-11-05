@@ -1,14 +1,7 @@
 import { complete, error as e, next, TestMessage } from '../message/TestMessage';
+import { ColdObservable } from '../utils/coreInternalImport';
 import { ObservableMarbleToken } from './ObservableMarbleToken';
 import { SubscriptionMarbleToken } from './SubscriptionMarbleToken';
-
-//tslint:disable no-var-requires no-require-imports
-const {
-  ColdObservable,
-}: {
-  ColdObservable: typeof import('rxjs/dist/types/internal/testing/ColdObservable').ColdObservable;
-} = require('rxjs/dist/cjs/internal/testing/ColdObservable');
-//tslint:enable no-var-requires no-require-imports
 
 /**
  * @internal

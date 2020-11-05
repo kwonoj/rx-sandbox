@@ -2,24 +2,7 @@ import { mapTo, windowCount } from 'rxjs/operators';
 import { parseObservableMarble } from '../../src/marbles/parseObservableMarble';
 import { complete, error, next, subscribe, TestMessage } from '../../src/message/TestMessage';
 import { TestScheduler } from '../../src/scheduler/TestScheduler';
-
-//tslint:disable no-var-requires no-require-imports
-const {
-  AsyncAction,
-}: {
-  AsyncAction: typeof import('rxjs/dist/types/internal/scheduler/AsyncAction').AsyncAction;
-} = require('rxjs/dist/cjs/internal/scheduler/AsyncAction');
-const {
-  ColdObservable,
-}: {
-  ColdObservable: typeof import('rxjs/dist/types/internal/testing/ColdObservable').ColdObservable;
-} = require('rxjs/dist/cjs/internal/testing/ColdObservable');
-const {
-  HotObservable,
-}: {
-  HotObservable: typeof import('rxjs/dist/types/internal/testing/HotObservable').HotObservable;
-} = require('rxjs/dist/cjs/internal/testing/HotObservable');
-//tslint:enable no-var-requires no-require-imports
+import { AsyncAction, ColdObservable, HotObservable } from '../../src/utils/coreInternalImport';
 
 describe('TestScheduler', () => {
   describe('hotObservable', () => {
