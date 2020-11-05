@@ -7,7 +7,7 @@ const defaultOption = {
   flushWithAsyncTick: false,
 };
 
-const interopOptionsFromArgument = (args: Array<any>): SandboxOption => {
+const interopOptionsFromArgument = (args: Array<any>): SandboxOption & { flushWithAsyncTick: boolean } => {
   if (args.length === 0) {
     return defaultOption;
   }
@@ -19,7 +19,7 @@ const interopOptionsFromArgument = (args: Array<any>): SandboxOption => {
       frameTimeFactor: args[1] ?? defaultOption.frameTimeFactor,
       maxFrameValue: args[2] ?? defaultOption.maxFrameValue,
       flushWithAsyncTick: false,
-    } as any;
+    };
   }
 
   return {
