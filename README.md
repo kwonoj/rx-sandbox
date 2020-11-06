@@ -18,7 +18,7 @@ For RxJS 5 support, check pre-1.x versions. 1.x supports latest RxJS 6.x.
 
 # Install
 
-This has a peer dependencies of `rxjs@6.*.*`, which will have to be installed as well
+This has a peer dependencies of `rxjs@6.*.*`, which will have to be installed as well. `2.0.0-beta.*` is available to support latest `rxjs@7.x` beta version.
 
 ```sh
 npm install rx-sandbox
@@ -241,7 +241,7 @@ expect(messages).to.deep.equal(expected);
 expect(() => getMessages(e1.mapTo('y'))).to.throw();
 ```
 
-### Scheduling flush into native async tick (Experimental)
+### Scheduling flush into native async tick (Experimental, 2.0 only)
 
 If you create sandbox instance with `flushWithAsyncTick` option, sandbox will return instance of `RxAsyncSandboxInstance` which all of flush interfaces need to be asynchronously awaited:
 
