@@ -5,20 +5,20 @@
 # RxSandbox
 
 `RxSandbox` is test suite for RxJS, based on marble diagram DSL for easier assertion around Observables.
-For RxJS 5 support, check pre-1.x versions. 1.x supports latest RxJS 6.x.
+For RxJS 5 support, check pre-1.x versions. 1.x supports latest RxJS 6.x. 2.0.0-beta.* is available to support latest `rxjs@7.x` beta version.
 
 ## What's difference with `TestScheduler` in RxJS?
 
-`RxJS` 5's test cases are written via its own [`TestScheduler`](https://github.com/ReactiveX/rxjs/blob/9267b30ebc982e1845843f85866906496b3aaa8f/src/testing/TestScheduler.ts) implementation. While it still can be used for testing any other Observable based codes its ergonomics are not user code friendly, reason why core repo tracks [issue](https://github.com/ReactiveX/rxjs/issues/1775) to provide separate package for general usage. RxSandbox aims to resolve those ergonomics with few design goals
+RxJs core itself includes its own [`TestScheduler`](https://github.com/ReactiveX/rxjs/blob/c63de0d380a923987aab587720473fad1d205d71/docs_app/content/guide/testing/marble-testing.md#testing-rxjs-code-with-marble-diagrams) implementation. With latest updates, it have different semantics around how to translate [`virtual frame` and `time progression`](https://github.com/ReactiveX/rxjs/blob/c63de0d380a923987aab587720473fad1d205d71/docs_app/content/guide/testing/marble-testing.md#time-progression-syntax) also slightly different api surfaces based on callbacks. RxSandbox aims to provide test interface with below design goals, bit different to core's test scheduler.
 
-- Provides feature parity to `TestScheduler`
 - Support extended marble diagram DSL
 - Near-zero configuration, works out of box
 - No dependencies to specific test framework
+- Flexible `TestMessage` support: test can be created from marble syntax, but also can be created from plain objects.
 
 # Install
 
-This has a peer dependencies of `rxjs@6.*.*`, which will have to be installed as well. `2.0.0-beta.*` is available to support latest `rxjs@7.x` beta version.
+This has a peer dependencies of `rxjs@6.*.*`, which will have to be installed as well.
 
 ```sh
 npm install rx-sandbox
@@ -62,9 +62,7 @@ const obs5 = ` - --a- -|`;
 //`            0 1234 56, emits `a` on frame 3, completes on frame 6
 const obs6 = `--...4...--|`
 //`           01......5678, completes on 8
-
 ```
-
 
 
 ## Subscription marble diagram token description
@@ -241,7 +239,7 @@ expect(messages).to.deep.equal(expected);
 expect(() => getMessages(e1.mapTo('y'))).to.throw();
 ```
 
-### Scheduling flush into native async tick (Experimental, 2.0 only)
+#### Scheduling flush into native async tick (Experimental, 2.0 only)
 
 If you create sandbox instance with `flushWithAsyncTick` option, sandbox will return instance of `RxAsyncSandboxInstance` which all of flush interfaces need to be asynchronously awaited:
 
@@ -264,7 +262,7 @@ const epic = (actionObservable) => actionObservable.ofType(...).pipe((mergeMap) 
 
 Testing this epic via rxSandbox won't work. Once sandbox flush all internal actions synchronously, promises are still scheduled into next tick so there's no inner observable subscription value collected by flush. `RxAsyncSandboxInstance` in opposite no longer flush actions synchronously but schedule each individual action into promise tick to try to collect values from async functions.
 
-**NOTE: this is beta feature and likely have some issues. Also Until stablized internal implementation can change without semver breaking.**
+**NOTE: this is beta feature and likely have some issues. Also until stablized internal implementation can change without semver breaking.**
 
 #### Custom frame time factor
 
@@ -303,6 +301,7 @@ const messages = getMessages(source.mapTo('x'));
 flush();
 
 marbleAssert(messages).to.equal(expected);
+marbleAssert(messages).toEqual(expected); // if you prefer jasmin / jest style matcher syntax
 marbleAssert(source.subscriptions).to.equal([sub]);
 ```
 
