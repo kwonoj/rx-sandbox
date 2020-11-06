@@ -1,3 +1,31 @@
+# [2.0.0-beta.3](https://github.com/kwonoj/rx-sandbox/compare/v2.0.0-beta.2...v2.0.0-beta.3) (2020-11-06)
+
+
+### Bug Fixes
+
+* **sandboxinstance:** expose scheduler instance ([6ada7a5](https://github.com/kwonoj/rx-sandbox/commit/6ada7a52c7e9bd25ae83b41eba1e786b194ffc93))
+
+
+### Features
+
+* **creattestscheduler:** support flush with native async tick ([93a99a4](https://github.com/kwonoj/rx-sandbox/commit/93a99a45bf63698f4e721a75f85fbf22f74eea68))
+* **marbleassert:** jasmine style toEqual() matcher ([6dcc7f8](https://github.com/kwonoj/rx-sandbox/commit/6dcc7f89936f971da66e0e4d0b286203b0fa68b9))
+* **sandbox:** accept config object ([3464710](https://github.com/kwonoj/rx-sandbox/commit/346471048564667c3a41df256467299fcb43eaa0))
+* **sandbox:** expose interface to create async flush scheduler ([f20fb40](https://github.com/kwonoj/rx-sandbox/commit/f20fb4088ae3fb2d3ee8501fa38b392685a67063))
+* **sandbox:** support to create async flush instance ([b9c5e71](https://github.com/kwonoj/rx-sandbox/commit/b9c5e71281cc3fd7def2c39ea94ab21c767585a8))
+
+
+### BREAKING CHANGES
+
+* **sandboxinstance:** scheduler no longer expose `maxFrame` property. use
+property returned by `sandbox.create()`.
+* **sandbox:** no longer directly export signatures for utilities,
+such as `getMessages` due to overloaded signature behaviors. Use
+`RxSandboxInstance['name']` or `RxAsyncSandboxInstance['name']` instead
+to pick up signatures.
+
+
+
 ## [1.0.4](https://github.com/kwonoj/rx-sandbox/compare/v1.0.3...v1.0.4) (2020-11-02)
 
 
