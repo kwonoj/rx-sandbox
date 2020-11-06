@@ -15,6 +15,17 @@ describe('rxSandbox', () => {
     expect(first).not.toEqual(second);
   });
 
+  it('should able to create async tick flush instance', async () => {
+    expect.assertions(1);
+
+    const sandbox = idx.rxSandbox;
+
+    const instance = sandbox.create({flushWithAsyncTick: true});
+
+    // verify instance returns promise based interfaces
+    await instance.flush().then(() => expect(true).toBeTruthy());
+  });
+
   it('should able to create instance with autoflush', () => {
     const sandbox = idx.rxSandbox;
 

@@ -1,6 +1,6 @@
 import { parseObservableMarble } from '../../src/marbles/parseObservableMarble';
 import { complete, error, next } from '../../src/message/TestMessage';
-import { TestScheduler } from '../../src/scheduler/TestScheduler';
+import { createTestScheduler } from '../../src/scheduler/createTestScheduler';
 import { ColdObservable } from '../../src/utils/coreInternalImport';
 
 describe('parseObservableMarble', () => {
@@ -205,10 +205,10 @@ describe('parseObservableMarble', () => {
   });
 
   it('should able to flatten inner observable', () => {
-    const scheduler = new TestScheduler(false, 1, 1000);
+    const { cold } = createTestScheduler(false, 1, 1000, false);
 
     const marble = '                            --a--|';
-    const inner = scheduler.createColdObservable('---1--');
+    const inner = cold('---1--');
 
     const messages = parseObservableMarble(marble, { a: inner }, null, true);
     const expected = [next(2, [next(3, '1')]), complete(5)];
