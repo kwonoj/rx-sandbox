@@ -17,13 +17,24 @@ export {
 type marbleAssertion = typeof marbleAssert;
 
 /**
- * Creates new instance of test scheduler for testing observables.
+ * Creates a new instance of test scheduler for testing observables.
+ *
+ * @return {RxSandboxInstance} instance of test scheduler interfaces.
+ */
+function create(autoFlush?: boolean, frameTimeFactor?: number, maxFrameValue?: number): RxSandboxInstance;
+/**
+ * Creates a new instance of test scheduler flushes action with native async tick for testing observables.
+ *
+ * NOTE: this is beta feature and likely have some issues. Also Until stablized internal implementation can change without sember breaking.
+ * @param {AsyncFlushSandboxOption} [options] customizable options to create test scheduler
+ */
+function create(options: AsyncFlushSandboxOption): RxAsyncSandboxInstance;
+/**
+ * Creates a new instance of test scheduler for testing observables.
  *
  * @param {SandboxOptions} [options] customizable options to create test scheduler.
  * @return {RxSandboxInstance} instance of test scheduler interfaces.
  */
-function create(autoFlush?: boolean, frameTimeFactor?: number, maxFrameValue?: number): RxSandboxInstance;
-function create(options: AsyncFlushSandboxOption): RxAsyncSandboxInstance;
 function create(options?: Partial<SandboxOption>): RxSandboxInstance;
 function create(...args: Array<any>): any {
   const { autoFlush, frameTimeFactor, maxFrameValue, flushWithAsyncTick } = interopOptionsFromArgument(args);

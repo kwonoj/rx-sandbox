@@ -121,6 +121,13 @@ it('testcase', () => {
 
 ```typescript
 rxSandbox.create(autoFlush?: boolean, frameTimeFactor?: number, maxFrameValue?: number): RxSandboxInstance
+
+rxSandbox.create({
+  autoFlush?: boolean,
+  frameTimeFactor?: number,
+  maxFrameValue?: boolean,
+  flushWithAsyncTick?: boolean,
+}): RxSandboxInstance | RxAsyncSandboxInstance
 ```
 
 `frameTimeFactor` allows to override default frame passage `1` to given value.
@@ -232,8 +239,32 @@ expect(messages).to.deep.equal(expected);
 
 //subsequent attempt will throw
 expect(() => getMessages(e1.mapTo('y'))).to.throw();
+```
+
+### Scheduling flush into native async tick (Experimental)
+
+If you create sandbox instance with `flushWithAsyncTick` option, sandbox will return instance of `RxAsyncSandboxInstance` which all of flush interfaces need to be asynchronously awaited:
 
 ```
+interface RxAsyncSandboxInstance {
+  ...,
+  advanceTo(toFrame: number) => Promise<void>;
+  flush: () => Promise<void>;
+  getMessages: <T = string>(observable: Observable<T>, unsubscriptionMarbles?: string | null) => Promise<void>;
+}
+```
+
+It is not uncommon practices chaining native async function or promise inside of observables, especially for inner observables. Let's say if there's a redux-observable epic like below
+
+```
+const epic = (actionObservable) => actionObservable.ofType(...).pipe((mergeMap) => {
+  return new Promise.resolve(...);
+})
+```
+
+Testing this epic via rxSandbox won't work. Once sandbox flush all internal actions synchronously, promises are still scheduled into next tick so there's no inner observable subscription value collected by flush. `RxAsyncSandboxInstance` in opposite no longer flush actions synchronously but schedule each individual action into promise tick to try to collect values from async functions.
+
+**NOTE: this is beta feature and likely have some issues. Also Until stablized internal implementation can change without semver breaking.**
 
 #### Custom frame time factor
 
