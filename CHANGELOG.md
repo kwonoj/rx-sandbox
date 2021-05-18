@@ -1,3 +1,12 @@
+## [2.0.2](https://github.com/kwonoj/rx-sandbox/compare/v2.0.1...v2.0.2) (2021-05-18)
+
+
+### Bug Fixes
+
+* **testmessage:** wide notificationtype<T> ([b167aff](https://github.com/kwonoj/rx-sandbox/commit/b167affd8fb9e3a63e0cc747f362e9b78f85e2a1))
+
+
+
 ## [2.0.1](https://github.com/kwonoj/rx-sandbox/compare/v2.0.0...v2.0.1) (2021-05-18)
 
 
