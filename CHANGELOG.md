@@ -1,3 +1,12 @@
+# [2.0.0](https://github.com/kwonoj/rx-sandbox/compare/v2.0.0-beta.3...v2.0.0) (2021-05-18)
+
+
+### Features
+
+* **sandbox:** support v7.0.1 ([3f40757](https://github.com/kwonoj/rx-sandbox/commit/3f407573fc702432029eae865d1c92103e154b73))
+
+
+
 # [2.0.0-beta.3](https://github.com/kwonoj/rx-sandbox/compare/v2.0.0-beta.2...v2.0.0-beta.3) (2020-11-06)
 
 
