@@ -1,10 +1,5 @@
 import { ObservableNotification } from 'rxjs';
-import {
-  COMPLETE_NOTIFICATION,
-  errorNotification,
-  nextNotification,
-  SubscriptionLog,
-} from '../utils/coreInternalImport';
+import { SubscriptionLog } from '../utils/coreInternalImport';
 
 /**
  * Represents interface for single metadata value emitted by HotObservable<T> or ColdObservable<T>
@@ -29,8 +24,7 @@ class TestMessageValue<T = string> implements TestMessage<T> {
  * @param value
  */
 
-const next = <T = string>(frame: number, value: T): TestMessage<T> =>
-  new TestMessageValue(frame, nextNotification(value));
+const next = <T = string>(frame: number, value: T): TestMessage<T> => new TestMessageValue(frame, { kind: 'N', value });
 
 /**
  * Utility function to generate TestMessage represents error for Observer::error()
@@ -38,13 +32,13 @@ const next = <T = string>(frame: number, value: T): TestMessage<T> =>
  * @param value
  */
 const error = (frame: number, error: any = '#'): TestMessage<any> =>
-  new TestMessageValue<any>(frame, errorNotification(error));
+  new TestMessageValue<any>(frame, { kind: 'E', error });
 
 /**
  * Utility function to generate TestMessage represents completion for Observer::complete()
  * @param frame virtual frame time when value will be emitted
  */
-const complete = <T = void>(frame: number): TestMessage<T> => new TestMessageValue<T>(frame, COMPLETE_NOTIFICATION);
+const complete = <T = void>(frame: number): TestMessage<T> => new TestMessageValue<T>(frame, { kind: 'C' });
 
 const subscribe = (
   subscribedFrame: number = Number.POSITIVE_INFINITY,

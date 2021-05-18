@@ -5,14 +5,7 @@ import { parseObservableMarble } from '../marbles/parseObservableMarble';
 import { SubscriptionMarbleToken } from '../marbles/SubscriptionMarbleToken';
 import { TestMessage } from '../message/TestMessage';
 import { TestMessageValue } from '../message/TestMessage';
-import {
-  AsyncAction,
-  ColdObservable,
-  COMPLETE_NOTIFICATION,
-  errorNotification,
-  HotObservable,
-  nextNotification,
-} from '../utils/coreInternalImport';
+import { AsyncAction, ColdObservable, HotObservable } from '../utils/coreInternalImport';
 import { calculateSubscriptionFrame } from './calculateSubscriptionFrame';
 
 /**
@@ -97,11 +90,17 @@ const getCreateHotObservable = (state: SandboxState) => {
  * As we don't inherit virtualtimescheduler anymore, only these functions should be
  * used to properly flush out actions. Calling `scheduler.flush()` will not do any work.
  */
-function getSchedulerFlushFunctions(state: SandboxState, flushWithAsyncTick: true): {
+function getSchedulerFlushFunctions(
+  state: SandboxState,
+  flushWithAsyncTick: true
+): {
   flushUntil: (toFrame?: number) => Promise<void>;
   advanceTo: (toFrame?: number) => Promise<void>;
 };
-function getSchedulerFlushFunctions(state: SandboxState, flushWithAsyncTick: false): {
+function getSchedulerFlushFunctions(
+  state: SandboxState,
+  flushWithAsyncTick: false
+): {
   flushUntil: (toFrame?: number) => void;
   advanceTo: (toFrame?: number) => void;
 };
@@ -131,9 +130,11 @@ function getSchedulerFlushFunctions(state: SandboxState, flushWithAsyncTick: boo
      * For synchronous loop, it'll use plain `while` loop. In case of flushing with tick, each action
      * will be scheduled into promise instead.
      */
-    function loopActions(loopState: SandboxState,
-                         condition: (loopState: SandboxState) => boolean,
-                         fn: (loopState: SandboxState) => Error | undefined): Promise<Error | undefined> | Error | undefined {
+    function loopActions(
+      loopState: SandboxState,
+      condition: (loopState: SandboxState) => boolean,
+      fn: (loopState: SandboxState) => Error | undefined
+    ): Promise<Error | undefined> | Error | undefined {
       if (!flushWithAsyncTick) {
         let fnResult;
         while (condition(loopState)) {
@@ -160,15 +161,19 @@ function getSchedulerFlushFunctions(state: SandboxState, flushWithAsyncTick: boo
 
     // flush actions via custom loop fn, as same as
     // https://github.com/kwonoj/rx-sandbox/blob/c2922e5c5e2503739c64af626f2861b1e1f38159/src/scheduler/TestScheduler.ts#L166-L173
-    const loopResult = loopActions(state, (flushState) => {
-      const action = flushState.scheduler.actions[0];
-      return !!action && action.delay <= toFrame;
-    }, (flushState) => {
-      const action = flushState.scheduler.actions.shift()!;
-      flushState.scheduler.frame = action.delay;
+    const loopResult = loopActions(
+      state,
+      (flushState) => {
+        const action = flushState.scheduler.actions[0];
+        return !!action && action.delay <= toFrame;
+      },
+      (flushState) => {
+        const action = flushState.scheduler.actions.shift()!;
+        flushState.scheduler.frame = action.delay;
 
-      return action.execute(action.state, action.delay);
-    });
+        return action.execute(action.state, action.delay);
+      }
+    );
 
     const tearDown = (error?: Error) => {
       state.flushing = false;
@@ -212,7 +217,9 @@ function getSchedulerFlushFunctions(state: SandboxState, flushWithAsyncTick: boo
     }
 
     const flushResult = flushUntil(toFrame);
-    const tearDown = () => { state.scheduler.frame = toFrame; };
+    const tearDown = () => {
+      state.scheduler.frame = toFrame;
+    };
     return isPromise(flushResult) ? flushResult.then(() => tearDown()) : tearDown();
   };
 
@@ -220,7 +227,10 @@ function getSchedulerFlushFunctions(state: SandboxState, flushWithAsyncTick: boo
 }
 
 type getMessages = <T = string>(observable: Observable<T>, unsubscriptionMarbles?: string | null) => void;
-type getMessagesWithTick = <T = string>(observable: Observable<T>, unsubscriptionMarbles?: string | null) => Promise<void>;
+type getMessagesWithTick = <T = string>(
+  observable: Observable<T>,
+  unsubscriptionMarbles?: string | null
+) => Promise<void>;
 
 /**
  * create getMessages function. Depends on flush, this'll either work asynchronously or synchronously.
@@ -235,11 +245,11 @@ function createGetMessages(state: SandboxState, flush: Function): Function {
     const pushMetaData = (notification: ObservableNotification<T>) =>
       innerObservableMetadata.push(new TestMessageValue<T>(state.scheduler.frame - outerFrame, notification));
 
-    observable.subscribe(
-      (value) => pushMetaData(nextNotification(value)),
-      (err) => pushMetaData(errorNotification(err)),
-      () => pushMetaData(COMPLETE_NOTIFICATION)
-    );
+    observable.subscribe({
+      next: (value) => pushMetaData({ kind: 'N', value }),
+      error: (error) => pushMetaData({ kind: 'E', error }),
+      complete: () => pushMetaData({ kind: 'C' }),
+    });
 
     return innerObservableMetadata;
   };
@@ -257,16 +267,15 @@ function createGetMessages(state: SandboxState, flush: Function): Function {
 
     let subscription: Subscription | null = null;
     state.scheduler.schedule(() => {
-      subscription = observable.subscribe(
-        (value: T) =>
-          pushMetadata(
-            nextNotification(
-              value instanceof Observable ? materializeInnerObservable<T>(value, state.scheduler.frame) : value
-            )
-          ),
-        (err: any) => pushMetadata(errorNotification(err)),
-        () => pushMetadata(COMPLETE_NOTIFICATION)
-      );
+      subscription = observable.subscribe({
+        next: (value: T) =>
+          pushMetadata({
+            kind: 'N',
+            value: value instanceof Observable ? materializeInnerObservable<T>(value, state.scheduler.frame) : value,
+          }),
+        error: (error: any) => pushMetadata({ kind: 'E', error }),
+        complete: () => pushMetadata({ kind: 'C' }),
+      });
     }, subscribedFrame);
 
     if (unsubscribedFrame !== Number.POSITIVE_INFINITY) {
@@ -294,7 +303,7 @@ const initializeSandboxState = (autoFlush: boolean, frameTimeFactor: number, max
     maxFrame,
     frameTimeFactor,
     scheduler: new VirtualTimeScheduler(VirtualAction, Number.POSITIVE_INFINITY),
-    autoFlush
+    autoFlush,
   };
 };
 
@@ -337,8 +346,8 @@ interface SchedulerInstance extends BaseSchedulerInstance {
 
 interface AsyncSchedulerInstance extends BaseSchedulerInstance {
   /**
-     * Flush out currently scheduled observables, only until reaches frame specfied.
-     */
+   * Flush out currently scheduled observables, only until reaches frame specfied.
+   */
   advanceTo: ReturnTypeWithArgs<typeof getSchedulerFlushFunctions, [SandboxState, true]>['advanceTo'];
   /**
    * Flush out currently scheduled observables, fill values returned by `getMarbles`.
@@ -355,9 +364,24 @@ interface AsyncSchedulerInstance extends BaseSchedulerInstance {
 /**
  * Creates a new instance of virtualScheduler, along with utility functions for sandbox assertions.
  */
-function createTestScheduler(autoFlush: boolean, frameTimeFactor: number, maxFrameValue: number, flushWithAsyncTick: true): AsyncSchedulerInstance;
-function createTestScheduler(autoFlush: boolean, frameTimeFactor: number, maxFrameValue: number, flushWithAsyncTick: false): SchedulerInstance;
-function createTestScheduler(autoFlush: boolean, frameTimeFactor: number, maxFrameValue: number, flushWithAsyncTick: boolean): any {
+function createTestScheduler(
+  autoFlush: boolean,
+  frameTimeFactor: number,
+  maxFrameValue: number,
+  flushWithAsyncTick: true
+): AsyncSchedulerInstance;
+function createTestScheduler(
+  autoFlush: boolean,
+  frameTimeFactor: number,
+  maxFrameValue: number,
+  flushWithAsyncTick: false
+): SchedulerInstance;
+function createTestScheduler(
+  autoFlush: boolean,
+  frameTimeFactor: number,
+  maxFrameValue: number,
+  flushWithAsyncTick: boolean
+): any {
   const sandboxState = initializeSandboxState(autoFlush, frameTimeFactor, maxFrameValue);
 
   const { flushUntil, advanceTo } = getSchedulerFlushFunctions(sandboxState, flushWithAsyncTick as any);
