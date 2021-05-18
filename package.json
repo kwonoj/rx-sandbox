@@ -1,13 +1,9 @@
 {
   "name": "rx-sandbox",
-  "version": "2.0.0-beta.3",
+  "version": "2.0.0",
   "description": "Marble diagram DSL based test suite for RxJS 6",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "engines": {
-    "npm": ">=3.0.0",
-    "node": ">=4.2.4"
-  },
   "lint-staged": {
     "*.{ts,js}": [
       "prettier --write --single-quote --print-width 120 --jsx-bracket-same-line true",
