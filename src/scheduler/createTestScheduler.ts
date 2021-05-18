@@ -226,11 +226,14 @@ function getSchedulerFlushFunctions(state: SandboxState, flushWithAsyncTick: boo
   return { flushUntil, advanceTo };
 }
 
-type getMessages = <T = string>(observable: Observable<T>, unsubscriptionMarbles?: string | null) => void;
+type getMessages = <T = string>(
+  observable: Observable<T>,
+  unsubscriptionMarbles?: string | null
+) => Array<TestMessage<T | Array<TestMessage<T>>>>;
 type getMessagesWithTick = <T = string>(
   observable: Observable<T>,
   unsubscriptionMarbles?: string | null
-) => Promise<void>;
+) => Promise<Array<TestMessage<T | Array<TestMessage<T>>>>>;
 
 /**
  * create getMessages function. Depends on flush, this'll either work asynchronously or synchronously.

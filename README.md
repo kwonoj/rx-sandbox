@@ -5,7 +5,7 @@
 # RxSandbox
 
 `RxSandbox` is test suite for RxJS, based on marble diagram DSL for easier assertion around Observables.
-For RxJS 5 support, check pre-1.x versions. 1.x supports latest RxJS 6.x. 2.0.0-beta.* is available to support latest `rxjs@7.x` beta version.
+For RxJS 5 support, check pre-1.x versions. 1.x supports latest RxJS 6.x. 2.* is available to support `rxjs@7.0.1` and above.
 
 ## What's difference with `TestScheduler` in RxJS?
 
