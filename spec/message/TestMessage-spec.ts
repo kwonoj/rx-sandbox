@@ -1,9 +1,9 @@
+import { ObservableNotification } from 'rxjs';
 import { complete, error, next, subscribe, TestMessageValue } from '../../src/message/TestMessage';
-import { COMPLETE_NOTIFICATION, errorNotification, nextNotification } from '../../src/utils/coreInternalImport';
 
 describe('TestMessageValue', () => {
   it('should create metadata', () => {
-    const notification = nextNotification('meh');
+    const notification = { kind: 'N', value: 'meh' } as ObservableNotification<string>;
 
     const message = new TestMessageValue(10, notification);
 
@@ -15,19 +15,19 @@ describe('TestMessageValue', () => {
     it('should create next', () => {
       const value = next(10, 'meh');
 
-      expect(value).toEqual(new TestMessageValue(10, nextNotification('meh')));
+      expect(value).toEqual(new TestMessageValue(10, { kind: 'N', value: 'meh' }));
     });
 
     it('should create error', () => {
       const errorValue = error(10, 'meh');
 
-      expect(errorValue).toEqual(new TestMessageValue(10, errorNotification('meh')));
+      expect(errorValue).toEqual(new TestMessageValue(10, { kind: 'E', error: 'meh' }));
     });
 
     it('should create complete', () => {
       const completeValue = complete(10);
 
-      expect(completeValue).toEqual(new TestMessageValue(10, COMPLETE_NOTIFICATION));
+      expect(completeValue).toEqual(new TestMessageValue(10, { kind: 'C' }));
     });
 
     it('should create subscription log', () => {
