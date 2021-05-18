@@ -49,7 +49,7 @@ const getCreateColdObservable = (state: SandboxState) => {
     const messages = Array.isArray(marbleValue)
       ? marbleValue
       : (parseObservableMarble(marbleValue, value, error, false, frameTimeFactor, maxFrame) as any);
-    const observable = new ColdObservable<T>(messages as Array<TestMessage<T | Array<TestMessage<T>>>>, scheduler);
+    const observable = new ColdObservable<T>(messages, scheduler);
     state.coldObservables.push(observable);
     return observable;
   }
@@ -75,7 +75,7 @@ const getCreateHotObservable = (state: SandboxState) => {
     const messages = Array.isArray(marbleValue)
       ? marbleValue
       : (parseObservableMarble(marbleValue, value, error, false, frameTimeFactor, maxFrame) as any);
-    const subject = new HotObservable<T>(messages as Array<TestMessage<T | Array<TestMessage<T>>>>, scheduler);
+    const subject = new HotObservable<T>(messages, scheduler);
     state.hotObservables.push(subject);
     return subject;
   }
