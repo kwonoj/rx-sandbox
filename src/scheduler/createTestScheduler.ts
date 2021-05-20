@@ -49,7 +49,7 @@ const getCreateColdObservable = (state: SandboxState) => {
     const messages = Array.isArray(marbleValue)
       ? marbleValue
       : (parseObservableMarble(marbleValue, value, error, false, frameTimeFactor, maxFrame) as any);
-    const observable = new ColdObservable<T>(messages as Array<TestMessage<T | Array<TestMessage<T>>>>, scheduler);
+    const observable = new ColdObservable<T>(messages, scheduler);
     state.coldObservables.push(observable);
     return observable;
   }
@@ -75,7 +75,7 @@ const getCreateHotObservable = (state: SandboxState) => {
     const messages = Array.isArray(marbleValue)
       ? marbleValue
       : (parseObservableMarble(marbleValue, value, error, false, frameTimeFactor, maxFrame) as any);
-    const subject = new HotObservable<T>(messages as Array<TestMessage<T | Array<TestMessage<T>>>>, scheduler);
+    const subject = new HotObservable<T>(messages, scheduler);
     state.hotObservables.push(subject);
     return subject;
   }
@@ -226,11 +226,14 @@ function getSchedulerFlushFunctions(state: SandboxState, flushWithAsyncTick: boo
   return { flushUntil, advanceTo };
 }
 
-type getMessages = <T = string>(observable: Observable<T>, unsubscriptionMarbles?: string | null) => void;
+type getMessages = <T = string>(
+  observable: Observable<T>,
+  unsubscriptionMarbles?: string | null
+) => Array<TestMessage<T | Array<TestMessage<T>>>>;
 type getMessagesWithTick = <T = string>(
   observable: Observable<T>,
   unsubscriptionMarbles?: string | null
-) => Promise<void>;
+) => Promise<Array<TestMessage<T | Array<TestMessage<T>>>>>;
 
 /**
  * create getMessages function. Depends on flush, this'll either work asynchronously or synchronously.

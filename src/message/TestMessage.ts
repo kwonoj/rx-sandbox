@@ -2,12 +2,23 @@ import { ObservableNotification } from 'rxjs';
 import { SubscriptionLog } from '../utils/coreInternalImport';
 
 /**
+ * Expanded structured type of `ObservableNotification<T>` since we can't narrow down
+ * TestMessage<T> to specific notification types, instead provide wide support
+ */
+interface NotificationType<T> {
+  kind: 'N' | 'E' | 'C';
+  value?: T;
+  error?: any;
+}
+
+/**
  * Represents interface for single metadata value emitted by HotObservable<T> or ColdObservable<T>
  *
  */
 interface TestMessage<T = string> {
   frame: number;
-  notification: ObservableNotification<T>;
+
+  notification: NotificationType<T>;
 }
 
 /**
