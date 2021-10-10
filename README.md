@@ -5,7 +5,7 @@
 # RxSandbox
 
 `RxSandbox` is test suite for RxJS, based on marble diagram DSL for easier assertion around Observables.
-For RxJS 5 support, check pre-1.x versions. 1.x supports latest RxJS 6.x. 2.* is available to support `rxjs@7.0.1` and above.
+For RxJS 5 support, check pre-1.x versions. 1.x supports latest RxJS 6.x. 2.* supports rxjs@7.0.1 and above.
 
 ## What's difference with `TestScheduler` in RxJS?
 
@@ -18,7 +18,7 @@ RxJs core itself includes its own [`TestScheduler`](https://github.com/ReactiveX
 
 # Install
 
-This has a peer dependencies of `rxjs@6.*.*`, which will have to be installed as well.
+This has a peer dependencies of `rxjs`, which will have to be installed as well.
 
 ```sh
 npm install rx-sandbox
