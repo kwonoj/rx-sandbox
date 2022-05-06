@@ -67,7 +67,7 @@
   },
   "dependencies": {
     "expect": "^27.2.5",
-    "jest-matcher-utils": "^27.2.5"
+    "jest-matcher-utils": "^28.1.0"
   },
   "husky": {
     "hooks": {
