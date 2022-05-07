@@ -1,3 +1,9 @@
+## [2.0.4](https://github.com/kwonoj/rx-sandbox/compare/v2.0.3...v2.0.4) (2022-05-07)
+
+### Features
+
+* **package**: bump up jest@28
+
 ## [2.0.3](https://github.com/kwonoj/rx-sandbox/compare/v2.0.2...v2.0.3) (2021-10-10)
 
 
