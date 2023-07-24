@@ -46,35 +46,35 @@ ${asserted.message()}
   }
 };
 
-const observableMarbleAssert = <T = string>(source: Array<TestMessage<T>> | Readonly<Array<TestMessage<T>>>) => (
-  expected: Array<TestMessage<T>> | Readonly<Array<TestMessage<T>>>
-) => {
-  if (!Array.isArray(expected)) {
-    throw new Error('Expected value is not array');
-  }
+const observableMarbleAssert =
+  <T extends Object = string>(source: Array<TestMessage<T>> | Readonly<Array<TestMessage<T>>>) =>
+  (expected: Array<TestMessage<T>> | Readonly<Array<TestMessage<T>>>) => {
+    if (!Array.isArray(expected)) {
+      throw new Error('Expected value is not array');
+    }
 
-  //polymorphic picks up observablemarbleassert first when empty array, manually falls back
-  //if expected is subscriptionlog
-  if ((expected as any).every((x: any) => x instanceof SubscriptionLog)) {
-    subscriptionMarbleAssert(source as any)(expected as any);
-    return;
-  }
+    //polymorphic picks up observablemarbleassert first when empty array, manually falls back
+    //if expected is subscriptionlog
+    if ((expected as any).every((x: any) => x instanceof SubscriptionLog)) {
+      subscriptionMarbleAssert(source as any)(expected as any);
+      return;
+    }
 
-  const sourceMarble = constructObservableMarble(source);
-  const expectedMarble = constructObservableMarble(expected);
+    const sourceMarble = constructObservableMarble(source);
+    const expectedMarble = constructObservableMarble(expected);
 
-  const asserted = toEqualAssert(source, expected);
+    const asserted = toEqualAssert(source, expected);
 
-  if (!asserted.pass) {
-    const description = `
+    if (!asserted.pass) {
+      const description = `
 ${printReceived(`Source:   ${sourceMarble}`)}
 ${printExpected(`Expected: ${expectedMarble}`)}
 
 ${asserted.message()}
     `;
-    throw new Error(description);
-  }
-};
+      throw new Error(description);
+    }
+  };
 
 function marbleAssert<T = string>(
   source: Array<TestMessage<T | Array<TestMessage<T>>>> | Readonly<Array<TestMessage<T | Array<TestMessage<T>>>>>
