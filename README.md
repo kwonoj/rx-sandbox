@@ -7,6 +7,10 @@
 `RxSandbox` is test suite for RxJS, based on marble diagram DSL for easier assertion around Observables.
 For RxJS 5 support, check pre-1.x versions. 1.x supports latest RxJS 6.x. 2.* supports rxjs@7.0.1 and above.
 
+## Maintenance notes
+
+This project is still maintained. I consider this project as feature complete so there is not much activity going on. I'll be updating time to time as new upstream RxJS releases, but do not have much plan to add new features. If you're experiencing issues with latest RxJS, please open issue with reproducible test case. I'll try to fix as soon as possible.
+
 ## What's difference with `TestScheduler` in RxJS?
 
 RxJs core itself includes its own [`TestScheduler`](https://github.com/ReactiveX/rxjs/blob/c63de0d380a923987aab587720473fad1d205d71/docs_app/content/guide/testing/marble-testing.md#testing-rxjs-code-with-marble-diagrams) implementation. With latest updates, it have different semantics around how to translate [`virtual frame` and `time progression`](https://github.com/ReactiveX/rxjs/blob/c63de0d380a923987aab587720473fad1d205d71/docs_app/content/guide/testing/marble-testing.md#time-progression-syntax) also slightly different api surfaces based on callbacks. RxSandbox aims to provide test interface with below design goals, bit different to core's test scheduler.
